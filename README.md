@@ -18,10 +18,11 @@ is plain HTML/CSS/JS with no build step.
 | Order, Order | `games/order-order.html` |
 | Steelman | `games/steelman.html` |
 | Vote Wordlet | `vote-wordlet/` |
+| Vote Stars | `vote-stars/vote-kids.html` |
 
-Other pieces referenced on the landing page (Vote Stars, MyTurn, Pass the Law,
-the Democracy Journey) are built but not yet hosted in this collection and show
-as *coming soon*.
+MyTurn and the Jersey Rent Tracker link out to their hosted versions on
+`computing-hub.github.io`. Pass the Law and the Democracy Journey are built but
+not yet hosted in this collection and show as *coming soon*.
 
 ## Viewing locally
 

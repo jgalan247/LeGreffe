@@ -1,0 +1,16 @@
+{
+  "name": "Vote Stars — Choosing Together",
+  "short_name": "Vote Stars",
+  "description": "A bright, friendly game that introduces young children to voting and democracy, using playground analogies like picking a team captain.",
+  "start_url": "./vote-kids.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#7C4DFF",
+  "theme_color": "#7C4DFF",
+  "lang": "en-GB",
+  "icons": [
+    { "src": "kids-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "kids-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Vote Stars — Choosing Together</title>
+<meta name="description" content="A bright, friendly game that introduces young children to voting and democracy, using playground analogies." />
+<link rel="manifest" href="kids-manifest.json" />
+<meta name="theme-color" content="#7C4DFF" />
+<link rel="icon" href="kids-icon-192.png" />
+<link rel="apple-touch-icon" href="kids-icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Vote Stars" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --accent:#EE5253;
+    --ink:#2D2A45;
+    --font:'Baloo 2', system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
+  html,body{ margin:0; height:100%; }
+  body{
+    font-family:var(--font); color:var(--ink);
+    background:linear-gradient(160deg,#8EC5FF 0%, #C2A8FF 45%, #FFC4E6 100%);
+    background-attachment:fixed;
+    min-height:100svh; display:flex; justify-content:center;
+    padding:env(safe-area-inset-top) 12px calc(env(safe-area-inset-bottom) + 12px);
+    overflow-x:hidden;
+  }
+  .app{ width:100%; max-width:480px; display:flex; flex-direction:column; }
+
+  /* ---------- top bar ---------- */
+  .topbar{ display:flex; align-items:center; gap:8px; padding:14px 4px 6px; }
+  .title{ font-weight:800; font-size:24px; letter-spacing:.3px; color:#fff; text-shadow:0 2px 0 rgba(0,0,0,.12); }
+  .title b{ color:#FFD23F; }
+  .iconbtn{ width:42px; height:42px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(255,255,255,.7); display:grid; place-items:center; font-size:20px; flex:none; }
+  .iconbtn:active{ transform:scale(.92); }
+  .spacer{ flex:1; }
+
+  /* ---------- star tray ---------- */
+  .stars{ display:flex; flex-wrap:wrap; gap:4px; justify-content:center; padding:4px 0 8px; }
+  .star{ font-size:22px; line-height:1; filter:grayscale(1) opacity(.45); transition:transform .3s, filter .3s; }
+  .star.on{ filter:none; animation:pop .45s ease; }
+  @keyframes pop{ 0%{transform:scale(.2) rotate(-30deg);} 60%{transform:scale(1.4) rotate(10deg);} 100%{transform:scale(1) rotate(0);} }
+
+  /* ---------- cards ---------- */
+  .card{
+    background:#fff; border-radius:26px; padding:18px 16px 20px; position:relative;
+    box-shadow:0 14px 0 -6px rgba(45,42,69,.18), 0 26px 40px -22px rgba(45,42,69,.5);
+    border:4px solid #fff;
+  }
+  .screen{ display:none; }
+  .screen.show{ display:block; animation:slidein .4s ease; }
+  @keyframes slidein{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- mascot ---------- */
+  .mascot{ width:96px; height:96px; display:block; margin:0 auto; }
+  .mascot.bob{ animation:bob 2.4s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0) rotate(-2deg);} 50%{transform:translateY(-7px) rotate(2deg);} }
+  .mascot.jump{ animation:jump .6s ease; }
+  @keyframes jump{ 0%{transform:translateY(0);} 30%{transform:translateY(-22px) scale(1.06);} 55%{transform:translateY(0) scale(.96);} 75%{transform:translateY(-8px);} 100%{transform:translateY(0);} }
+  .mbody{ fill:var(--accent); }
+
+  /* ---------- start screen ---------- */
+  .big-title{ font-weight:800; font-size:34px; text-align:center; color:var(--accent); margin:6px 0 2px; }
+  .lead{ text-align:center; font-size:17px; font-weight:600; color:var(--ink); margin:4px 6px 14px; line-height:1.35; }
+  .bubble{
+    background:#FFF4D6; border:3px solid #FFD23F; border-radius:18px; padding:12px 14px;
+    font-size:15px; font-weight:600; text-align:center; color:#6b5a16; margin:10px 2px 0; position:relative;
+  }
+
+  /* ---------- play card ---------- */
+  .prompt{ text-align:center; font-weight:700; font-size:18px; color:var(--accent); margin:4px 0 12px; }
+  .line{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; align-items:center; min-height:54px; }
+  .slot, .tile{ font-family:var(--font); font-weight:700; font-size:19px; border-radius:14px; line-height:1; }
+  .slot{
+    min-width:50px; min-height:50px; padding:0 14px; display:inline-flex; align-items:center; justify-content:center;
+    background:#F1EEFB; border:3px dashed #cfc7ea; color:#9b93bf;
+    transition:transform .15s, background .2s, border-color .2s, color .2s;
+  }
+  .slot.filled{ background:#fff; border:3px solid var(--accent); color:var(--ink); cursor:pointer; }
+  .slot.filled:active{ transform:scale(.94); }
+  .slot.locked{ background:var(--accent); border:3px solid var(--accent); color:#fff; }
+  .slot.done{ background:#21c08b; border:3px solid #21c08b; color:#fff; animation:popgreen .45s ease; }
+  .slot.done::after{ content:" ✓"; }
+  @keyframes popgreen{ 0%{transform:scale(.4);} 60%{transform:scale(1.25);} 100%{transform:scale(1);} }
+
+  .bank{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; min-height:54px; margin-top:18px; }
+  .tile{
+    background:#fff; color:var(--ink); padding:13px 17px; cursor:pointer;
+    border:3px solid var(--accent); box-shadow:0 5px 0 var(--accent);
+    animation:drop .4s cubic-bezier(.2,1.4,.5,1) backwards;
+  }
+  .tile:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--accent); }
+  .tile.gone{ display:none; }
+  @keyframes drop{ 0%{opacity:0; transform:translateY(-20px) scale(.6);} 100%{opacity:1; transform:translateY(0) scale(1);} }
+
+  .controls{ display:flex; gap:10px; margin-top:20px; }
+  .btn{ font-family:var(--font); font-weight:800; font-size:19px; border:none; border-radius:18px; padding:15px 12px;
+    cursor:pointer; flex:1; transition:transform .1s; }
+  .btn:active{ transform:translateY(3px); }
+  .btn-go{ background:var(--accent); color:#fff; box-shadow:0 6px 0 rgba(0,0,0,.18); flex:2; }
+  .btn-help{ background:#FFD23F; color:#6b5a16; box-shadow:0 6px 0 #e0b400; }
+
+  .saybox{ display:flex; align-items:flex-start; gap:10px; margin-top:16px; }
+  .saybox .m{ width:54px; height:54px; flex:none; }
+  .say{ background:#EAF8F1; border:3px solid #21c08b; border-radius:16px 16px 16px 4px; padding:11px 13px;
+    font-size:15px; font-weight:600; color:#176b4f; flex:1; }
+  .say.hide{ display:none; }
+  .say b{ color:#0e9b6e; }
+
+  .feedback{ text-align:center; font-weight:700; font-size:16px; min-height:22px; margin-top:12px; color:var(--accent); }
+
+  /* ---------- end screen ---------- */
+  .end-title{ font-weight:800; font-size:30px; text-align:center; color:var(--accent); margin:8px 0 2px; }
+  .endstars{ font-size:30px; text-align:center; letter-spacing:2px; margin:6px 0; }
+
+  /* ---------- confetti ---------- */
+  #confetti{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:50; }
+  .conf{ position:absolute; width:11px; height:14px; border-radius:2px; will-change:transform; }
+  @keyframes fall{ to{ transform:translateY(115vh) rotate(720deg); opacity:.9; } }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+  :focus-visible{ outline:4px solid #2E86DE; outline-offset:2px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="title">Vote <b>Stars</b></div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="sound" title="Sound on/off" aria-label="Sound on or off">🔊</button>
+  </div>
+
+  <!-- ============ START ============ -->
+  <section class="screen show" id="startScreen">
+    <div class="card">
+      <svg class="mascot bob" viewBox="0 0 120 120" id="mStart" aria-hidden="true">
+        <g id="mascotG">
+          <rect class="mbody" x="20" y="40" width="80" height="64" rx="16"/>
+          <rect x="44" y="34" width="32" height="10" rx="4" fill="#2D2A45"/>
+          <rect x="52" y="14" width="22" height="26" rx="3" fill="#fff" stroke="#2D2A45" stroke-width="2"/>
+          <path d="M57 27 l4 5 l9 -11" fill="none" stroke="#21c08b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="44" cy="64" r="8" fill="#fff"/><circle cx="76" cy="64" r="8" fill="#fff"/>
+          <circle cx="45" cy="66" r="3.5" fill="#2D2A45"/><circle cx="77" cy="66" r="3.5" fill="#2D2A45"/>
+          <path d="M46 82 q14 12 28 0" fill="none" stroke="#2D2A45" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="33" cy="96" r="4" fill="#fff" opacity=".7"/><circle cx="87" cy="96" r="4" fill="#fff" opacity=".7"/>
+        </g>
+      </svg>
+      <h1 class="big-title">Let's Vote!</h1>
+      <p class="lead">Voting is how we choose things <b>together</b> — fairly, with everyone's say.</p>
+      <div class="bubble">Like picking a football captain ⚽ or choosing the class game — everyone votes, and the favourite wins!</div>
+      <div class="controls">
+        <button class="btn btn-go" id="startBtn">Play! 🎉</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GAME ============ -->
+  <section class="screen" id="gameScreen">
+    <div class="stars" id="starTray" aria-label="Stars collected"></div>
+    <div class="card">
+      <div class="prompt" id="prompt">Build the sentence! 🧩</div>
+      <div class="line" id="line"></div>
+      <div class="bank" id="bank"></div>
+      <div class="controls">
+        <button class="btn btn-go" id="checkBtn">Check ✅</button>
+        <button class="btn btn-help" id="helpBtn">Help 💡</button>
+      </div>
+      <p class="feedback" id="feedback"></p>
+      <div class="saybox" id="saybox">
+        <svg class="m" viewBox="0 0 120 120" aria-hidden="true"><use href="#mascotG"/></svg>
+        <div class="say hide" id="say"></div>
+      </div>
+      <div class="controls" id="nextWrap" style="display:none">
+        <button class="btn btn-go" id="nextBtn">Next ➡️</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ END ============ -->
+  <section class="screen" id="endScreen">
+    <div class="card">
+      <svg class="mascot jump" viewBox="0 0 120 120" aria-hidden="true"><use href="#mascotG"/></svg>
+      <h2 class="end-title">You're a Voting Star! ⭐</h2>
+      <div class="endstars" id="endStars"></div>
+      <p class="lead">You learned how we choose <b>together</b> — everyone gets a fair say, and the most votes win!</p>
+      <div class="controls">
+        <button class="btn btn-go" id="againBtn">Play again 🔁</button>
+      </div>
+    </div>
+  </section>
+</div>
+<div id="confetti" aria-hidden="true"></div>
+
+<script>
+/* ---------------- rounds: short sentence + playground analogy + colour ---------------- */
+const ROUNDS = [
+  { w:["Voting","helps","us","decide","together."], why:"Just like choosing a class game — everyone shares an idea, then we pick the favourite!", c:"#EE5253" },
+  { w:["Everyone","gets","one","fair","vote."],      why:"Fair means everyone gets the same say — one turn each, like sharing out the sweets!", c:"#F0932B" },
+  { w:["The","most","votes","always","wins."],       why:"If most friends want football, you play football. The biggest choice wins! ⚽", c:"#E1A700" },
+  { w:["We","raise","our","hands","up."],            why:"In class we vote by putting our hands up — easy peasy! ✋", c:"#21c08b" },
+  { w:["A","vote","is","your","voice."],             why:"Your vote is your voice — it tells everyone what YOU think is best.", c:"#00B5AD" },
+  { w:["We","count","every","single","vote."],       why:"We count all the votes, like counting goals, to see which one wins.", c:"#2E86DE" },
+  { w:["Voting","is","fair","for","everyone."],      why:"Voting is fair, like taking turns on the slide — everyone gets a go.", c:"#5F46E0" },
+  { w:["We","choose","our","team","captain."],       why:"Picking a captain? The team votes, and the favourite gets the armband! 🧢", c:"#8E44AD" },
+  { w:["Your","choice","really","does","matter."],   why:"Even one vote can change things — so your choice really counts!", c:"#E84393" },
+  { w:["Together","we","make","good","choices."],    why:"When we choose together, we pick something most of us are happy with. 🤝", c:"#16A085" }
+];
+
+const $ = (id)=>document.getElementById(id);
+let idx=0, slots=[], bank=[], soundOn=true;
+try{ soundOn = (localStorage.getItem('vs_sound')??'1')==='1'; }catch(e){}
+
+/* ---------------- sound (gentle Web Audio) ---------------- */
+let ac=null;
+function tone(freq, start, dur, type='sine', vol=0.18){
+  if(!soundOn) return;
+  try{
+    ac = ac || new (window.AudioContext||window.webkitAudioContext)();
+    const o=ac.createOscillator(), g=ac.createGain();
+    o.type=type; o.frequency.value=freq;
+    o.connect(g); g.connect(ac.destination);
+    const t=ac.currentTime+start;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.start(t); o.stop(t+dur+0.02);
+  }catch(e){}
+}
+const sDing =()=>{ tone(660,0,.18,'triangle'); tone(990,.10,.22,'triangle'); };
+const sNudge=()=>{ tone(300,0,.14,'sine',.12); };
+const sTada =()=>{ [523,659,784,1047].forEach((f,i)=>tone(f,i*.12,.30,'triangle',.2)); };
+
+function updateSoundBtn(){ $('sound').textContent = soundOn ? '🔊' : '🔇'; }
+$('sound').addEventListener('click',()=>{ soundOn=!soundOn; try{localStorage.setItem('vs_sound',soundOn?'1':'0');}catch(e){} updateSoundBtn(); if(soundOn) sDing(); });
+updateSoundBtn();
+
+/* ---------------- confetti ---------------- */
+const COLS=['#EE5253','#F0932B','#FFD23F','#21c08b','#2E86DE','#8E44AD','#E84393'];
+function confetti(n=46){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box=$('confetti');
+  for(let i=0;i<n;i++){
+    const d=document.createElement('div');
+    d.className='conf';
+    d.style.left=Math.random()*100+'vw';
+    d.style.top=(-10-Math.random()*20)+'vh';
+    d.style.background=COLS[(Math.random()*COLS.length)|0];
+    d.style.borderRadius=Math.random()<.5?'2px':'50%';
+    const dur=1.4+Math.random()*1.2;
+    d.style.animation=`fall ${dur}s linear forwards`;
+    d.style.transform=`rotate(${Math.random()*360}deg)`;
+    box.appendChild(d);
+    setTimeout(()=>d.remove(), dur*1000+200);
+  }
+}
+
+/* ---------------- screens ---------------- */
+function show(id){ ['startScreen','gameScreen','endScreen'].forEach(s=>$(s).classList.toggle('show', s===id)); }
+
+/* ---------------- star tray ---------------- */
+function renderStars(){
+  const tray=$('starTray'); tray.innerHTML='';
+  ROUNDS.forEach((_,i)=>{
+    const s=document.createElement('span');
+    s.className='star'+(i<idx?' on':'');
+    s.textContent='★';
+    tray.appendChild(s);
+  });
+}
+function lightStar(i){
+  const el=$('starTray').children[i];
+  if(el){ el.classList.add('on'); }
+}
+
+/* ---------------- round ---------------- */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function loadRound(){
+  const r=ROUNDS[idx];
+  document.documentElement.style.setProperty('--accent', r.c);
+  $('feedback').textContent='';
+  $('say').classList.add('hide'); $('say').innerHTML='';
+  $('nextWrap').style.display='none';
+  $('checkBtn').style.display=''; $('helpBtn').style.display='';
+  renderStars();
+
+  const last=r.w.length-1;
+  slots=r.w.map((w,i)=>{ const locked=(i===0||i===last); return {locked, fixed:false, word:locked?w:null, tileId:null}; });
+  let middle=r.w.map((w,i)=>({w,i})).filter(o=>o.i!==0 && o.i!==last);
+  let order; do{ order=shuffle(middle.slice()); } while(middle.length>1 && order.map(o=>o.i).join(',')===middle.map(o=>o.i).join(','));
+  bank=order.map((o,k)=>({id:k, word:o.w, gone:false}));
+  render();
+}
+
+function render(){
+  const line=$('line'); line.innerHTML='';
+  slots.forEach((s,i)=>{
+    const fixedOrLocked = s.locked || s.fixed;
+    const el=document.createElement(fixedOrLocked?'span':'button');
+    let cls='slot';
+    if(s.locked) cls+=' locked';
+    else if(s.fixed) cls+=' done';
+    else if(s.word) cls+=' filled';
+    el.className=cls; el.textContent=s.word||'';
+    if(!fixedOrLocked){ el.type='button'; el.addEventListener('click',()=>pull(i)); }
+    line.appendChild(el);
+  });
+  const bk=$('bank'); bk.innerHTML='';
+  bank.forEach((t,k)=>{
+    const el=document.createElement('button');
+    el.type='button'; el.className='tile'+(t.gone?' gone':''); el.textContent=t.word;
+    el.style.animationDelay=(k*0.06)+'s';
+    el.disabled=t.gone;
+    el.addEventListener('click',()=>place(t.id));
+    bk.appendChild(el);
+  });
+}
+
+function place(id){
+  const t=bank.find(b=>b.id===id); if(!t||t.gone) return;
+  const slot=slots.find(s=>!s.locked && !s.fixed && !s.word); if(!slot) return;
+  slot.word=t.word; slot.tileId=id; t.gone=true;
+  $('feedback').textContent='';
+  render();
+}
+function pull(i){
+  const s=slots[i]; if(s.locked||s.fixed||!s.word) return;
+  const t=bank.find(b=>b.id===s.tileId); if(t) t.gone=false;
+  s.word=null; s.tileId=null; render();
+}
+
+function check(){
+  const r=ROUNDS[idx];
+  if(slots.some(s=>!s.word)){ $('feedback').textContent='Fill the gaps first! 🧩'; sNudge(); return; }
+  let allRight=true;
+  slots.forEach((s,i)=>{
+    if(s.locked||s.fixed) return;
+    if(s.word===r.w[i]){ s.fixed=true; }
+    else { const t=bank.find(b=>b.id===s.tileId); if(t) t.gone=false; s.word=null; s.tileId=null; allRight=false; }
+  });
+  render();
+  if(allRight){ win(); }
+  else { $('feedback').textContent='So close! Keep the green ones and try the rest 💪'; sNudge(); bobMascot(); }
+}
+
+function help(){
+  const r=ROUNDS[idx];
+  for(let i=0;i<slots.length;i++){
+    if(slots[i].locked||slots[i].fixed) continue;
+    if(slots[i].word){ const t=bank.find(b=>b.id===slots[i].tileId); if(t)t.gone=false; slots[i].word=null; slots[i].tileId=null; }
+    const free=bank.find(b=>b.word===r.w[i] && !b.gone);
+    if(free){ free.gone=true; slots[i].word=r.w[i]; slots[i].tileId=free.id; slots[i].fixed=true; }
+    render();
+    if(slots.every(s=>s.locked||s.fixed)) { win(); }
+    else { $('feedback').textContent='There you go! 💡'; }
+    return;
+  }
+}
+
+function bobMascot(){ const m=document.querySelector('#saybox .m'); }
+
+function win(){
+  $('feedback').textContent='YES! 🎉';
+  $('say').innerHTML='<b>Did you know?</b> '+ROUNDS[idx].why;
+  $('say').classList.remove('hide');
+  $('checkBtn').style.display='none'; $('helpBtn').style.display='none';
+  $('nextWrap').style.display='';
+  lightStar(idx);
+  confetti();
+  sDing();
+}
+
+function next(){
+  if(idx<ROUNDS.length-1){ idx++; loadRound(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else finish();
+}
+
+function finish(){
+  show('endScreen');
+  $('endStars').textContent='⭐'.repeat(ROUNDS.length);
+  confetti(80); sTada();
+}
+
+/* ---------------- buttons ---------------- */
+$('startBtn').addEventListener('click',()=>{ idx=0; show('gameScreen'); loadRound(); sDing(); });
+$('checkBtn').addEventListener('click',check);
+$('helpBtn').addEventListener('click',help);
+$('nextBtn').addEventListener('click',next);
+$('againBtn').addEventListener('click',()=>{ idx=0; show('gameScreen'); loadRound(); });
+
+/* ---------------- PWA ---------------- */
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('kids-sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>
