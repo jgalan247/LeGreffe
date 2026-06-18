@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Pass the Law — Jersey legislative game</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A; --gold-d:#B9781F;
+    --ink:#1E293B; --muted:#64748B; --tint:#EEF4F7; --line:#D8E3EA; --bg:#F6F9FB;
+    --white:#fff; --green:#15807A; --red:#A6492E;
+    --serif:Georgia,"Times New Roman",serif; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px}
+  header{background:var(--navy);color:#fff;padding:13px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .eyebrow{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px;margin-top:2px}
+  /* stage tracker */
+  .stages{display:flex;gap:5px;margin-top:10px}
+  .stages .st{flex:1;height:5px;border-radius:999px;background:rgba(255,255,255,.18)}
+  .stages .st.on{background:var(--gold)}
+  .stages .st.done{background:var(--teal)}
+  .screen{display:none;padding:20px 0 44px}
+  .screen.show{display:block}
+  h1{font-family:var(--serif);color:var(--deep);font-size:27px;margin:0 0 10px;line-height:1.15}
+  h2{font-family:var(--serif);color:var(--deep);font-size:22px;margin:0 0 4px}
+  .stagetag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);margin-bottom:4px}
+  p.lede{font-size:15px;color:var(--ink);margin:0 0 16px}
+  .btn{border:0;border-radius:12px;padding:13px 18px;font-weight:700;font-size:15px;cursor:pointer;font-family:var(--sans)}
+  .btn.gold{background:var(--gold);color:var(--navy);box-shadow:0 2px 0 var(--gold-d)}
+  .btn.deep{background:var(--deep);color:#fff}
+  .btn.ghost{background:transparent;color:var(--deep);border:1.5px solid var(--line)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+  .card.tint{background:var(--tint);border:none}
+  .choice{width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;display:block}
+  .choice:hover{border-color:var(--teal)}
+  .choice .t{font-family:var(--serif);font-weight:700;color:var(--deep);font-size:15px}
+  .choice .d{font-size:13px;color:var(--ink);margin-top:3px}
+  .choice .tag{font-size:11px;color:var(--muted);margin-top:6px}
+  /* support meter */
+  .meter{background:var(--navy);color:#fff;border-radius:14px;padding:12px 16px;margin-bottom:14px;position:sticky;top:0;z-index:5}
+  .meter .row{display:flex;justify-content:space-between;align-items:baseline}
+  .meter .big{font-family:var(--serif);font-size:24px;font-weight:700}
+  .meter .lab{font-size:11px;color:#9FB3C8}
+  .track{height:8px;background:rgba(255,255,255,.15);border-radius:999px;margin-top:8px;overflow:hidden;position:relative}
+  .track>span{display:block;height:100%;background:var(--gold);border-radius:999px;transition:width .35s}
+  .track .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;opacity:.7}
+  .feedback{font-size:13px;border-radius:10px;padding:10px 12px;margin:10px 0}
+  .fb-good{background:#E7F1F0;color:var(--green)}
+  .fb-bad{background:#FBEEE6;color:var(--red)}
+  .opt{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+  .amd{border-left:4px solid var(--gold);background:var(--tint);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+  .amd .who{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;text-transform:uppercase}
+  .amd .txt{font-size:14px;color:var(--ink);margin:5px 0 0}
+  /* vote */
+  .tally{display:flex;justify-content:center;gap:18px;margin:12px 0;text-align:center}
+  .tally .b{font-family:var(--serif);font-size:34px;font-weight:700;line-height:1}
+  .tally .pour{color:var(--green)} .tally .contre{color:var(--red)} .tally .abs{color:var(--muted)}
+  .tally .lab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .votebar{display:flex;height:16px;border-radius:999px;overflow:hidden;margin:8px 0 12px;border:1px solid var(--line)}
+  .votebar .p{background:var(--green)} .votebar .c{background:var(--red)} .votebar .a{background:#CBD5E1}
+  .verdict{text-align:center;font-family:var(--serif);font-size:21px;font-weight:700;margin:6px 0}
+  .pass{color:var(--green)} .fail{color:var(--red)}
+  .reflect{background:var(--navy);color:#fff;border-radius:14px;padding:16px;margin-top:14px;font-size:14px}
+  .reflect b{color:var(--gold)}
+  .note{font-size:12px;color:var(--muted);margin-top:14px}
+  .row-btns{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .row-btns .btn{flex:1;min-width:140px}
+  .pathline{font-size:12px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .pathline span{background:var(--tint);border-radius:999px;padding:3px 9px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div style="flex:1">
+    <div class="eyebrow">States Assembly of Jersey · learning game</div>
+    <div class="brand">Pass the Law</div>
+    <div class="stages" id="stageTrack"></div>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <!-- START / PICK -->
+  <div class="screen show" id="start">
+    <h1>You have an idea. Can you make it law?</h1>
+    <p class="lede">In Jersey, any States Member can bring a <b>proposition</b>. But an idea only becomes law if it survives every stage and wins the room. Pick a proposition to take through the States Assembly — then guide it from lodging to the final vote.</p>
+    <div id="picks"></div>
+    <p class="note">Illustrative propositions and procedure, based on the real stages a proposition passes through in the States Assembly.</p>
+  </div>
+
+  <!-- GENERIC STAGE SCREEN -->
+  <div class="screen" id="stage">
+    <div class="meter">
+      <div class="row"><div><div class="lab">Support in the Assembly</div><div class="big"><span id="supNum">—</span> <span style="font-size:14px;font-weight:400;color:#9FB3C8">of 49 · 25 to pass</span></div></div></div>
+      <div class="track"><span id="supTrack" style="width:0%"></span><div class="mark" id="supMark" style="left:51%"></div></div>
+    </div>
+    <div id="stageBody"></div>
+  </div>
+
+  <!-- OUTCOME -->
+  <div class="screen" id="outcome"><div id="outcomeBody"></div>
+    <div class="row-btns"><button class="btn gold" data-action="restart">Try another proposition 🔁</button></div>
+    <p class="note">A learning game about how the States Assembly turns an idea into law — lodging, debate, amendment and the vote. The process is the same whatever the topic; that's the point.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var STAGE_NAMES=["Lodge","Build support","Amendment","Debate","Vote"];
+  var PROPS=[
+    {id:"recycle",t:"Island-wide recycling on the go",
+     d:"Require public bins across Jersey to have a recycling option alongside general waste.",
+     tag:"Environment · public realm",
+     objection:"the cost of new bins and collection rounds",
+     answer_good:"Phase it in over three years and start where footfall is highest, so the cost is spread and the benefit is visible early.",
+     answer_weak:"Insist it all happens at once because the cause is important."},
+    {id:"benches",t:"More public seating and shade",
+     d:"Add benches and shaded spots in town and parish centres so older and disabled Islanders can rest.",
+     tag:"Community · accessibility",
+     objection:"whether parishes or the Government should pay",
+     answer_good:"Propose a shared fund with parishes opting in, so no one is forced and the cost is split fairly.",
+     answer_weak:"Leave the funding question open and sort it out later."},
+    {id:"transport",t:"Cheaper off-peak bus travel for under-25s",
+     d:"Introduce discounted off-peak bus fares for Islanders under 25 to support work, study and independence.",
+     tag:"Transport · young people",
+     objection:"the loss of fare income and who makes up the difference",
+     answer_good:"Trial it for a year with clear targets, and review the cost against any rise in passenger numbers before committing.",
+     answer_weak:"Promise it will pay for itself without any evidence yet."}
+  ];
+
+  var S={prop:null,stage:0,support:18,log:[]};
+  function $(id){return document.getElementById(id);}
+  function show(id){["start","stage","outcome"].forEach(function(s){$(s).classList.toggle("show",s===id);});window.scrollTo(0,0);}
+  function clamp(v){return Math.max(2,Math.min(49,v));}
+
+  function renderTrack(){
+    var h="";
+    for(var i=0;i<STAGE_NAMES.length;i++){h+='<div class="st '+(i<S.stage?"done":(i===S.stage?"on":""))+'"></div>';}
+    $("stageTrack").innerHTML=h;
+  }
+  function renderMeter(){
+    $("supNum").textContent=S.support;
+    $("supTrack").style.width=Math.round(100*S.support/49)+"%";
+  }
+
+  function renderPicks(){
+    var h="";
+    PROPS.forEach(function(p){
+      h+='<button class="choice" data-action="pick" data-id="'+p.id+'"><div class="t">'+p.t+'</div><div class="d">'+p.d+'</div><div class="tag">'+p.tag+'</div></button>';
+    });
+    $("picks").innerHTML=h;
+  }
+
+  // ---- stage renderers ----
+  function go(stage){ S.stage=stage; renderTrack(); renderMeter(); renderStage(); show("stage"); }
+
+  function renderStage(){
+    var p=S.prop, h="", fb="";
+    if(S.fb){ fb='<div class="feedback '+(S.fb.good?"fb-good":"fb-bad")+'">'+S.fb.txt+'</div>'; }
+
+    if(S.stage===0){ // LODGE
+      h='<div class="stagetag">Stage 1 · Lodging "au Greffe"</div><h2>Lodge your proposition</h2>'+
+        '<div class="card tint"><b>'+p.t+'</b><div style="font-size:13px;margin-top:4px">'+p.d+'</div></div>'+
+        '<p class="lede">A lodged proposition is published and must sit for a minimum <b>lodging period</b> so every Member can read it before it\'s debated. You can take the full time — or ask the Assembly to shorten it so you can debate sooner.</p>'+fb+
+        '<div class="opt">'+
+        '<button class="btn ghost" data-action="lodge" data-v="full">Take the full lodging period (Members get time to read it)</button>'+
+        '<button class="btn ghost" data-action="lodge" data-v="short">Ask to reduce the lodging period and debate sooner</button></div>';
+    }
+    else if(S.stage===1){ // BUILD SUPPORT
+      h='<div class="stagetag">Stage 2 · Before the debate</div><h2>Build your support</h2>'+
+        '<p class="lede">Most Members are independents and no party holds a majority, so you need to win backing person by person. How do you spend your time?</p>'+fb+
+        '<div class="opt">'+
+        '<button class="btn ghost" data-action="build" data-v="listen">Meet Members one-to-one and adjust the detail to their concerns</button>'+
+        '<button class="btn ghost" data-action="build" data-v="media">Make your case publicly and hope pressure brings Members along</button>'+
+        '<button class="btn ghost" data-action="build" data-v="nothing">Trust the idea to speak for itself and do little lobbying</button></div>';
+    }
+    else if(S.stage===2){ // AMENDMENT
+      h='<div class="stagetag">Stage 3 · Amendment</div><h2>A Member lodges an amendment</h2>'+
+        '<div class="amd"><div class="who">Amendment lodged</div><div class="txt">A Member proposes to <b>'+p.amdText+'</b> — it would soften your proposition, but several colleagues support the change.</div></div>'+
+        '<p class="lede">Remember: amendments are debated and voted on <b>first</b>. If one passes, your proposition is then debated <i>as amended</i>. Do you accept it to keep that bloc onside, or resist to keep your proposition whole?</p>'+fb+
+        '<div class="opt">'+
+        '<button class="btn ghost" data-action="amend" data-v="accept">Accept the amendment (compromise — keeps their votes)</button>'+
+        '<button class="btn ghost" data-action="amend" data-v="resist">Resist it (defend your proposition, risk their votes)</button></div>';
+    }
+    else if(S.stage===3){ // DEBATE
+      h='<div class="stagetag">Stage 4 · The debate</div><h2>Answer the strongest objection</h2>'+
+        '<p class="lede">In the debate, the sharpest challenge to your proposition is about <b>'+p.objection+'</b>. How do you respond when you sum up?</p>'+fb+
+        '<div class="opt">'+
+        '<button class="btn ghost" data-action="debate" data-v="good">'+p.answer_good+'</button>'+
+        '<button class="btn ghost" data-action="debate" data-v="weak">'+p.answer_weak+'</button></div>';
+    }
+    else if(S.stage===4){ // VOTE
+      h='<div class="stagetag">Stage 5 · The vote (appel nominal)</div><h2>The Assembly votes</h2>'+
+        '<p class="lede">The Bailiff calls the vote. Members press <b>pour</b> (for), <b>contre</b> (against) or <b>abstain</b>. A majority of those voting carries it'+(S.amended?', and your proposition is voted on <i>as amended</i>':'')+'.</p>'+
+        '<button class="btn gold" data-action="callvote" style="width:100%">Call the vote →</button>';
+    }
+    $("stageBody").innerHTML=h;
+  }
+
+  function bump(n,txt,good){ S.support=clamp(S.support+n); S.fb={txt:txt,good:good}; }
+
+  function renderOutcome(){
+    // final vote
+    var pour=S.support + (Math.round(Math.random()*6)-3);
+    pour=Math.max(2,Math.min(47,pour));
+    var abstain=Math.max(0,Math.min(6,Math.round(Math.random()*4)));
+    var contre=49-pour-abstain;
+    if(contre<0){contre=0;abstain=49-pour;}
+    var cast=pour+contre;
+    var pass=pour>contre;
+    var p=S.prop;
+    var h='<div class="stagetag">Result</div><h2>'+p.t+(S.amended?' (as amended)':'')+'</h2>';
+    h+='<div class="tally"><div class="b-wrap"><div class="b pour">'+pour+'</div><div class="lab">Pour</div></div>'+
+       '<div class="b-wrap"><div class="b contre">'+contre+'</div><div class="lab">Contre</div></div>'+
+       '<div class="b-wrap"><div class="b abs">'+abstain+'</div><div class="lab">Abstain</div></div></div>';
+    var tot=pour+contre+abstain;
+    h+='<div class="votebar"><span class="p" style="width:'+(100*pour/tot)+'%"></span><span class="c" style="width:'+(100*contre/tot)+'%"></span><span class="a" style="width:'+(100*abstain/tot)+'%"></span></div>';
+    h+='<div class="verdict '+(pass?"pass":"fail")+'">'+(pass?"✓ Adopted — your proposition becomes binding":"✗ Defeated — the proposition falls")+'</div>';
+
+    h+='<div class="card"><div style="font-weight:700;color:var(--deep);font-family:var(--serif);margin-bottom:6px">The journey it took</div>';
+    S.log.forEach(function(l){h+='<div class="pathline"><span>'+l+'</span></div>';});
+    h+='</div>';
+
+    var msg;
+    if(pass && S.amended) msg='You got your idea through — but not untouched. It passed <b>as amended</b>, which is how most propositions succeed: shaped by the Assembly on the way.';
+    else if(pass) msg='You held your proposition together <i>and</i> won the vote — a strong result that takes careful groundwork.';
+    else msg='It didn\'t carry this time. Most ideas that fail do so because the support wasn\'t built before the debate, or a compromise that would have won a majority was refused.';
+    h+='<div class="reflect"><b>What just happened.</b> '+msg+' An idea becomes law in Jersey only by surviving every stage — <b>lodging, scrutiny by the whole Assembly, amendment, debate and a vote</b> — and by winning over Members who answer to no party. <b>That is how the States Assembly makes law.</b></div>';
+    $("outcomeBody").innerHTML=h;
+    show("outcome");
+  }
+
+  document.addEventListener("click",function(e){
+    var el=e.target.closest("[data-action]"); if(!el)return;
+    var a=el.getAttribute("data-action"), v=el.getAttribute("data-v"), id=el.getAttribute("data-id");
+    if(a==="pick"){
+      var p=PROPS.find(function(x){return x.id===id;});
+      S={prop:Object.assign({},p),stage:0,support:18,log:[],fb:null,amended:false};
+      // tailor amendment text per topic
+      S.prop.amdText = p.id==="recycle"?"limit it to the largest car parks and town only, for now"
+        : p.id==="benches"?"make it a voluntary guideline for parishes rather than a requirement"
+        : "restrict the discount to weekends only at first";
+      go(0); return;
+    }
+    if(a==="lodge"){
+      if(v==="full"){bump(4,"Members appreciate having time to read and consider it — goodwill built.",true);S.log.push("Lodged with full reading time");}
+      else {bump(-4,"Some Members object to the rush and feel pushed — that costs you goodwill, as it often does in reality.",false);S.log.push("Asked to shorten the lodging period");}
+      go(1); return;
+    }
+    if(a==="build"){
+      if(v==="listen"){bump(8,"Meeting Members and addressing their concerns wins real, durable support.",true);S.log.push("Built support Member by Member");}
+      else if(v==="media"){bump(2,"Public pressure helps a little, but Members value being consulted directly.",true);S.log.push("Made the case publicly");}
+      else {bump(-6,"Few Members feel any reason to back it — an idea rarely passes on its own.",false);S.log.push("Did little lobbying");}
+      go(2); return;
+    }
+    if(a==="amend"){
+      if(v==="accept"){bump(7,"Accepting the change brought a bloc of Members with you — your proposition continues, as amended.",true);S.amended=true;S.log.push("Accepted an amendment");}
+      else {bump(-3,"You kept your proposition whole, but lost the Members who wanted the change.",false);S.log.push("Resisted the amendment");}
+      go(3); return;
+    }
+    if(a==="debate"){
+      if(v==="good"){bump(6,"A practical, evidenced answer reassures wavering Members.",true);S.log.push("Answered the objection well");}
+      else {bump(-5,"Conviction without a practical answer leaves the objection standing.",false);S.log.push("Answered the objection weakly");}
+      go(4); return;
+    }
+    if(a==="callvote"){ renderOutcome(); return; }
+    if(a==="restart"){ S={prop:null,stage:0,support:18,log:[]}; renderPicks(); show("start"); renderTrack&&($("stageTrack").innerHTML=""); return; }
+  });
+
+  // init
+  renderPicks();
+  $("stageTrack").innerHTML="";
+})();
+</script>
+</body>
+</html>

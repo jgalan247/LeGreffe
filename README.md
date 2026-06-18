@@ -17,12 +17,13 @@ is plain HTML/CSS/JS with no build step.
 | Motion Builder | `games/motion-builder.html` |
 | Order, Order | `games/order-order.html` |
 | Steelman | `games/steelman.html` |
+| Pass the Law | `games/pass-the-law.html` |
 | Vote Wordlet | `vote-wordlet/` |
 | Vote Stars | `vote-stars/vote-kids.html` |
+| The Democracy Journey | `democracy-journey.html` |
 
 MyTurn and the Jersey Rent Tracker link out to their hosted versions on
-`computing-hub.github.io`. Pass the Law and the Democracy Journey are built but
-not yet hosted in this collection and show as *coming soon*.
+`computing-hub.github.io`. Everything else is published in this collection.
 
 ## Viewing locally
 

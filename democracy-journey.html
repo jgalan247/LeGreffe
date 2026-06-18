@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>From the Classroom to the Ballot Box — building the voting habit, KS2 to 35</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A;
+    --ink:#1E293B; --muted:#64748B; --tint:#EEF4F7; --line:#D8E3EA;
+    --bg:#F6F9FB; --white:#fff; --rust:#A6492E;
+    --ks2:#1C7293; --ks3:#0A4D68; --ks4:#14807A; --ks5:#E0973A; --adult:#A6492E;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  .serif{font-family:var(--serif)}
+
+  header{background:var(--navy);color:#fff;padding:16px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .eyebrow{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px}
+  .pill{background:rgba(255,255,255,.12);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600}
+
+  /* hero */
+  .hero{background:linear-gradient(160deg,var(--navy),var(--deep));color:#fff;padding:46px 0 40px}
+  .hero h1{font-family:var(--serif);font-size:38px;line-height:1.12;margin:6px 0 12px;max-width:780px}
+  .hero p{font-size:17px;color:#CFE0EA;max-width:720px;margin:0}
+  .sec-label{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+
+  /* the problem band */
+  .why{background:#fff;border-bottom:1px solid var(--line);padding:38px 0}
+  h2.title{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--deep);margin:0 0 8px}
+  .lede{font-size:16px;color:var(--ink);max-width:780px;margin:0 0 24px}
+  .dropchart{background:var(--tint);border-radius:18px;padding:26px 24px 18px}
+  .bars{display:flex;align-items:flex-end;gap:14px;height:230px;border-bottom:2px solid var(--line);padding:0 4px}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .bar .col{width:100%;max-width:90px;border-radius:10px 10px 0 0;position:relative;transition:height .3s}
+  .bar .v{font-family:var(--serif);font-weight:700;color:var(--deep);font-size:20px;margin-bottom:6px}
+  .bar .lab{font-size:12px;color:var(--muted);margin-top:10px;text-align:center;line-height:1.3}
+  .bar .lab b{display:block;color:var(--ink);font-size:13px}
+  .dropnote{font-size:13px;color:var(--muted);margin-top:14px;text-align:center;font-style:italic}
+
+  /* journey */
+  .journey{padding:44px 0 10px}
+  .spine{position:relative;margin-top:10px}
+  .stage{display:grid;grid-template-columns:140px 1fr;gap:0;position:relative}
+  .stage:last-child .rail::after{display:none}
+  .rail{position:relative;display:flex;flex-direction:column;align-items:center;padding-top:6px}
+  .node{width:54px;height:54px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--serif);font-weight:700;font-size:22px;box-shadow:0 6px 16px rgba(18,38,58,.18);z-index:2;flex:0 0 auto}
+  .rail::after{content:"";position:absolute;top:54px;bottom:-10px;width:4px;background:var(--line);z-index:1}
+  .agechip{margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--muted);text-align:center;line-height:1.3}
+  .agechip b{display:block;font-size:13px;color:var(--ink)}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin:0 0 30px 8px;position:relative}
+  .panel::before{content:"";position:absolute;left:-9px;top:24px;width:16px;height:16px;background:#fff;border-left:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+  .ks{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+  .panel h3{font-family:var(--serif);font-size:22px;color:var(--deep);margin:4px 0 10px}
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+  .block .h{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+  .block p{margin:0;font-size:14px;color:var(--ink)}
+  .builds{margin-top:16px;background:var(--tint);border-radius:12px;padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:flex-start}
+  .builds b{color:var(--deep)}
+  .deliver{margin-top:14px}
+  .deliver .h{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .tags{display:flex;gap:8px;flex-wrap:wrap}
+  .tag{background:var(--tint);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--deep)}
+
+  /* pivot callout */
+  .pivot{background:var(--gold);color:var(--navy);border-radius:14px;padding:8px 14px;font-size:13px;font-weight:700;display:inline-flex;gap:8px;align-items:center;margin-top:14px}
+
+  /* the gap */
+  .gap{background:var(--navy);color:#fff;padding:44px 0}
+  .gap h2{font-family:var(--serif);font-size:28px;color:#fff;margin:0 0 10px}
+  .gap p{color:#CFE0EA;max-width:740px;font-size:16px;margin:0 0 22px}
+  .gapgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:center}
+  .gapcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px}
+  .gapcard h3{font-family:var(--serif);color:var(--gold);font-size:18px;margin:0 0 8px}
+  .gapcard p{color:#DCE7EF;font-size:14px;margin:0}
+  .bridge{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:14px;color:#fff}
+  .bridge .dot{width:10px;height:10px;border-radius:999px;background:var(--gold);flex:0 0 auto}
+
+  /* payoff */
+  .payoff{background:var(--bg);padding:44px 0}
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+  .pillar{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+  .pillar .n{width:42px;height:42px;border-radius:999px;background:var(--deep);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;margin-bottom:10px}
+  .pillar h3{font-family:var(--serif);color:var(--deep);font-size:18px;margin:0 0 6px}
+  .pillar p{margin:0;font-size:14px}
+  .kicker{margin-top:24px;background:var(--deep);color:#fff;border-radius:16px;padding:22px 24px;text-align:center}
+  .kicker .big{font-family:var(--serif);font-size:24px;line-height:1.3;max-width:760px;margin:0 auto}
+  .kicker .big b{color:var(--gold)}
+
+  footer{background:var(--navy);color:#9FB3C8;font-size:13px;padding:24px 0;text-align:center}
+  .sources{font-size:11px;color:var(--muted);max-width:880px;margin:18px auto 0;text-align:center;line-height:1.6}
+
+  @media(max-width:760px){
+    .hero h1{font-size:28px}
+    h2.title{font-size:24px}
+    .pgrid,.gapgrid,.pillars{grid-template-columns:1fr}
+    .stage{grid-template-columns:78px 1fr}
+    .node{width:46px;height:46px;font-size:18px}
+    .bars{height:190px}
+  }
+  @media print{
+    body{background:#fff}
+    .hero,.gap{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .stage{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">States Assembly of Jersey · engagement initiative</div>
+      <div class="brand">“What’s It To Me?” — the citizenship journey</div>
+    </div>
+    <div class="pill">Infographic</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="sec-label">The story in one line</div>
+    <h1 class="serif">From the classroom to the ballot box — and beyond</h1>
+    <p>Voting is a right, not a reflex. It has to be learned, felt, practised and kept. This is how we introduce democracy at every life stage — small, age-right deliveries from KS2 to 35 — so the habit built in school actually carries through to adulthood, where today it falls away.</p>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div class="wrap">
+    <div class="sec-label">Why a continuous journey</div>
+    <h2 class="title">Engagement is built in school — then lost in early adulthood</h2>
+    <p class="lede">Jersey runs strong school programmes and lets Islanders vote from 16. But participation drops sharply once people leave the classroom. The most disengaged group is everyone under 35 — exactly where the pipeline currently has no next step.</p>
+    <div class="dropchart">
+      <div class="bars">
+        <div class="bar">
+          <div class="v">High</div>
+          <div class="col" style="height:82%;background:linear-gradient(180deg,var(--teal),var(--deep))"></div>
+          <div class="lab"><b>In school</b>KS2–KS5 programmes &amp; mock votes</div>
+        </div>
+        <div class="bar">
+          <div class="v">17%</div>
+          <div class="col" style="height:20%;background:var(--rust)"></div>
+          <div class="lab"><b>Under‑35 turnout</b>2022 election</div>
+        </div>
+        <div class="bar">
+          <div class="v">~32%</div>
+          <div class="col" style="height:36%;background:var(--gold)"></div>
+          <div class="lab"><b>Overall turnout</b>June 2026 — best in a decade</div>
+        </div>
+        <div class="bar">
+          <div class="v">53%</div>
+          <div class="col" style="height:62%;background:var(--deep)"></div>
+          <div class="lab"><b>Rural high (St Mary)</b>vs ~22% in St Helier</div>
+        </div>
+      </div>
+      <div class="dropnote">The drop between “in school” and “under‑35” is the gap this journey is designed to close.</div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section class="journey">
+  <div class="wrap">
+    <div class="sec-label">The journey · five stages</div>
+    <h2 class="title">One spine, five age-right deliveries</h2>
+    <p class="lede">Each stage introduces the next idea about democracy, with activities pitched to that age — and each one connects back to the same live Assembly business adults will meet later. Nothing is taught twice; everything builds.</p>
+
+    <div class="spine">
+
+      <!-- KS2 -->
+      <div class="stage">
+        <div class="rail">
+          <div class="node" style="background:var(--ks2)">1</div>
+          <div class="agechip"><b>Ages 7–11</b>Primary</div>
+        </div>
+        <div class="panel">
+          <div class="ks" style="color:var(--ks2)">Key Stage 2 · The seed</div>
+          <h3>“We decide together, and it’s fair.”</h3>
+          <div class="pgrid">
+            <div class="block"><div class="h">Concept introduced</div><p>Democracy is how a group makes fair choices when people want different things — everyone gets a say, the most-supported choice wins.</p></div>
+            <div class="block"><div class="h">Made concrete by</div><p>Class votes, school council elections, deciding a shared rule — first-hand experience of a vote that actually changes something around them.</p></div>
+          </div>
+          <div class="deliver"><div class="h">Piecemeal delivery</div>
+            <div class="tags"><span class="tag">🗳 Class &amp; school-council votes</span><span class="tag">📚 “Having a say” story unit</span><span class="tag">⚖ Fairness games</span></div>
+          </div>
+          <div class="builds">✦ <div><b>Builds:</b> the gut feeling that <i>my voice counts</i> — the emotional foundation everything else stands on.</div></div>
+        </div>
+      </div>
+
+      <!-- KS3 -->
+      <div class="stage">
+        <div class="rail">
+          <div class="node" style="background:var(--ks3)">2</div>
+          <div class="agechip"><b>Ages 11–14</b>Lower secondary</div>
+        </div>
+        <div class="panel">
+          <div class="ks" style="color:var(--ks3)">Key Stage 3 · The map</div>
+          <h3>“This is who decides — and where.”</h3>
+          <div class="pgrid">
+            <div class="block"><div class="h">Concept introduced</div><p>Jersey is governed by people we choose: the States Assembly, Ministers and the parishes. Decisions are made by a process you can name and follow.</p></div>
+            <div class="block"><div class="h">Made concrete by</div><p>A visit to the Assembly or parish hall, a mock debate on a real question, meeting a Deputy — seeing the chamber as a real place, not an abstraction.</p></div>
+          </div>
+          <div class="deliver"><div class="h">Piecemeal delivery</div>
+            <div class="tags"><span class="tag">🏛 Assembly / parish visit</span><span class="tag">🎤 Mock debate</span><span class="tag">🗺 “How Jersey is run” explainer</span></div>
+          </div>
+          <div class="builds">✦ <div><b>Builds:</b> a mental map of <i>who holds power and how it’s used</i> — so later, “the Assembly” means something.</div></div>
+        </div>
+      </div>
+
+      <!-- KS4 -->
+      <div class="stage">
+        <div class="rail">
+          <div class="node" style="background:var(--ks4)">3</div>
+          <div class="agechip"><b>Ages 14–16</b>GCSE years</div>
+        </div>
+        <div class="panel">
+          <div class="ks" style="color:var(--ks4)">Key Stage 4 · The stakes</div>
+          <h3>“These decisions land on me.”</h3>
+          <div class="pgrid">
+            <div class="block"><div class="h">Concept introduced</div><p>Assembly business isn’t remote — it’s housing, wages, health fees, transport and the environment. The things you’ll feel as an adult are decided now.</p></div>
+            <div class="block"><div class="h">Made concrete by</div><p>Working a real proposition (e.g. social-housing rents, the living wage) through a mock scrutiny panel; a school-wide mock election with genuine issues.</p></div>
+          </div>
+          <div class="deliver"><div class="h">Piecemeal delivery</div>
+            <div class="tags"><span class="tag">🏠 Real-issue case studies</span><span class="tag">🔍 Mock scrutiny panel</span><span class="tag">✅ School mock election</span></div>
+          </div>
+          <div class="builds">✦ <div><b>Builds:</b> the link between <i>a vote and my own life</i> — answering the “what’s this got to do with me?” question early.</div></div>
+        </div>
+      </div>
+
+      <!-- KS5 -->
+      <div class="stage">
+        <div class="rail">
+          <div class="node" style="background:var(--ks5)">4</div>
+          <div class="agechip"><b>Ages 16–18</b>Sixth form</div>
+        </div>
+        <div class="panel">
+          <div class="ks" style="color:var(--ks5)">Key Stage 5 · The right, exercised</div>
+          <h3>“I can vote — now, for real.”</h3>
+          <div class="pgrid">
+            <div class="block"><div class="h">Concept introduced</div><p>In Jersey you can vote from 16. The right stops being a lesson and becomes a real choice you make on a real ballot — and a habit you start.</p></div>
+            <div class="block"><div class="h">Made concrete by</div><p>Auto/assisted registration at school, a guided first vote, Q&amp;A with sitting Members, and how to use Scrutiny, petitions and contacting a Member.</p></div>
+          </div>
+          <div class="deliver"><div class="h">Piecemeal delivery</div>
+            <div class="tags"><span class="tag">📝 Register-to-vote drive</span><span class="tag">🗳 Guided first vote</span><span class="tag">👥 Meet your Members</span></div>
+          </div>
+          <div class="pivot">⭐ The pivot: lesson becomes action — capture the very first vote while we still reach them</div>
+          <div class="builds">✦ <div><b>Builds:</b> a <i>first vote on the record</i> — and people who vote once are far likelier to vote again.</div></div>
+        </div>
+      </div>
+
+      <!-- ADULTHOOD -->
+      <div class="stage">
+        <div class="rail">
+          <div class="node" style="background:var(--adult)">5</div>
+          <div class="agechip"><b>Ages 18–35</b>Early adulthood</div>
+        </div>
+        <div class="panel">
+          <div class="ks" style="color:var(--adult)">Adulthood to 35 · Keeping the habit</div>
+          <h3>“It still has something to do with me.”</h3>
+          <div class="pgrid">
+            <div class="block"><div class="h">Concept introduced</div><p>No school now reminds you. So the Assembly comes to you — live business translated into plain “what this means for you” terms, in the places adults already are.</p></div>
+            <div class="block"><div class="h">Made concrete by</div><p>The <b>“What’s It To Me?”</b> plain-language layer: short, impartial explainers in English and key community languages, each ending in a real action — pushed to workplaces, parish hubs and social feeds.</p></div>
+          </div>
+          <div class="deliver"><div class="h">Piecemeal delivery</div>
+            <div class="tags"><span class="tag">📱 Plain-language explainers</span><span class="tag">🌐 Community-language versions</span><span class="tag">➡ One-tap routes to act</span></div>
+          </div>
+          <div class="builds">✦ <div><b>Builds:</b> the <i>bridge across the gap</i> — sustaining the school-built habit through the years turnout currently collapses.</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- THE GAP -->
+<section class="gap">
+  <div class="wrap">
+    <div class="sec-label">The break we’re fixing</div>
+    <h2>Today the pipeline stops at the school gate</h2>
+    <p>Jersey already does KS2–KS5 well. The failure point isn’t the teaching — it’s that there is no stage 5. Strong school programmes don’t translate into adult participation because the moment a young person leaves education, every prompt to engage disappears.</p>
+    <div class="gapgrid">
+      <div class="gapcard">
+        <h3>Where it breaks</h3>
+        <p>At 18, the school council, the mock election and the citizenship lesson all stop at once. The right remains — the reminders, the plain language and the “why it matters” do not. Reach falls away fastest exactly here.</p>
+        <div class="bridge"><span class="dot"></span>Result: 17% under‑35 turnout, worst in town among renters and EAL Islanders.</div>
+      </div>
+      <div class="gapcard">
+        <h3>How stage 5 closes it</h3>
+        <p>“What’s It To Me?” is the missing rung — it carries the same idea taught in school (these decisions land on you) into adult life, on the channels adults actually use, always pointing to an action they can already take.</p>
+        <div class="bridge"><span class="dot"></span>One continuous habit: <b>say → map → stakes → first vote → kept vote.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYOFF -->
+<section class="payoff">
+  <div class="wrap">
+    <div class="sec-label">Why it works as one journey</div>
+    <h2 class="title">A habit, not a one-off campaign</h2>
+    <p class="lede">Each stage is light on its own — but joined up, they turn a right people <i>have</i> into a right people <i>use</i>. Three principles hold the whole spine together.</p>
+    <div class="pillars">
+      <div class="pillar"><div class="n">A</div><h3>Same thread throughout</h3><p>The same idea — “these decisions land on you” — is reintroduced age-appropriately at every stage, so adulthood feels like the next step, not a cold start.</p></div>
+      <div class="pillar"><div class="n">B</div><h3>Always a real action</h3><p>From a class vote to a real ballot to a Scrutiny submission, every stage ends in doing, not just knowing. Participation is rehearsed until it’s normal.</p></div>
+      <div class="pillar"><div class="n">C</div><h3>Meets people where they are</h3><p>School reaches the young; the plain-language layer reaches the adults school no longer can — closing the reach gap in town and in community languages.</p></div>
+    </div>
+    <div class="kicker">
+      <div class="big">The goal isn’t a better turnout number in one election. It’s a generation that grows up <b>expecting to have a say</b> — and never loses the prompt to use it.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    “What’s It To Me?” — a prototype for the States Greffe Education &amp; Outreach initiative · the citizenship journey, KS2 to 35
+    <div class="sources">
+      Figures drawn from the companion prototype: ~32% turnout (June 2026, official Vote.je); 27,691 votes cast — most in over a decade; 17% under‑35 turnout (2022); St Helier ~22% vs St Mary ~53%. Jersey’s voting age is 16. Built for demonstration.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
