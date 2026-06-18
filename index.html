@@ -90,6 +90,33 @@
   .mock .act .row:first-of-type{border-top:0}
   .caption{font-size:13px;color:var(--muted);font-style:italic;margin-top:10px;max-width:430px}
 
+  /* live reader (phone simulation) */
+  #demo .phone{max-width:392px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 18px 40px rgba(18,38,58,.16)}
+  #demo .appbar{background:var(--navy);color:#fff;padding:18px 20px 16px}
+  #demo .appbar .row{display:flex;align-items:center;justify-content:space-between}
+  #demo .appbar .brand{font-family:var(--serif);font-weight:700;font-size:16px}
+  #demo .appbar .tag{color:#9FB3C8;font-size:12px;margin-top:4px}
+  #demo .langtog{background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
+  #demo .pbody{padding:16px}
+  #demo .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  #demo .chip{border:0;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;background:var(--tint);color:var(--muted)}
+  #demo .chip.on{background:var(--deep);color:#fff}
+  #demo .issue{width:100%;text-align:left;background:var(--tint);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;display:block}
+  #demo .issue .top{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gold)}
+  #demo .issue h4{font-family:var(--serif);color:var(--deep);margin:4px 0 0;font-size:16px;line-height:1.3}
+  #demo .issue .meta{font-size:12px;color:var(--muted);margin-top:8px}
+  #demo .back{background:none;border:0;color:var(--teal);font-weight:600;font-size:12px;cursor:pointer;margin-bottom:10px;padding:0}
+  #demo .field{margin-bottom:12px}
+  #demo .field .lab{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
+  #demo .field .val{font-size:14px;color:var(--ink)}
+  #demo .actions{background:var(--navy);border-radius:16px;padding:12px;margin-top:14px}
+  #demo .actions .lab{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px}
+  #demo .actbtn{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.08);color:#fff;border-radius:12px;padding:9px 12px;margin-bottom:8px;font-size:13px;font-weight:600;text-decoration:none}
+  #demo .src{font-size:12px;color:var(--teal);text-decoration:underline;display:block;margin-top:12px}
+  #demo .clearbar{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  #demo .mini{border:0;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;background:var(--tint);color:var(--deep)}
+  #demo .caption{margin-top:10px}
+
   /* workflow */
   .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:22px 0}
   .flow .f{flex:1;min-width:130px;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:13px 14px}
@@ -223,7 +250,7 @@
     <div class="note">
       <div>
         <div class="tag">Building on MyTurn</div>
-        <p>You've seen <strong>MyTurn</strong> working at the school-age end of this journey, and it's encouraging that it resonated. That success is also what frames the gap: if engagement is healthy in school but under-35 turnout sits at 17%, the open question is what happens once young people leave that environment — and how we keep the connection alive into adult life.</p>
+        <p>You've seen <a href="https://computing-hub.github.io/myturn/" target="_blank" rel="noopener">MyTurn</a> working at the school-age end of this journey, and it's encouraging that it resonated. That success is also what frames the gap: if engagement is healthy in school but under-35 turnout sits at 17%, the open question is what happens once young people leave that environment — and how we keep the connection alive into adult life.</p>
       </div>
     </div>
 
@@ -269,32 +296,13 @@
 <section id="example">
   <div class="wrap">
     <div class="label">3 · An example</div>
-    <h2>What one explainer might look like</h2>
-    <p>To make it concrete, here is a sketch of a single explainer on a real proposition — social housing rents and "rental stress" (P.29/2025). It is illustrative, and every word would be officer-checked before publishing.</p>
+    <h2>What an explainer looks like — try the filters</h2>
+    <p>To make it concrete, this is a live reader view. Use the topic chips to filter — Housing, Health, Cost of living — tap an issue to open the plain-language explainer, and switch the language toggle (EN / PT). It's illustrative, and every word would be officer-checked before publishing.</p>
 
     <div class="grid2" style="align-items:start">
       <div>
-        <div class="mock">
-          <div class="top">
-            <div class="t">What's it to me?</div>
-            <div class="s">The Assembly, in plain language · EN / PT</div>
-          </div>
-          <div class="body">
-            <div class="topic">Housing</div>
-            <h4>Social housing rents: what's being decided?</h4>
-            <div class="field"><div class="lab">What's proposed</div><div class="val">From 2027, social housing rents would be set so they don't leave tenants in "rental stress" — paying over 30% of their income on rent.</div></div>
-            <div class="field"><div class="lab">The case for</div><div class="val">Supporters say it would protect lower-income tenants and could reduce money spent on income support.</div></div>
-            <div class="field"><div class="lab">The case to weigh</div><div class="val">Others note any change must stay financially sustainable for housing providers and Government, so costs need working out first.</div></div>
-            <div class="field"><div class="lab">Where it stands</div><div class="val">The Assembly agreed to review the policy. No change to rents has been made yet.</div></div>
-            <div class="act">
-              <div class="lab">What you can do</div>
-              <div class="row"><span>Share your views with Scrutiny</span><span>↗</span></div>
-              <div class="row"><span>Sign or start a petition</span><span>↗</span></div>
-              <div class="row"><span>Find and contact your Members</span><span>↗</span></div>
-            </div>
-          </div>
-        </div>
-        <p class="caption">A sketch, not a live tool — shown to convey the format and tone. A fuller working <a href="whats-it-to-me.html" target="_blank" rel="noopener">prototype</a> exists if you'd like to explore it, but the proposal stands on the idea, not the build.</p>
+        <div id="demo"></div>
+        <p class="caption">A live reader view — filter by topic and open an issue. The fuller <a href="whats-it-to-me.html" target="_blank" rel="noopener">prototype</a> also includes the officer console, where every explainer is reviewed and signed off before it reaches readers.</p>
       </div>
       <div>
         <h3>Why this shape</h3>
@@ -392,13 +400,13 @@
     <p class="small">The ambition isn't a single tool but a continuous habit of engagement, from the classroom through to adult life. MyTurn already does real work at the young end; this proposal is about the adult end of the same journey.</p>
     <div class="journey">
       <div class="leg" style="background:var(--teal)"><div class="age">Primary · KS2</div><h3>Vote Stars</h3><p>First choices — the idea that decisions get made together.</p><div class="open">In progress</div></div>
-      <div class="leg" style="background:var(--deep)"><div class="age">Secondary · KS3–4</div><h3>MyTurn</h3><p>How the Assembly works, as a habit.<span class="badge">you've seen this ✓</span></p></div>
+      <a class="leg" style="background:var(--deep)" href="https://computing-hub.github.io/myturn/" target="_blank" rel="noopener"><div class="age">Secondary · KS3–4</div><h3>MyTurn</h3><p>How the Assembly works, as a habit.<span class="badge">you've seen this ✓</span></p><div class="open">Open ↗</div></a>
       <a class="leg" style="background:#14807A" href="games/motion-builder.html" target="_blank" rel="noopener"><div class="age">Sixth form · 16+</div><h3>Having a say</h3><p>Debate, motions and first votes.</p><div class="open">Open ↗</div></a>
       <a class="leg" style="background:var(--rust)" href="whats-it-to-me.html" target="_blank" rel="noopener"><div class="age">Adults · the gap</div><h3>What's it to me?</h3><p>Keeping the connection alive.<span class="badge">this proposal</span></p><div class="open">Open ↗</div></a>
     </div>
 
     <h3 style="margin-top:26px">The wider toolkit I've been prototyping</h3>
-    <p class="small">None of this has to be built from scratch. Alongside MyTurn, I've sketched a set of small, self-contained pieces that the journey above could draw on — each one a habit, a game or a tool aimed at a different stage. They're prototypes and starting points, not finished products, and I'd expect to keep, drop or rework them based on what we learn.</p>
+    <p class="small">None of this has to be built from scratch. Alongside MyTurn, I've sketched a set of small, self-contained pieces that the journey above could draw on — each one a habit, a game or a tool aimed at a different stage. They're prototypes and starting points, not finished products, and I'd expect to keep, drop or rework them based on what we learn. One is already classroom-tested: a <a href="https://computing-hub.github.io/jersey-rent-tracker/" target="_blank" rel="noopener">Jersey Rent Tracker</a> I've used with Year 9 students to make the importance of voting concrete — starting from rents they recognise rather than abstract procedure.</p>
 
     <!-- Cards marked "coming soon" (Vote Stars, MyTurn, Pass the Law, Democracy Journey) are not in this collection yet; swap them to <a class="tool" href="..."> once hosted. -->
     <div class="toolkit">
@@ -407,11 +415,16 @@
         <div class="name">Vote Stars <span class="soon">coming soon</span></div>
         <p>"Choosing together" — a first, playful sense that decisions get made as a group.</p>
       </div>
-      <div class="tool ph">
+      <a class="tool" href="https://computing-hub.github.io/myturn/" target="_blank" rel="noopener">
         <div class="stage">Secondary · KS3–4</div>
-        <div class="name">MyTurn <span class="seen">panel has seen this</span></div>
+        <div class="name">MyTurn <span class="ext">↗</span><span class="seen">panel has seen this</span></div>
         <p>A short, daily civics trainer — voting, the States, parishes, courts — built as a habit.</p>
-      </div>
+      </a>
+      <a class="tool" href="https://computing-hub.github.io/jersey-rent-tracker/" target="_blank" rel="noopener">
+        <div class="stage">Secondary · Year 9 classroom</div>
+        <div class="name">Jersey Rent Tracker <span class="ext">↗</span></div>
+        <p>A lesson I've used to make voting matter to Year 9s — tracking real local rents so the housing debate becomes something they can see in their own lives.</p>
+      </a>
       <div class="tool ph">
         <div class="stage">Secondary · role-play</div>
         <div class="name">Pass the Law <span class="soon">coming soon</span></div>
@@ -472,6 +485,123 @@
     <p>States Greffe · Education &amp; Outreach interview · figures illustrative and drawn from official sources, to be verified before use</p>
   </div>
 </footer>
+
+<script>
+// Live reader demo — topic filtering + EN/PT, ported from the What's it to me? prototype.
+(function(){
+  var demo=document.getElementById("demo");
+  if(!demo) return;
+  var ACTIONS=[
+    {en:"Share your views with Scrutiny",pt:"Partilhe a sua opinião com o Scrutiny",url:"https://statesassembly.je/have-your-say/share-your-views-on-current-review-topics"},
+    {en:"Sign or start a petition",pt:"Assine ou crie uma petição",url:"https://statesassembly.je/have-your-say/petitions"},
+    {en:"Find and email your Members",pt:"Encontre e contacte os seus Deputados",url:"https://statesassembly.je/members"}
+  ];
+  var EN_LAB={proposed:"What’s proposed",caseFor:"The case for",caseToWeigh:"The case to weigh",status:"Where it stands"};
+  var PT_LAB={proposed:"O que é proposto",caseFor:"Os argumentos a favor",caseToWeigh:"Os argumentos a ponderar",status:"Ponto de situação"};
+  var ORDER=["proposed","caseFor","caseToWeigh","status"];
+  var CANNED_EN={
+    headline:"Social housing rents: what’s being decided?",
+    proposed:"From 2027, social housing rents would be set so they don’t leave tenants in “rental stress” — paying over 30% of their income on rent.",
+    caseFor:"Supporters say it would protect lower-income tenants and could reduce the money spent on income support.",
+    caseToWeigh:"Others note any change must stay financially sustainable for housing providers and the Government, so the costs need to be worked out first.",
+    status:"The Assembly agreed to review the policy. No change to rents has been made yet."
+  };
+  var CANNED_PT={
+    headline:"Rendas da habitação social: o que está a ser decidido?",
+    proposed:"A partir de 2027, as rendas da habitação social seriam definidas para não deixarem os inquilinos em “stress financeiro com a renda” — a pagar mais de 30% do rendimento em renda.",
+    caseFor:"Os apoiantes dizem que protegeria os inquilinos com menos rendimentos e poderia reduzir o dinheiro gasto em apoios ao rendimento.",
+    caseToWeigh:"Outros observam que qualquer alteração tem de ser financeiramente sustentável para os fornecedores de habitação e para o Governo, pelo que os custos têm de ser calculados primeiro.",
+    status:"A Assembleia concordou em rever a política. Ainda não foi feita qualquer alteração às rendas."
+  };
+  var S={ lang:"en", topic:"All", openId:null, voted:false,
+    issues:[
+      {id:"p29-2025",topic:"Housing",source:"P.29/2025 — statesassembly.je",en:CANNED_EN,pt:CANNED_PT},
+      {id:"health-gp",topic:"Health",source:"Health access & GP fees — gov.je",
+        en:{headline:"Health appointment costs: what’s changing?",
+            proposed:"The cost of some healthcare appointments — with nurses, pharmacists, paramedics and by telephone — has been cut by £10, following earlier reductions to GP fees.",
+            caseFor:"Supporters say lower fees help people get care early and ease pressure on household budgets.",
+            caseToWeigh:"Others note the subsidies cost public money, so their ongoing affordability has to be weighed.",
+            status:"The reductions are in place; wider changes to how primary care is funded remain under discussion."},
+        pt:{headline:"Custos das consultas de saúde: o que está a mudar?",
+            proposed:"O custo de algumas consultas de saúde — com enfermeiros, farmacêuticos, paramédicos e por telefone — foi reduzido em £10, na sequência de reduções anteriores nas taxas do médico de família.",
+            caseFor:"Os apoiantes dizem que taxas mais baixas ajudam as pessoas a procurar cuidados cedo e aliviam o orçamento das famílias.",
+            caseToWeigh:"Outros observam que os subsídios têm custos para o erário público, pelo que é preciso ponderar a sua sustentabilidade.",
+            status:"As reduções já estão em vigor; outras alterações ao financiamento dos cuidados primários continuam em discussão."}},
+      {id:"col-wage",topic:"Cost of living",source:"Minimum / living wage — gov.je",
+        en:{headline:"The minimum wage and the move to a “living wage”",
+            proposed:"The minimum wage rose to £13 an hour in April 2025, with a plan to set it as a “living wage” — two-thirds of the 2024 median wage — from 2026.",
+            caseFor:"Supporters say it helps lower-paid workers keep up with the cost of living.",
+            caseToWeigh:"Others note higher wage costs fall on employers, so support for business and the wider economy is part of the plan.",
+            status:"The April 2025 rate is in place; the living-wage target for 2026 is being worked through."},
+        pt:{headline:"O salário mínimo e a passagem a um “salário digno”",
+            proposed:"O salário mínimo subiu para £13 por hora em abril de 2025, com o plano de o definir como um “salário digno” — dois terços do salário mediano de 2024 — a partir de 2026.",
+            caseFor:"Os apoiantes dizem que ajuda os trabalhadores com salários mais baixos a acompanhar o custo de vida.",
+            caseToWeigh:"Outros observam que os custos salariais mais elevados recaem sobre os empregadores, pelo que o apoio às empresas e à economia faz parte do plano.",
+            status:"A taxa de abril de 2025 está em vigor; a meta do “salário digno” para 2026 está a ser trabalhada."}}
+    ]
+  };
+  function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function published(){return S.issues.filter(function(i){return S.topic==="All"||i.topic===S.topic;});}
+  function tr(i){return (S.lang==="pt"&&i.pt)?i.pt:i.en;}
+  function reader(){
+    var issue=S.openId?S.issues.find(function(i){return i.id===S.openId;}):null;
+    var body=issue?tr(issue):null;
+    var h='<div class="phone"><div class="appbar"><div class="row"><div class="brand">What’s it to me?</div>'+
+      '<button class="langtog" data-action="lang">🌐 '+(S.lang==="en"?"EN":"PT")+'</button></div>'+
+      '<div class="tag">'+(S.lang==="en"?"The Assembly, in plain language":"A Assembleia, em linguagem simples")+'</div></div>';
+    if(!issue){
+      h+='<div class="pbody"><div class="chips">';
+      ["All","Housing","Health","Cost of living"].forEach(function(x){
+        h+='<button class="chip'+(S.topic===x?' on':'')+'" data-action="topic" data-x="'+esc(x)+'">'+esc(x)+'</button>';
+      });
+      h+='</div>';
+      published().forEach(function(i){
+        h+='<button class="issue" data-action="open" data-id="'+esc(i.id)+'"><div class="top">'+esc(i.topic.toUpperCase())+'</div>'+
+           '<h4>'+esc(tr(i).headline)+'</h4><div class="meta">'+(S.lang==="en"?"1 min read":"1 min de leitura")+'</div></button>';
+      });
+      h+='</div>';
+    } else {
+      h+='<div class="pbody"><button class="back" data-action="closeIssue">‹ '+(S.lang==="en"?"All issues":"Todos os temas")+'</button>';
+      h+='<div class="top" style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gold)">'+esc(issue.topic.toUpperCase())+'</div>';
+      h+='<h2 class="serif" style="color:var(--deep);font-size:20px;line-height:1.25;margin:4px 0 12px">'+esc(body.headline)+'</h2>';
+      ORDER.forEach(function(k){
+        var lab=(S.lang==="en"?EN_LAB:PT_LAB)[k];
+        h+='<div class="field"><div class="lab">'+esc(lab)+'</div><div class="val">'+esc(body[k])+'</div></div>';
+      });
+      h+='<div class="actions"><div class="lab">'+(S.lang==="en"?"WHAT YOU CAN DO":"O QUE PODE FAZER")+'</div>';
+      ACTIONS.forEach(function(a){
+        h+='<a class="actbtn" href="'+esc(a.url)+'" target="_blank" rel="noreferrer" data-action="act">'+esc(S.lang==="en"?a.en:a.pt)+' ↗</a>';
+      });
+      h+='</div>';
+      h+='<a class="src" href="https://statesassembly.je" target="_blank" rel="noreferrer">'+(S.lang==="en"?"Find out more":"Saber mais")+' · '+esc(issue.source)+'</a>';
+      h+='<div class="clearbar">';
+      if(!S.voted){
+        h+='<span>'+(S.lang==="en"?"Was this clear?":"Foi claro?")+'</span>'+
+           '<button class="mini" data-action="clearYes">👍 '+(S.lang==="en"?"Yes":"Sim")+'</button>'+
+           '<button class="mini" data-action="clearNo" style="color:var(--muted)">'+(S.lang==="en"?"Not really":"Nem por isso")+'</button>';
+      } else {
+        h+='<span style="color:var(--teal)">'+(S.lang==="en"?"Thanks — that helps us measure what’s working.":"Obrigado — ajuda-nos a medir o que resulta.")+'</span>';
+      }
+      h+='</div></div>';
+    }
+    h+='</div><p class="caption">Reader view — what an Islander sees on their phone.</p>';
+    return h;
+  }
+  function render(){ demo.innerHTML=reader(); }
+  demo.addEventListener("click",function(e){
+    var el=e.target.closest("[data-action]"); if(!el)return;
+    var a=el.getAttribute("data-action");
+    if(a==="act"){return;}
+    if(a==="lang"){S.lang=S.lang==="en"?"pt":"en";render();return;}
+    if(a==="topic"){S.topic=el.getAttribute("data-x");render();return;}
+    if(a==="open"){S.openId=el.getAttribute("data-id");S.voted=false;render();return;}
+    if(a==="closeIssue"){S.openId=null;render();return;}
+    if(a==="clearYes"){S.voted=true;render();return;}
+    if(a==="clearNo"){S.voted=true;render();return;}
+  });
+  render();
+})();
+</script>
 
 <script>
   // Lightweight scrollspy to keep the nav in step with the section in view.
