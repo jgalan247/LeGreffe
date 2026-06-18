@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>What's It To Me? — engaging the Islanders we reach least</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A;
+    --ink:#1E293B; --muted:#64748B; --tint:#EEF4F7; --line:#D8E3EA;
+    --bg:#F6F9FB; --white:#fff; --rust:#A6492E;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  a{color:inherit}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  .serif{font-family:var(--serif)}
+  /* header */
+  header{background:var(--navy);color:#fff;padding:14px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px}
+  .eyebrow{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  .pill{background:rgba(255,255,255,.12);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600}
+  /* sections */
+  section{padding:48px 0}
+  .sec-label{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+  h2.title{font-family:var(--serif);font-size:32px;font-weight:700;color:var(--deep);margin:0 0 10px}
+  .lede{font-size:17px;color:var(--ink);max-width:760px;margin:0 0 26px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .card.tint{background:var(--tint);border:none}
+  .card h3{font-family:var(--serif);color:var(--deep);font-size:17px;margin:6px 0 8px}
+  .card p{margin:0;font-size:14px;color:var(--ink)}
+  .stat{background:var(--deep);color:#fff;border-radius:16px;padding:22px;text-align:center}
+  .stat .big{font-family:var(--serif);font-size:46px;font-weight:700;line-height:1}
+  .stat .sub{color:#CADCFC;font-size:13px;margin-top:8px}
+  .stat .note{color:var(--gold);font-size:12px;font-style:italic;margin-top:8px}
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:999px;background:var(--deep);color:#fff;margin-bottom:4px}
+  .badge.gold{background:var(--gold)}
+  .badge.teal{background:var(--teal)}
+  .problem{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .solution{background:var(--bg)}
+  .impartial{background:var(--navy);color:#fff;border-radius:16px;padding:20px;margin-top:16px;display:flex;gap:14px;align-items:flex-start}
+  .impartial b{color:var(--gold)}
+  /* demo */
+  .demohead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .tabs{display:inline-flex;background:var(--tint);border-radius:999px;padding:4px}
+  .tab{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:14px;padding:9px 18px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .tab.active{background:var(--deep);color:#fff}
+  /* phone */
+  .phone{max-width:392px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 18px 40px rgba(18,38,58,.16)}
+  .appbar{background:var(--navy);color:#fff;padding:18px 20px 16px}
+  .appbar .row{display:flex;align-items:center;justify-content:space-between}
+  .appbar .tag{color:#9FB3C8;font-size:12px;margin-top:4px}
+  .langtog{background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;gap:5px;align-items:center}
+  .pbody{padding:16px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{border:0;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;background:var(--tint);color:var(--muted)}
+  .chip.on{background:var(--deep);color:#fff}
+  .issue{width:100%;text-align:left;background:var(--tint);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;display:block}
+  .issue .top{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gold)}
+  .issue h4{font-family:var(--serif);color:var(--deep);margin:4px 0 0;font-size:16px;line-height:1.3}
+  .issue .meta{font-size:12px;color:var(--muted);margin-top:8px}
+  .back{background:none;border:0;color:var(--teal);font-weight:600;font-size:12px;cursor:pointer;display:inline-flex;gap:4px;align-items:center;margin-bottom:10px;padding:0}
+  .field{margin-bottom:12px}
+  .field .lab{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
+  .field .val{font-size:14px;color:var(--ink)}
+  .actions{background:var(--navy);border-radius:16px;padding:12px;margin-top:14px}
+  .actions .lab{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px}
+  .actbtn{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.08);color:#fff;border-radius:12px;padding:9px 12px;margin-bottom:8px;font-size:13px;font-weight:600;text-decoration:none}
+  .src{font-size:12px;color:var(--teal);text-decoration:underline;display:block;margin-top:12px}
+  .clearbar{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .mini{border:0;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;background:var(--tint);color:var(--deep)}
+  .caption{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+  /* officer */
+  .obanner{background:var(--navy);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:center;font-size:14px}
+  .ocols{display:flex;gap:16px}
+  .ocard{flex:1;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+  .ocard .step{display:flex;align-items:center;gap:8px;color:var(--deep);font-family:var(--serif);font-weight:700;margin-bottom:10px}
+  textarea,input.txt{width:100%;background:var(--tint);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:13px;color:var(--ink);resize:vertical}
+  .btn{border:0;border-radius:12px;padding:12px;font-weight:600;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px}
+  .btn.deep{background:var(--deep);color:#fff}
+  .btn.gold{background:var(--gold);color:var(--navy)}
+  .btn.soft{background:var(--tint);color:var(--deep)}
+  .btn:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+  .lab2{font-size:11px;font-weight:700;color:var(--gold)}
+  .demoflag{font-size:11px;color:var(--muted);margin-top:8px;text-align:center}
+  .err{margin-top:10px;background:#FBEEE6;color:var(--rust);border-radius:8px;padding:8px;font-size:12px}
+  .checkrow{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;font-size:14px}
+  .box{width:20px;height:20px;border-radius:6px;border:1px solid var(--line);background:var(--tint);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .box.on{background:var(--deep)}
+  .metrics{background:var(--tint);border-radius:16px;padding:16px;margin-top:16px;display:flex;justify-content:space-around}
+  .metrics .m{text-align:center}
+  .metrics .mv{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--deep)}
+  .metrics .ml{font-size:12px;color:var(--muted)}
+  footer{background:var(--navy);color:#9FB3C8;font-size:13px;padding:24px 0;text-align:center}
+  svg{display:block}
+  @media(max-width:760px){
+    .grid3,.grid2{grid-template-columns:1fr}
+    .ocols{flex-direction:column}
+    h2.title{font-size:26px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">States Assembly of Jersey · engagement initiative</div>
+      <div class="brand">“What’s It To Me?”</div>
+    </div>
+    <div class="pill">Working prototype</div>
+  </div>
+</header>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="wrap">
+    <div class="sec-label">The problem</div>
+    <h2 class="title">Most Islanders never connect with the Assembly that shapes their lives</h2>
+    <p class="lede">Engagement is strong for young people and at election time. The space in between — and the adults in it — is where reach falls away.</p>
+    <div class="grid3" style="margin-bottom:16px">
+      <div class="stat">
+        <div class="big">~32%</div>
+        <div class="sub">turnout, June 2026 (official, Vote.je)</div>
+        <div class="note">27,691 voted — the most in over a decade — yet with auto-registration, fewer than 1 in 3 on the roll did</div>
+      </div>
+      <div class="card tint">
+        <h3>The young aren’t carrying through</h3>
+        <p>Under-35 turnout was just 17% in 2022 — strong school programmes aren’t translating into adult participation.</p>
+      </div>
+      <div class="card tint">
+        <h3>And it’s worst in town</h3>
+        <p>St Helier ~22% vs rural St Mary ~53% — renters, younger and EAL Islanders, who vote least, cluster in town.</p>
+      </div>
+    </div>
+    <div class="grid3">
+      <div class="card"><h3>“What’s this got to do with me?”</h3><p>Assembly business feels remote from housing, wages, schools and roads — the things people actually feel.</p></div>
+      <div class="card"><h3>“Who can actually read this?”</h3><p>Propositions and debates are long and dense — the facts exist, but not in a form most people will read.</p></div>
+      <div class="card"><h3>“Where would I even see it?”</h3><p>Engagement waits on the website for people to come to it — not the places adults already are.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution">
+  <div class="wrap">
+    <div class="sec-label">The proposed solution</div>
+    <h2 class="title">A plain-language layer that brings live Assembly business to people</h2>
+    <p class="lede">Don’t create more content — translate what already exists into plain, personal, accessible terms, take it to where people are, and point them to the action they can already take.</p>
+    <div class="grid3">
+      <div class="card"><div class="badge">1</div><h3>Translate</h3><p>Turn live propositions into short “what this means for you” explainers — AI-assisted, always human-checked for impartiality.</p></div>
+      <div class="card"><div class="badge">2</div><h3>Place</h3><p>Push them where adults already are — workplaces, parish halls, community hubs and social feeds — in plain English and key community languages.</p></div>
+      <div class="card"><div class="badge">3</div><h3>Activate</h3><p>End every explainer with a clear route into existing tools: Scrutiny, petitions, contacting a Member.</p></div>
+    </div>
+    <div class="impartial">
+      <div class="badge gold" style="flex:0 0 auto">✓</div>
+      <div><b>Impartiality is built in. </b>The AI only drafts; a human officer reviews and signs off every word before it publishes. Explainers describe and attribute — they never advocate — and each links back to the official record.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section>
+  <div class="wrap">
+    <div class="sec-label">Try it</div>
+    <h2 class="title">The pipeline, working on a real proposition</h2>
+    <p class="lede">Draft an explainer in the Officer console, tick the impartiality checks, approve it — and watch it appear for readers. Example: social housing rents and “rental stress” (P.29/2025).</p>
+    <div class="demohead">
+      <div class="tabs">
+        <button class="tab active" data-action="tab" data-v="reader">📱 Reader</button>
+        <button class="tab" data-action="tab" data-v="officer">⚙️ Officer console</button>
+      </div>
+    </div>
+    <div id="demo"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">“What’s It To Me?” — a prototype for the States Greffe Education &amp; Outreach initiative · built for demonstration</div>
+</footer>
+
+<script>
+(function(){
+  var ACTIONS=[
+    {en:"Share your views with Scrutiny",pt:"Partilhe a sua opinião com o Scrutiny",url:"https://statesassembly.je/have-your-say/share-your-views-on-current-review-topics"},
+    {en:"Sign or start a petition",pt:"Assine ou crie uma petição",url:"https://statesassembly.je/have-your-say/petitions"},
+    {en:"Find and email your Members",pt:"Encontre e contacte os seus Deputados",url:"https://statesassembly.je/members"}
+  ];
+  var EN_LAB={proposed:"What’s proposed",caseFor:"The case for",caseToWeigh:"The case to weigh",status:"Where it stands"};
+  var PT_LAB={proposed:"O que é proposto",caseFor:"Os argumentos a favor",caseToWeigh:"Os argumentos a ponderar",status:"Ponto de situação"};
+  var ORDER=["proposed","caseFor","caseToWeigh","status"];
+
+  var CANNED_EN={
+    headline:"Social housing rents: what’s being decided?",
+    proposed:"From 2027, social housing rents would be set so they don’t leave tenants in “rental stress” — paying over 30% of their income on rent.",
+    caseFor:"Supporters say it would protect lower-income tenants and could reduce the money spent on income support.",
+    caseToWeigh:"Others note any change must stay financially sustainable for housing providers and the Government, so the costs need to be worked out first.",
+    status:"The Assembly agreed to review the policy. No change to rents has been made yet."
+  };
+  var CANNED_PT={
+    headline:"Rendas da habitação social: o que está a ser decidido?",
+    proposed:"A partir de 2027, as rendas da habitação social seriam definidas para não deixarem os inquilinos em “stress financeiro com a renda” — a pagar mais de 30% do rendimento em renda.",
+    caseFor:"Os apoiantes dizem que protegeria os inquilinos com menos rendimentos e poderia reduzir o dinheiro gasto em apoios ao rendimento.",
+    caseToWeigh:"Outros observam que qualquer alteração tem de ser financeiramente sustentável para os fornecedores de habitação e para o Governo, pelo que os custos têm de ser calculados primeiro.",
+    status:"A Assembleia concordou em rever a política. Ainda não foi feita qualquer alteração às rendas."
+  };
+  var SAMPLE_RAW="P.29/2025 — Social Housing Rents (Rental Stress). The States are asked to request the Minister for Housing to bring forward a revised rental policy so that, from January 2027, social housing rents are set at a level that does not place tenants in rental stress — defined as paying more than 30% of gross household income on housing costs — and to consult the Minister for Treasury to ensure the policy is financially sustainable and does not disrupt the delivery of new affordable homes.";
+
+  var S={
+    view:"reader", lang:"en", topic:"All", openId:null, voted:false,
+    issues:[
+      {id:"p29-2025",topic:"Housing",source:"P.29/2025 — statesassembly.je",published:true,en:CANNED_EN,pt:CANNED_PT},
+      {id:"health-gp",topic:"Health",source:"Health access & GP fees — gov.je",published:true,
+        en:{headline:"Health appointment costs: what’s changing?",
+            proposed:"The cost of some healthcare appointments — with nurses, pharmacists, paramedics and by telephone — has been cut by £10, following earlier reductions to GP fees.",
+            caseFor:"Supporters say lower fees help people get care early and ease pressure on household budgets.",
+            caseToWeigh:"Others note the subsidies cost public money, so their ongoing affordability has to be weighed.",
+            status:"The reductions are in place; wider changes to how primary care is funded remain under discussion."},
+        pt:{headline:"Custos das consultas de saúde: o que está a mudar?",
+            proposed:"O custo de algumas consultas de saúde — com enfermeiros, farmacêuticos, paramédicos e por telefone — foi reduzido em £10, na sequência de reduções anteriores nas taxas do médico de família.",
+            caseFor:"Os apoiantes dizem que taxas mais baixas ajudam as pessoas a procurar cuidados cedo e aliviam o orçamento das famílias.",
+            caseToWeigh:"Outros observam que os subsídios têm custos para o erário público, pelo que é preciso ponderar a sua sustentabilidade.",
+            status:"As reduções já estão em vigor; outras alterações ao financiamento dos cuidados primários continuam em discussão."}},
+      {id:"col-wage",topic:"Cost of living",source:"Minimum / living wage — gov.je",published:true,
+        en:{headline:"The minimum wage and the move to a “living wage”",
+            proposed:"The minimum wage rose to £13 an hour in April 2025, with a plan to set it as a “living wage” — two-thirds of the 2024 median wage — from 2026.",
+            caseFor:"Supporters say it helps lower-paid workers keep up with the cost of living.",
+            caseToWeigh:"Others note higher wage costs fall on employers, so support for business and the wider economy is part of the plan.",
+            status:"The April 2025 rate is in place; the living-wage target for 2026 is being worked through."},
+        pt:{headline:"O salário mínimo e a passagem a um “salário digno”",
+            proposed:"O salário mínimo subiu para £13 por hora em abril de 2025, com o plano de o definir como um “salário digno” — dois terços do salário mediano de 2024 — a partir de 2026.",
+            caseFor:"Os apoiantes dizem que ajuda os trabalhadores com salários mais baixos a acompanhar o custo de vida.",
+            caseToWeigh:"Outros observam que os custos salariais mais elevados recaem sobre os empregadores, pelo que o apoio às empresas e à economia faz parte do plano.",
+            status:"A taxa de abril de 2025 está em vigor; a meta do “salário digno” para 2026 está a ser trabalhada."}}
+    ],
+    metrics:{views:0,clear:0,actions:0},
+    off:{raw:SAMPLE_RAW,draft:null,pt:null,busy:"",err:"",oTopic:"Housing",source:"P.29/2025 — statesassembly.je",checks:{sides:false,words:false,headline:false,source:false}}
+  };
+
+  function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  var demo=document.getElementById("demo");
+
+  function published(){return S.issues.filter(function(i){return i.published && (S.topic==="All"||i.topic===S.topic);});}
+  function tr(i){return (S.lang==="pt"&&i.pt)?i.pt:i.en;}
+
+  function reader(){
+    var issue=S.openId?S.issues.find(function(i){return i.id===S.openId;}):null;
+    var noPt=issue&&S.lang==="pt"&&!issue.pt;
+    var body=issue?(noPt?issue.en:tr(issue)):null;
+    var h='<div class="phone"><div class="appbar"><div class="row"><div class="brand">What’s It To Me?</div>'+
+      '<button class="langtog" data-action="lang">🌐 '+(S.lang==="en"?"EN":"PT")+'</button></div>'+
+      '<div class="tag">'+(S.lang==="en"?"The Assembly, in plain language":"A Assembleia, em linguagem simples")+'</div></div>';
+    if(!issue){
+      h+='<div class="pbody"><div class="chips">';
+      ["All","Housing","Health","Cost of living"].forEach(function(x){
+        h+='<button class="chip'+(S.topic===x?' on':'')+'" data-action="topic" data-x="'+esc(x)+'">'+esc(x)+'</button>';
+      });
+      h+='</div>';
+      var ps=published();
+      if(ps.length===0){h+='<div class="card tint"><p>Nothing here in this topic yet. Open the Officer console to draft and publish one.</p></div>';}
+      ps.forEach(function(i){
+        h+='<button class="issue" data-action="open" data-id="'+esc(i.id)+'"><div class="top">'+esc(i.topic.toUpperCase())+'</div>'+
+           '<h4>'+esc(tr(i).headline)+'</h4><div class="meta">'+(S.lang==="en"?"1 min read":"1 min de leitura")+'</div></button>';
+      });
+      h+='</div>';
+    } else {
+      h+='<div class="pbody"><button class="back" data-action="closeIssue">‹ '+(S.lang==="en"?"All issues":"Todos os temas")+'</button>';
+      h+='<div class="top" style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gold)">'+esc(issue.topic.toUpperCase())+'</div>';
+      h+='<h2 class="serif" style="color:var(--deep);font-size:20px;line-height:1.25;margin:4px 0 12px">'+esc(body.headline)+'</h2>';
+      if(noPt){h+='<div class="card tint" style="padding:8px;margin-bottom:12px"><p style="font-size:12px">Portuguese not added yet — showing English.</p></div>';}
+      ORDER.forEach(function(k){
+        var lab=(S.lang==="en"?EN_LAB:PT_LAB)[k];
+        h+='<div class="field"><div class="lab">'+esc(lab)+'</div><div class="val">'+esc(body[k])+'</div></div>';
+      });
+      h+='<div class="actions"><div class="lab">'+(S.lang==="en"?"WHAT YOU CAN DO":"O QUE PODE FAZER")+'</div>';
+      ACTIONS.forEach(function(a){
+        h+='<a class="actbtn" href="'+esc(a.url)+'" target="_blank" rel="noreferrer" data-action="act">'+esc(S.lang==="en"?a.en:a.pt)+' ↗</a>';
+      });
+      h+='</div>';
+      h+='<a class="src" href="https://statesassembly.je" target="_blank" rel="noreferrer">'+(S.lang==="en"?"Find out more":"Saber mais")+' · '+esc(issue.source)+'</a>';
+      h+='<div class="clearbar">';
+      if(!S.voted){
+        h+='<span>'+(S.lang==="en"?"Was this clear?":"Foi claro?")+'</span>'+
+           '<button class="mini" data-action="clearYes">👍 '+(S.lang==="en"?"Yes":"Sim")+'</button>'+
+           '<button class="mini" data-action="clearNo" style="color:var(--muted)">'+(S.lang==="en"?"Not really":"Nem por isso")+'</button>';
+      } else {
+        h+='<span style="color:var(--teal)">'+(S.lang==="en"?"Thanks — that helps us measure what’s working.":"Obrigado — ajuda-nos a medir o que resulta.")+'</span>';
+      }
+      h+='</div></div>';
+    }
+    h+='</div><p class="caption">Reader view — what an Islander sees on their phone.</p>';
+    return h;
+  }
+
+  function officer(){
+    var o=S.off;
+    var h='<div class="obanner"><span style="font-size:20px">🛡️</span><div><b style="color:var(--gold)">AI drafts. A human decides. </b>Nothing reaches readers until you review and approve it below.</div></div>';
+    h+='<div class="ocols">';
+    // step 1
+    h+='<div class="ocard"><div class="step">📄 1 · Official text</div>'+
+       '<textarea rows="9" data-field="raw">'+esc(o.raw)+'</textarea>'+
+       '<button class="btn deep" style="margin-top:12px" data-action="generate" '+(o.busy==="gen"?"disabled":"")+'>'+(o.busy==="gen"?"⏳ Drafting…":"✦ Generate plain-language draft")+'</button>'+
+       '<div class="demoflag">Demo mode: drafting is simulated. In production this calls the Claude API with the constrained neutral prompt.</div>';
+    if(o.err){h+='<div class="err">'+esc(o.err)+'</div>';}
+    h+='</div>';
+    // step 2
+    h+='<div class="ocard"><div class="step">👁 2 · Review &amp; edit</div>';
+    if(!o.draft){
+      h+='<div class="card tint"><p>Generate a draft, then edit any wording here before it can be published.</p></div>';
+    } else {
+      h+='<div class="lab2">HEADLINE</div><input class="txt" style="font-weight:600;margin-bottom:8px" data-field="d_headline" value="'+esc(o.draft.headline)+'"/>';
+      ORDER.forEach(function(k){
+        h+='<div style="margin-bottom:8px"><div class="lab2">'+esc(EN_LAB[k].toUpperCase())+'</div>'+
+           '<textarea rows="2" data-field="d_'+k+'">'+esc(o.draft[k])+'</textarea></div>';
+      });
+      h+='<button class="btn soft" data-action="translate" '+(o.busy==="pt"?"disabled":"")+'>'+(o.busy==="pt"?"⏳ Translating…":(o.pt?"Portuguese added ✓":"🗣 Add Portuguese version"))+'</button>';
+    }
+    h+='</div></div>';
+    // step 3
+    if(o.draft){
+      h+='<div class="ocard" style="margin-top:16px"><div class="step">🛡️ 3 · Impartiality check &amp; publish</div><div class="ocols">';
+      h+='<div style="flex:1">';
+      [["sides","Both sides present and attributed"],["words","No loaded or persuasive words"],["headline","Headline names the issue, not a person"],["source","Source link included"]].forEach(function(c){
+        h+='<div class="checkrow" data-action="check" data-k="'+c[0]+'"><span class="box'+(o.checks[c[0]]?' on':'')+'">'+(o.checks[c[0]]?'<span style="color:#fff;font-size:12px">✓</span>':'')+'</span><span>'+esc(c[1])+'</span></div>';
+      });
+      h+='</div><div style="flex:1">';
+      h+='<div class="chips" style="margin-bottom:8px">';
+      ["Housing","Health","Cost of living","Other"].forEach(function(x){
+        h+='<button class="chip'+(o.oTopic===x?' on':'')+'" data-action="otopic" data-x="'+esc(x)+'" style="'+(o.oTopic===x?'background:var(--teal)':'')+'">'+esc(x)+'</button>';
+      });
+      h+='</div>';
+      h+='<input class="txt" style="margin-bottom:12px" data-field="osource" value="'+esc(o.source)+'"/>';
+      var ok=o.checks.sides&&o.checks.words&&o.checks.headline&&o.checks.source;
+      h+='<button class="btn '+(ok?'gold':'')+'" data-action="publish" '+(ok?'':'disabled')+'>✉ '+(ok?"Approve & publish to readers":"Confirm all checks to publish")+'</button>';
+      h+='</div></div></div>';
+    }
+    // metrics
+    h+='<div class="metrics">'+
+       '<div class="m"><div class="mv">'+S.metrics.views+'</div><div class="ml">Views</div></div>'+
+       '<div class="m"><div class="mv">'+S.metrics.clear+'</div><div class="ml">“Clear” votes</div></div>'+
+       '<div class="m"><div class="mv">'+S.metrics.actions+'</div><div class="ml">Action clicks</div></div></div>'+
+       '<p class="caption">Pilot would judge success on these — new reach, understanding and action — not raw clicks.</p>';
+    return h;
+  }
+
+  function render(){
+    document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active",t.getAttribute("data-v")===S.view);});
+    demo.innerHTML = S.view==="reader"?reader():officer();
+  }
+
+  // input sync (no re-render, keeps focus)
+  document.addEventListener("input",function(e){
+    var f=e.target.getAttribute&&e.target.getAttribute("data-field");
+    if(!f)return;
+    if(f==="raw")S.off.raw=e.target.value;
+    else if(f==="osource")S.off.source=e.target.value;
+    else if(f==="d_headline")S.off.draft.headline=e.target.value;
+    else if(f.indexOf("d_")===0&&S.off.draft)S.off.draft[f.slice(2)]=e.target.value;
+  });
+
+  document.addEventListener("click",function(e){
+    var el=e.target.closest("[data-action]"); if(!el)return;
+    var a=el.getAttribute("data-action");
+    if(a==="act"){S.metrics.actions++; /* allow link to open */ return;}
+    if(a==="tab"){S.view=el.getAttribute("data-v");render();return;}
+    if(a==="lang"){S.lang=S.lang==="en"?"pt":"en";render();return;}
+    if(a==="topic"){S.topic=el.getAttribute("data-x");render();return;}
+    if(a==="open"){S.openId=el.getAttribute("data-id");S.voted=false;S.metrics.views++;render();return;}
+    if(a==="closeIssue"){S.openId=null;render();return;}
+    if(a==="clearYes"){S.voted=true;S.metrics.clear++;render();return;}
+    if(a==="clearNo"){S.voted=true;render();return;}
+    if(a==="generate"){
+      S.off.busy="gen";S.off.err="";S.off.pt=null;render();
+      setTimeout(function(){S.off.draft=JSON.parse(JSON.stringify(CANNED_EN));S.off.busy="";render();},900);
+      return;
+    }
+    if(a==="translate"){
+      if(!S.off.draft)return;
+      S.off.busy="pt";render();
+      setTimeout(function(){S.off.pt=JSON.parse(JSON.stringify(CANNED_PT));S.off.busy="";render();},700);
+      return;
+    }
+    if(a==="check"){var k=el.getAttribute("data-k");S.off.checks[k]=!S.off.checks[k];render();return;}
+    if(a==="otopic"){S.off.oTopic=el.getAttribute("data-x");render();return;}
+    if(a==="publish"){
+      var c=S.off.checks; if(!(c.sides&&c.words&&c.headline&&c.source))return;
+      var id="live-"+Date.now();
+      S.issues.unshift({id:id,topic:S.off.oTopic,source:S.off.source,published:true,en:S.off.draft,pt:S.off.pt});
+      S.off.draft=null;S.off.pt=null;S.off.checks={sides:false,words:false,headline:false,source:false};
+      S.topic="All";S.view="reader";S.openId=id;S.voted=false;render();
+      return;
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

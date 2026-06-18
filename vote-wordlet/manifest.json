@@ -1,0 +1,16 @@
+{
+  "name": "Vote Wordlet — Why Your Vote Matters",
+  "short_name": "Vote Wordlet",
+  "description": "A word game about why voting matters in Jersey's States Assembly elections. Rebuild each sentence — the first and last words are given.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBFAF7",
+  "theme_color": "#C81E2D",
+  "lang": "en-GB",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

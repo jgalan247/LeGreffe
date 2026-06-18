@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Order! Order! — chair the Assembly</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A; --gold-d:#B9781F;
+    --ink:#1E293B; --muted:#64748B; --tint:#EEF4F7; --line:#D8E3EA; --bg:#F6F9FB;
+    --white:#fff; --green:#15807A; --red:#A6492E;
+    --serif:Georgia,"Times New Roman",serif; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px}
+  header{background:var(--navy);color:#fff;padding:13px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .eyebrow{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px;margin-top:2px}
+  .counter{font-size:12px;background:rgba(255,255,255,.12);padding:5px 11px;border-radius:999px}
+  .screen{display:none;padding:20px 0 44px}
+  .screen.show{display:block}
+  h1{font-family:var(--serif);color:var(--deep);font-size:27px;margin:0 0 10px;line-height:1.15}
+  h2{font-family:var(--serif);color:var(--deep);font-size:21px;margin:0 0 4px}
+  p.lede{font-size:15px;color:var(--ink);margin:0 0 16px}
+  .btn{border:0;border-radius:12px;padding:13px 18px;font-weight:700;font-size:15px;cursor:pointer;font-family:var(--sans)}
+  .btn.gold{background:var(--gold);color:var(--navy);box-shadow:0 2px 0 var(--gold-d)}
+  .btn.ghost{background:#fff;color:var(--deep);border:1.5px solid var(--line);text-align:left}
+  .btn.ghost:hover{border-color:var(--teal)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+  .card.tint{background:var(--tint);border:none}
+  /* order meter */
+  .meter{background:var(--navy);color:#fff;border-radius:14px;padding:12px 16px;margin-bottom:16px;position:sticky;top:0;z-index:5}
+  .meter .row{display:flex;justify-content:space-between;align-items:center}
+  .meter .lab{font-size:11px;color:#9FB3C8}
+  .meter .val{font-family:var(--serif);font-size:20px;font-weight:700}
+  .track{height:9px;background:rgba(255,255,255,.15);border-radius:999px;margin-top:8px;overflow:hidden}
+  .track>span{display:block;height:100%;border-radius:999px;transition:width .35s,background .35s}
+  /* scene */
+  .speaker{display:flex;gap:11px;align-items:flex-start;margin-bottom:6px}
+  .speaker .av{flex:none;width:40px;height:40px;border-radius:999px;background:var(--tint);display:flex;align-items:center;justify-content:center;font-size:20px}
+  .speaker .nm{font-family:var(--serif);font-weight:700;color:var(--deep);font-size:14px}
+  .speaker .role{font-size:11px;color:var(--muted)}
+  .quote{background:var(--tint);border-radius:12px;padding:13px 15px;font-size:15px;color:var(--ink);margin:8px 0 14px;border-left:4px solid var(--teal)}
+  .prompt{font-size:13px;font-weight:700;color:var(--gold-d);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .opt{display:flex;flex-direction:column;gap:9px}
+  .feedback{font-size:14px;border-radius:12px;padding:13px 15px;margin-top:14px}
+  .fb-good{background:#E7F1F0;color:var(--green)}
+  .fb-bad{background:#FBEEE6;color:var(--red)}
+  .feedback .rule{font-size:12px;color:var(--muted);margin-top:6px}
+  .reflect{background:var(--navy);color:#fff;border-radius:14px;padding:16px;margin-top:14px;font-size:14px}
+  .reflect b{color:var(--gold)}
+  .note{font-size:12px;color:var(--muted);margin-top:14px}
+  .row-btns{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .row-btns .btn{flex:1;min-width:140px}
+  .scoreline{display:flex;justify-content:space-between;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div><div class="eyebrow">States Assembly of Jersey · learning game</div><div class="brand">Order! Order!</div></div>
+  <div class="counter" id="counter" style="display:none">Ruling 1 of 6</div>
+</div></header>
+
+<div class="wrap">
+  <div class="screen show" id="start">
+    <h1>You're in the Chair. Keep the Assembly in order.</h1>
+    <p class="lede">Every States sitting is run by a presiding officer — the <b>Bailiff</b>, or in their absence whoever is presiding. They decide who speaks, rule on the rules, keep Members to the point, and call the votes — but they do not take sides and cannot vote themselves. Take the Chair for one sitting. Six moments will test your judgement.</p>
+    <div class="card tint"><div style="font-size:14px"><b>Your job:</b> apply the Standing Orders fairly. Rule well and the debate runs cleanly; rule poorly and order — and the Assembly's respect for the Chair — starts to slip.</div></div>
+    <button class="btn gold" data-action="begin">Take the Chair →</button>
+    <p class="note">Illustrative scenarios based on the real powers and duties of the presiding officer under the States' Standing Orders.</p>
+  </div>
+
+  <div class="screen" id="play">
+    <div class="meter">
+      <div class="row"><div class="lab">Order in the Assembly</div><div class="val" id="orderVal">Calm</div></div>
+      <div class="track"><span id="orderTrack" style="width:80%"></span></div>
+    </div>
+    <div id="sceneBody"></div>
+  </div>
+
+  <div class="screen" id="outcome"><div id="outcomeBody"></div>
+    <div class="row-btns"><button class="btn gold" data-action="begin">Chair another sitting 🔁</button></div>
+    <p class="note">A learning game about how a States sitting is run and why the rules exist. The presiding officer's role is to be scrupulously impartial — which is exactly what keeps the Assembly's debates fair.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var SCENES=[
+    {
+      av:"✋", nm:"Two Members rise at once", role:"Both want to speak",
+      quote:"Two Members are on their feet, each pressing to speak on the proposition. The Assembly looks to you.",
+      prompt:"Who speaks?",
+      opts:[
+        {t:"Recognise the Member who hasn't spoken yet, then the other after",good:true,fb:"Good. Spreading speaking time keeps the debate balanced — a core duty of the Chair.",rule:"The presiding officer decides who speaks and keeps debate fair."},
+        {t:"Let the more senior Member speak both times",good:false,fb:"Seniority isn't the test. The Chair shares the floor fairly, or the debate looks captured.",rule:"The Chair's job is balance, not favour."},
+        {t:"Let them argue it out between themselves",good:false,fb:"That's how order is lost. Deciding who speaks is precisely the Chair's responsibility.",rule:"Only the Chair recognises speakers."}
+      ]
+    },
+    {
+      av:"⚖️", nm:"A point of order", role:"A Member interrupts",
+      quote:"\"Point of order! The Member is debating something not actually in the proposition before us.\"",
+      prompt:"How do you handle the point of order?",
+      opts:[
+        {t:"Pause the debate, consider the Standing Orders, and rule on whether it's in order",good:true,fb:"Correct. A point of order is a question about the rules, and the Chair must rule on what they mean.",rule:"On a point of order, the presiding officer rules how Standing Orders apply."},
+        {t:"Ignore it and let the speaker carry on",good:false,fb:"A point of order can't be brushed aside — ruling on it is a defined duty of the Chair.",rule:"Points of order require a ruling."},
+        {t:"Ask the Assembly to vote on whether it's a valid point",good:false,fb:"It isn't put to a vote — the Chair decides what the rules mean, not the room.",rule:"The Chair interprets the rules; the Assembly doesn't vote on interpretation."}
+      ]
+    },
+    {
+      av:"💬", nm:"A Member strays off topic", role:"Rambling debate",
+      quote:"A Member has spent two minutes on an unrelated grievance with little to do with the question before the Assembly.",
+      prompt:"What do you do?",
+      opts:[
+        {t:"Politely remind the Member to keep their remarks relevant to the proposition",good:true,fb:"Right. Keeping Members to the question is how the Chair protects everyone's time.",rule:"The Chair may require relevance to the matter under debate."},
+        {t:"Cut their microphone immediately without warning",good:false,fb:"Too heavy-handed. A fair reminder comes first; the Chair keeps order without appearing partial.",rule:"Order is kept proportionately — a reminder before any sanction."},
+        {t:"Say nothing — Members can speak about whatever they like",good:false,fb:"Not quite. Relevance is a real requirement, or debates would never end.",rule:"Speeches must relate to the matter in hand."}
+      ]
+    },
+    {
+      av:"🏷️", nm:"An undeclared interest", role:"Possible conflict",
+      quote:"A Member speaks warmly in favour of a grant — and you know their own organisation could benefit. They haven't mentioned it.",
+      prompt:"How do you respond?",
+      opts:[
+        {t:"Remind the Member of the requirement to declare any relevant interest",good:true,fb:"Exactly. Declaring interests keeps debate honest and transparent — the Chair upholds that.",rule:"Members must declare relevant interests; the Chair ensures it."},
+        {t:"Name the conflict yourself and criticise the Member",good:false,fb:"The Chair stays impartial — you prompt the declaration, you don't take sides or attack.",rule:"The Chair is neutral; it reminds, it doesn't accuse."},
+        {t:"Let it pass — it's not your concern",good:false,fb:"Transparency is the Chair's concern. An undeclared interest undermines trust in the debate.",rule:"Upholding declarations protects the Assembly's integrity."}
+      ]
+    },
+    {
+      av:"🔥", nm:"Unparliamentary language", role:"Tempers rise",
+      quote:"In a heated exchange, one Member accuses another of deliberately lying to the Assembly.",
+      prompt:"How do you keep order?",
+      opts:[
+        {t:"Ask the Member to withdraw the remark and return to the issue",good:true,fb:"Good. The Chair cools the temperature and keeps debate on the substance, not personal attacks.",rule:"The Chair may require unparliamentary remarks to be withdrawn."},
+        {t:"Join in and tell the Member off sharply",good:false,fb:"The Chair doesn't get drawn in. Calm authority keeps order; matching the heat loses it.",rule:"The Chair restores order without taking part in the row."},
+        {t:"Adjourn the whole sitting at once",good:false,fb:"Far too drastic for one remark. A withdrawal restores order proportionately.",rule:"Sanctions are proportionate to the breach."}
+      ]
+    },
+    {
+      av:"🗳️", nm:"Calling the vote", role:"Debate has closed",
+      quote:"The proposer has summed up. It's time to decide the matter.",
+      prompt:"How do you take the vote?",
+      opts:[
+        {t:"Call Members to their seats, ask the Greffier to open the appel nominal, then announce the result",good:true,fb:"Spot on. That's the real procedure — and note you announce the result but never cast a vote yourself.",rule:"The Bailiff calls the vote and announces it, but does not vote."},
+        {t:"Cast your own deciding vote to settle it quickly",good:false,fb:"The presiding officer can't vote. Impartiality is the whole point of the Chair.",rule:"The Bailiff may speak but cannot vote."},
+        {t:"Declare the result by your own judgement of the mood",good:false,fb:"The vote must be properly taken and counted — not guessed from the room.",rule:"Decisions are by recorded vote, not the Chair's impression."}
+      ]
+    }
+  ];
+
+  var S={i:0,order:80,good:0,answered:false};
+  function $(id){return document.getElementById(id);}
+  function show(id){["start","play","outcome"].forEach(function(s){$(s).classList.toggle("show",s===id);});window.scrollTo(0,0);}
+  function clamp(v){return Math.max(0,Math.min(100,v));}
+
+  function orderWord(){return S.order>=75?"Calm":(S.order>=50?"Restless":(S.order>=25?"Disorderly":"In uproar"));}
+  function orderCol(){return S.order>=75?"var(--green)":(S.order>=50?"var(--gold)":"var(--red)");}
+  function renderMeter(){$("orderVal").textContent=orderWord();$("orderTrack").style.width=S.order+"%";$("orderTrack").style.background=orderCol();}
+
+  function shuffle(arr){ for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;} return arr; }
+
+  function renderScene(){
+    var sc=SCENES[S.i];
+    $("counter").style.display="inline-block";
+    $("counter").textContent="Ruling "+(S.i+1)+" of "+SCENES.length;
+    S.opts=shuffle(sc.opts.slice()); // randomise positions; scoring uses o.good, not row
+    var h='<div class="card"><div class="speaker"><div class="av">'+sc.av+'</div><div><div class="nm">'+sc.nm+'</div><div class="role">'+sc.role+'</div></div></div>'+
+      '<div class="quote">'+sc.quote+'</div>'+
+      '<div class="prompt">'+sc.prompt+'</div><div class="opt" id="opts">';
+    S.opts.forEach(function(o,idx){ h+='<button class="btn ghost" data-action="choose" data-idx="'+idx+'">'+o.t+'</button>'; });
+    h+='</div><div id="fb"></div></div>';
+    $("sceneBody").innerHTML=h;
+    renderMeter();
+  }
+
+  function choose(idx){
+    if(S.answered) return;
+    S.answered=true;
+    var o=S.opts[idx];
+    if(o.good){S.order=clamp(S.order+6);S.good++;} else {S.order=clamp(S.order-18);}
+    renderMeter();
+    var h='<div class="feedback '+(o.good?"fb-good":"fb-bad")+'">'+o.fb+'<div class="rule">Standing Orders: '+o.rule+'</div></div>'+
+      '<button class="btn gold" data-action="next" style="width:100%;margin-top:12px">'+(S.i<SCENES.length-1?"Next moment →":"Close the sitting →")+'</button>';
+    $("fb").innerHTML=h;
+    var opts=document.getElementById("opts");
+    if(opts){var bs=opts.getElementsByTagName("button");for(var j=0;j<bs.length;j++){bs[j].disabled=true;bs[j].style.opacity=(j===idx?"1":".5");}}
+  }
+
+  function renderOutcome(){
+    var grade = S.order>=75?"a model of fair chairing":(S.order>=50?"a workable sitting, if a little bumpy":(S.order>=25?"a disorderly sitting":"a sitting that descended into uproar"));
+    var h='<h1>The sitting rises</h1><p class="lede">You presided over six moments. The Assembly leaves having had '+grade+'.</p>'+
+      '<div class="card"><div class="scoreline"><span>Rulings handled well</span><b>'+S.good+' of '+SCENES.length+'</b></div>'+
+      '<div class="scoreline" style="border:0"><span>Order at the close</span><b>'+orderWord()+'</b></div></div>'+
+      '<div class="reflect"><b>What this taught.</b> A debate only stays fair because someone keeps it fair. The presiding officer decides who speaks, rules on what the rules mean, keeps Members to the point, and calls the vote — <b>without ever taking a side or casting a vote</b>. That impartiality is not a detail; it is what lets 49 Members with no party majority argue, disagree and still reach a decision together. <b>That is what holds the Assembly together.</b></div>';
+    $("outcomeBody").innerHTML=h;
+    show("outcome");
+  }
+
+  document.addEventListener("click",function(e){
+    var el=e.target.closest("[data-action]"); if(!el)return;
+    var a=el.getAttribute("data-action");
+    if(a==="begin"){S={i:0,order:80,good:0,answered:false};renderScene();show("play");return;}
+    if(a==="choose"){choose(parseInt(el.getAttribute("data-idx"),10));return;}
+    if(a==="next"){
+      if(S.i<SCENES.length-1){S.i++;S.answered=false;renderScene();}
+      else{renderOutcome();}
+      return;
+    }
+  });
+})();
+</script>
+</body>
+</html>

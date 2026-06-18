@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Steelman — argue the other side</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A; --gold-d:#B9781F;
+    --ink:#1E293B; --muted:#64748B; --tint:#EEF4F7; --line:#D8E3EA; --bg:#F6F9FB;
+    --white:#fff; --green:#15807A; --amber:#B9781F; --red:#A6492E;
+    --serif:Georgia,"Times New Roman",serif; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px}
+  header{background:var(--navy);color:#fff;padding:13px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .eyebrow{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px;margin-top:2px}
+  .counter{font-size:12px;background:rgba(255,255,255,.12);padding:5px 11px;border-radius:999px;white-space:nowrap}
+  .dots{display:flex;gap:5px;margin-top:10px}
+  .dots .d{flex:1;height:5px;border-radius:999px;background:rgba(255,255,255,.18)}
+  .dots .d.on{background:var(--gold)} .dots .d.done{background:var(--teal)}
+  .screen{display:none;padding:20px 0 44px}
+  .screen.show{display:block}
+  h1{font-family:var(--serif);color:var(--deep);font-size:27px;margin:0 0 10px;line-height:1.15}
+  h2{font-family:var(--serif);color:var(--deep);font-size:20px;margin:0 0 4px}
+  h3{font-family:var(--serif);color:var(--deep);font-size:16px;margin:16px 0 6px}
+  .stagetag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+  p.lede{font-size:15px;color:var(--ink);margin:0 0 14px}
+  .btn{border:0;border-radius:12px;padding:13px 18px;font-weight:700;font-size:15px;cursor:pointer;font-family:var(--sans)}
+  .btn.gold{background:var(--gold);color:var(--navy);box-shadow:0 2px 0 var(--gold-d)}
+  .btn.ghost{background:#fff;color:var(--deep);border:1.5px solid var(--line);text-align:left}
+  .btn.ghost:hover{border-color:var(--teal)}
+  .btn:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+  .card.tint{background:var(--tint);border:none}
+  .choice{width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;display:block}
+  .choice:hover{border-color:var(--teal)}
+  .choice .t{font-weight:700;color:var(--deep);font-size:15px}
+  .choice .d{font-size:12.5px;color:var(--muted);margin-top:3px}
+  /* straw vs steel intro graphic */
+  .vs{display:flex;gap:10px;margin:14px 0}
+  .vs>div{flex:1;border-radius:14px;padding:14px}
+  .vs .straw{background:#FBEEE6}
+  .vs .steel{background:#E7F1F0}
+  .vs .h{font-family:var(--serif);font-weight:700;margin-bottom:5px}
+  .vs .straw .h{color:var(--red)} .vs .steel .h{color:var(--green)}
+  .vs .x{font-size:13px}
+  /* the brief */
+  .brief{background:var(--navy);color:#fff;border-radius:16px;padding:16px 18px;margin-bottom:14px;position:sticky;top:0;z-index:5}
+  .brief .lab{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+  .brief .m{font-family:var(--serif);font-size:17px;line-height:1.35}
+  .brief .side{margin-top:9px;font-size:13px;background:rgba(255,255,255,.1);border-radius:10px;padding:8px 11px}
+  .brief .side b{color:var(--gold)}
+  .tip{background:#FFF6E9;border:1px solid #F0D9B5;border-radius:12px;padding:11px 13px;margin-bottom:14px;font-size:13px;color:#7a5618}
+  .tip b{color:var(--gold-d)}
+  .opt{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+  .feedback{font-size:14px;border-radius:12px;padding:13px 15px;margin-top:14px}
+  .fb-good{background:#E7F1F0;color:var(--green)}
+  .fb-bad{background:#FBEEE6;color:var(--red)}
+  .fb .move{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;opacity:.8}
+  .build{background:var(--tint);border-radius:12px;padding:11px 13px;margin:6px 0 0;border-left:4px solid var(--teal);font-size:13.5px}
+  .build .step{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  /* result */
+  .check{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+  .check:first-child{border-top:0}
+  .check .ic{flex:none;width:26px;height:26px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
+  .check .nm{font-weight:700;color:var(--deep);font-size:14px}
+  .check .ds{font-size:12.5px;color:var(--ink)}
+  .model{background:#F4FAF9;border:1px solid #CDE7E3;border-radius:14px;padding:16px;font-size:14px;line-height:1.6}
+  .model .q{font-family:var(--serif);font-style:italic;color:var(--deep)}
+  .qlist{margin:0;padding-left:18px}
+  .qlist li{margin-bottom:8px;font-size:14px}
+  .reflect{background:var(--navy);color:#fff;border-radius:14px;padding:16px;margin-top:14px;font-size:14px}
+  .reflect b{color:var(--gold)}
+  .note{font-size:12px;color:var(--muted);margin-top:14px}
+  .row-btns{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .row-btns .btn{flex:1;min-width:140px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div style="flex:1"><div class="eyebrow">States Assembly of Jersey · Youth Assembly toolkit</div><div class="brand">Steelman</div>
+    <div class="dots" id="dots"></div></div>
+  <div class="counter" id="counter" style="display:none">Step 1 of 5</div>
+</div></header>
+
+<div class="wrap">
+  <!-- START -->
+  <div class="screen show" id="start">
+    <h1>Argue the side you didn't choose.</h1>
+    <p class="lede">In a real debate, the easiest thing to do is knock down a weak, cartoon version of the other side. That's a <b>straw man</b> — and it convinces no one who actually disagrees with you. The harder, more valuable move is to build the <b>steelman</b>: the <i>strongest, fairest</i> version of the opposing case.</p>
+    <div class="vs">
+      <div class="straw"><div class="h">🥀 Straw man</div><div class="x">You attack the weakest, silliest version of the other side. Easy — but it dodges the real argument.</div></div>
+      <div class="steel"><div class="h">🛡️ Steelman</div><div class="x">You build the other side's <b>best</b> case, as they'd make it. Harder — but it's the only one worth answering.</div></div>
+    </div>
+    <div class="card tint"><div style="font-size:14px"><b>Why bother?</b> Three reasons: you can't rebut an argument you don't understand; you spot weak reasoning faster once you know what strong reasoning looks like; and you disagree more fairly — which is exactly what a good Assembly debate, and an impartial chamber, depends on.</div></div>
+    <p class="lede" style="margin-top:14px">You'll be handed a motion and told <b>which side to argue</b> — sometimes the side you disagree with. Your job isn't to win. It's to build a case the other side would recognise as fair. Pick a motion to begin.</p>
+    <div id="picks"></div>
+    <p class="note">A Youth Assembly skill-builder. Every motion can be argued either way — the game scores the quality of your reasoning, never which side is “right”.</p>
+  </div>
+
+  <!-- BUILD -->
+  <div class="screen" id="build">
+    <div class="brief"><div class="lab">The motion</div><div class="m" id="bMotion">—</div><div class="side" id="bSide">—</div></div>
+    <div id="buildBody"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="result"><div id="resultBody"></div>
+    <div class="row-btns"><button class="btn gold" data-action="restart">Steelman another motion 🔁</button></div>
+    <p class="note">Being able to argue a side you disagree with isn't dishonest — it's how you truly understand a debate, and how you earn the right to disagree well.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  // 5 steps: foundation, evidence, strawman (spot the unfair caricature of YOUR case), answer, rebuttal-prep
+  var MOTIONS=[
+    {
+      id:"phones", icon:"📵",
+      motion:"This Assembly would require phones to be kept away during secondary school lessons.",
+      side:"AGAINST", sideText:"You might personally support the ban — your task is to build the strongest, fairest case <b>against</b> it.",
+      foundation:[
+        {t:"Phones are valuable learning tools, so a blanket ban removes a resource, not just a distraction.",good:true,d:"Strong: reframes around learning, and engages the real trade-off.",move:"Attacks the position, not people"},
+        {t:"Teachers who want a ban are just controlling and out of touch.",good:false,d:"Weak: that's an <b>ad hominem</b> — attacking people, not the argument.",move:"Ad hominem"}
+      ],
+      evidence:[
+        {t:"Many schools use phones for research, accessibility apps and quick polls — a ban loses those gains.",good:true,d:"Concrete and checkable — gives the claim real substance.",move:"Evidence"},
+        {t:"Everyone has a phone now, so banning them is pointless.",good:false,d:"Weak: \u201Ceveryone does it\u201D isn't a reason either way (bandwagon).",move:"Bandwagon"}
+      ],
+      strawman:[
+        {t:"\u201CWe accept phones can distract, but argue a blanket ban is the wrong tool.\u201D",good:true,d:"Strong: states your case so it can't be caricatured as \u201Cthey think phones never distract\u201D.",move:"Strawman-proof"},
+        {t:"\u201CPhones are always good and never cause any problem at all.\u201D",good:false,d:"Weak: an overclaim the other side can easily knock down.",move:"Overclaim (easy to strawman)"}
+      ],
+      answer:[
+        {t:"Concede distraction is real, then argue for clear classroom rules instead of a total ban.",good:true,d:"Strong: grants the valid point, then offers a measured alternative.",move:"Concede-and-counter"},
+        {t:"Insist phones never distract anyone, ever.",good:false,d:"Weak: denying an obvious truth makes your whole case look unfair.",move:"Denial"}
+      ],
+      rebuttal:[
+        {t:"Anticipate \u201Csome pupils misuse phones\u201D and answer it: target misuse directly rather than banning the tool for all.",good:true,d:"Strong: you've prepared for their best counter before they make it.",move:"Pre-empts the counter"},
+        {t:"Assume they'll have nothing to say back.",good:false,d:"Weak: a good debater always prepares for the strongest reply.",move:"Complacency"}
+      ],
+      model:"We accept that phones can distract — that point is fair and we don't dispute it. But the question isn't whether phones can be misused; it's whether a blanket ban is the right response. Phones are also genuine learning tools: research, accessibility apps, and quick classroom polls all rely on them. The risk of a total ban is that it throws away those benefits to solve a problem that clear classroom rules could handle more precisely. So our case is not that phones never distract — it's that we should target the misuse, not the tool."
+    },
+    {
+      id:"hours", icon:"⏰",
+      motion:"This Assembly would start the secondary school day at 9.30am.",
+      side:"FOR", sideText:"Whatever you think of later starts, build the strongest, fairest case <b>for</b> this motion.",
+      foundation:[
+        {t:"Teenage sleep patterns shift later in adolescence, so a later start can lift focus and wellbeing.",good:true,d:"Strong: grounds the case in how teenagers actually function.",move:"Argues the issue"},
+        {t:"Anyone who opposes this just doesn't care about young people.",good:false,d:"Weak: that's an <b>ad hominem</b>, and unfair to opponents.",move:"Ad hominem"}
+      ],
+      evidence:[
+        {t:"Schools elsewhere that shifted start times reported better attendance and attention — worth a trial.",good:true,d:"Concrete precedent the Assembly can examine.",move:"Evidence"},
+        {t:"It would just be really nice to sleep in.",good:false,d:"Weak: personal comfort isn't a public-policy reason.",move:"Personal preference"}
+      ],
+      strawman:[
+        {t:"\u201CWe're proposing a trial of a 30-minute shift, not abolishing early starts forever.\u201D",good:true,d:"Strong: framed so it can't be caricatured as a reckless overhaul.",move:"Strawman-proof"},
+        {t:"\u201CSchool should basically start whenever students feel like it.\u201D",good:false,d:"Weak: an extreme version opponents will gladly attack.",move:"Overclaim"}
+      ],
+      answer:[
+        {t:"Accept the logistics are real, and propose adjusting bus times and trialling before any full rollout.",good:true,d:"Strong: takes the objection seriously, offers a practical path.",move:"Concede-and-counter"},
+        {t:"Say parents' work and bus timetables simply don't matter.",good:false,d:"Weak: dismissing real impacts makes the case look careless.",move:"Dismissal"}
+      ],
+      rebuttal:[
+        {t:"Anticipate \u201Cit'll cost money to change buses\u201D and answer it: build a costed trial into the proposal.",good:true,d:"Strong: you've prepared for their strongest reply.",move:"Pre-empts the counter"},
+        {t:"Hope no one raises the cost.",good:false,d:"Weak: the obvious objection should be met head-on.",move:"Avoidance"}
+      ],
+      model:"The strongest case for a later start isn't about comfort — it's about evidence. Teenagers' body clocks shift later during adolescence, so a 9.30am start aligns school with how students actually function, which several places that trialled it link to better attendance and attention. We're not proposing to abolish early starts forever; we're proposing a costed trial of a modest shift. We accept the genuine objection — buses and parents' working hours — and that's exactly why a trial, with adjusted transport, is the sensible first step rather than an overnight change."
+    },
+    {
+      id:"vote", icon:"🗳️",
+      motion:"This Assembly would lower the candidacy age so under-18s could stand for election.",
+      side:"AGAINST", sideText:"You may well support youth voice — here, build the strongest, fairest case <b>against</b> this particular change.",
+      foundation:[
+        {t:"Standing for office carries legal duties the law ties to 18, so there's a consistency question to resolve first.",good:true,d:"Strong: a principled point about the law, not about young people's worth.",move:"Principled, not personal"},
+        {t:"Teenagers simply aren't clever enough to be politicians.",good:false,d:"Weak — and unfair: it attacks people, not the proposal.",move:"Ad hominem"}
+      ],
+      evidence:[
+        {t:"Certain contracts and legal responsibilities begin at 18, so changing one age alone may create mismatches worth examining.",good:true,d:"Reasoned and specific — invites scrutiny, not insult.",move:"Evidence"},
+        {t:"Young people should just wait their turn.",good:false,d:"Weak: dismissive, and not actually an argument.",move:"Dismissal"}
+      ],
+      strawman:[
+        {t:"\u201CWe support youth voice; our concern is narrowly about legal consistency of the candidacy age.\u201D",good:true,d:"Strong: framed so no one can caricature you as anti-young-people.",move:"Strawman-proof"},
+        {t:"\u201CYoung people shouldn't be involved in politics at all.\u201D",good:false,d:"Weak: an extreme line that misrepresents your own case.",move:"Overclaim"}
+      ],
+      answer:[
+        {t:"Strongly agree young people deserve a voice, and point to other routes while the age-consistency issue is worked through.",good:true,d:"Strong: honours the valid point, keeps the disagreement narrow.",move:"Concede-and-counter"},
+        {t:"Claim young people don't really want a voice anyway.",good:false,d:"Weak: a straw man that misrepresents the other side.",move:"Strawman"}
+      ],
+      rebuttal:[
+        {t:"Anticipate \u201C16-year-olds already vote here\u201D and answer it: voting and standing carry different responsibilities worth distinguishing.",good:true,d:"Strong: meets their best counter with a real distinction.",move:"Pre-empts the counter"},
+        {t:"Ignore that 16-year-olds can already vote in Jersey.",good:false,d:"Weak: ducking a known fact undermines your credibility.",move:"Avoidance"}
+      ],
+      model:"Let's be clear at the outset: we support young people having a real voice — this is not an argument about ability or worth. Our concern is narrower and legal. Standing for office carries duties that the law currently ties to turning 18, and changing the candidacy age in isolation could create mismatches with those other responsibilities. We recognise that 16-year-olds already vote in Jersey — but voting and standing for office are different acts with different duties. So our case is simply that the age-consistency question deserves to be resolved first, through proper scrutiny, before this specific change is made."
+    }
+  ];
+
+  var STEP_KEYS=["foundation","evidence","strawman","answer","rebuttal"];
+  var STEP_META=[
+    {tag:"Step 1 · Foundation", h:"Open on the strongest ground", tip:"A steelman argues the <b>position</b>, never the people who hold it. Attacking opponents is an <b>ad hominem</b> — it feels good and proves nothing.", lead:"Pick the opening that engages the real issue."},
+    {tag:"Step 2 · Evidence", h:"Make it solid", tip:"Strong arguments rest on something <b>concrete and checkable</b>, not on \u201Ceveryone knows\u201D or \u201Ceveryone does it\u201D.", lead:"Choose the support that gives your case substance."},
+    {tag:"Step 3 · Strawman-proof it", h:"Don't hand them an easy target", tip:"State your case in its <b>most reasonable</b> form. Overclaiming (\u201Cnever\u201D, \u201Calways\u201D) lets the other side caricature and dismiss you.", lead:"Which version of your case is hardest to misrepresent?"},
+    {tag:"Step 4 · Answer the other side", h:"The real steelman move", tip:"Concede what's <b>genuinely true</b> in the opposing view, then counter. Refusing to grant any valid point makes you look unfair.", lead:"How do you respond to the other side's best point?"},
+    {tag:"Step 5 · Prepare your rebuttal", h:"Meet their strongest reply", tip:"Great debaters answer the best counter <b>before</b> it's made. Hoping it won't come up is not a strategy.", lead:"Anticipate their sharpest comeback — and have an answer ready."}
+  ];
+
+  var S={m:null,step:0,picks:{},fb:null};
+  function $(id){return document.getElementById(id);}
+  function show(id){["start","build","result"].forEach(function(s){$(s).classList.toggle("show",s===id);});window.scrollTo(0,0);}
+
+  function renderPicks(){
+    var h="";
+    MOTIONS.forEach(function(m){
+      h+='<button class="choice" data-action="pick" data-id="'+m.id+'"><div class="t">'+m.icon+'  '+m.motion+'</div><div class="d">You\'ll argue: <b>'+m.side+'</b></div></button>';
+    });
+    $("picks").innerHTML=h;
+  }
+  function renderDots(){var h="";for(var i=0;i<5;i++){h+='<div class="d '+(i<S.step?"done":(i===S.step?"on":""))+'"></div>';}$("dots").innerHTML=h;}
+
+  function renderBuild(){
+    var m=S.m, key=STEP_KEYS[S.step], meta=STEP_META[S.step];
+    $("counter").style.display="inline-block";
+    $("counter").textContent="Step "+(S.step+1)+" of 5";
+    renderDots();
+    $("bMotion").innerHTML=m.motion;
+    $("bSide").innerHTML='You are arguing <b>'+m.side+'</b>. '+m.sideText;
+    var fb = S.fb ? '<div class="feedback '+(S.fb.good?"fb-good":"fb-bad")+'"><div class="move">'+(S.fb.good?"Good move · ":"Watch out · ")+S.fb.move+'</div>'+S.fb.txt+'</div>' : "";
+    var built="";
+    for(var k=0;k<S.step;k++){ var ch=S.m[STEP_KEYS[k]][S.picks[STEP_KEYS[k]]]; built+='<div class="build"><div class="step">'+STEP_META[k].tag.replace(/^Step \d+ · /,"")+'</div>'+ch.t+'</div>'; }
+    var h='<div class="stagetag">'+meta.tag+'</div><h2>'+meta.h+'</h2><div class="tip">💡 <b>Principle:</b> '+meta.tip+'</div>';
+    if(built) h+='<div class="card" style="padding:10px 12px"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Your case so far</div>'+built+'</div>';
+    h+='<p class="lede">'+meta.lead+'</p>'+fb+'<div class="opt">';
+    var opts=m[key], order=opts.map(function(_,i){return i;});
+    for(var z=order.length-1;z>0;z--){var j=Math.floor(Math.random()*(z+1));var tmp=order[z];order[z]=order[j];order[j]=tmp;}
+    order.forEach(function(i){h+='<button class="btn ghost" data-action="choose" data-i="'+i+'"><div style="font-weight:700">'+opts[i].t+'</div></button>';});
+    h+='</div>';
+    $("buildBody").innerHTML=h;
+  }
+
+  function renderResult(){
+    var m=S.m;
+    function pick(k){return m[k][S.picks[k]];}
+    var labels={foundation:"Strong foundation",evidence:"Solid evidence",strawman:"Strawman-proofed",answer:"Answered the other side",rebuttal:"Prepared a rebuttal"};
+    var checks=STEP_KEYS.map(function(k){var c=pick(k);return {nm:labels[k],ok:c.good,ds:c.good? "✓ "+c.move : c.d};});
+    var score=checks.filter(function(c){return c.ok;}).length;
+    var h='<div class="stagetag">Your steelman · arguing '+m.side+'</div><div class="card tint"><div style="font-family:var(--serif);font-size:17px;color:var(--deep);line-height:1.35">'+m.motion+'</div></div>';
+    h+='<div class="card">';
+    checks.forEach(function(c){h+='<div class="check"><div class="ic" style="background:'+(c.ok?"var(--green)":"var(--amber)")+'">'+(c.ok?"✓":"!")+'</div><div><div class="nm">'+c.nm+'</div><div class="ds">'+c.ds+'</div></div></div>';});
+    h+='</div>';
+    // model answer
+    h+='<h3>A model steelman — '+m.side.toLowerCase()+' the motion</h3>'+
+       '<div class="model"><div class="q">Read how a strong, fair version reads start to finish:</div><p style="margin:10px 0 0">'+m.model+'</p>'+
+       '<div style="font-size:12px;color:var(--muted);margin-top:10px">Notice: it argues the issue, uses something concrete, concedes a real point, and never caricatures the other side.</div></div>';
+    // reflection
+    var msg = score>=4 ? "That's a genuine steelman — a case the other side would recognise as fair, and one a thoughtful opponent would have to answer."
+      : score>=2 ? "A solid attempt with weak links. The model above shows how to strengthen them." 
+      : "This leaned on dismissing the other side rather than understanding it — the straw-man trap. Compare it with the model above.";
+    h+='<div class="reflect"><b>'+score+' of 5.</b> '+msg+'<br><br><b>Reflect:</b> did building this case change how well you <i>understand</i> the side you argued? You don\'t have to agree with a position to argue it well — and now that you can put it fairly, you\'re ready to answer it properly. That ability to hold both sides at once is what makes a debate fair, and what an impartial Assembly depends on.</div>';
+    // group discussion
+    h+='<h3>Discuss as a group</h3><div class="card"><ol class="qlist">'+
+       '<li>Was it harder to argue the side you disagreed with? Why?</li>'+
+       '<li>Did making the opposing case stronger change your own view at all — even a little?</li>'+
+       '<li>Where have you seen a <b>straw man</b> used in a real debate or online? How could it have been steelmanned instead?</li>'+
+       '<li>Why might a fair Assembly — and an impartial Chair — value Members who can state the other side\'s best case?</li>'+
+       '</ol></div>';
+    $("resultBody").innerHTML=h;
+    show("result");
+  }
+
+  document.addEventListener("click",function(e){
+    var el=e.target.closest("[data-action]"); if(!el)return;
+    var a=el.getAttribute("data-action"), i=el.getAttribute("data-i"), id=el.getAttribute("data-id");
+    if(a==="pick"){ S={m:MOTIONS.find(function(x){return x.id===id;}),step:0,picks:{},fb:null}; renderBuild(); show("build"); return; }
+    if(a==="choose"){
+      i=parseInt(i,10);
+      var key=STEP_KEYS[S.step], o=S.m[key][i];
+      S.picks[key]=i;
+      if(S.step<4){
+        S.fb={good:o.good,move:o.move,txt:o.d};
+        S.step++; renderBuild();
+      } else { renderResult(); }
+      return;
+    }
+    if(a==="restart"){ renderPicks(); show("start"); $("counter").style.display="none"; $("dots").innerHTML=""; return; }
+  });
+
+  renderPicks();
+})();
+</script>
+</body>
+</html>

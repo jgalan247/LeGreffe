@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Vote Wordlet — Why Your Vote Matters</title>
+<meta name="description" content="A multilingual word game about why voting matters in Jersey's States Assembly elections. English, Portuguese, Polish, Romanian and Bulgarian." />
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#C81E2D" />
+<link rel="icon" href="icon-192.png" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Vote Wordlet" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --ink:#14233A; --red:#C81E2D; --red-deep:#A4151F;
+    --paper:#FBFAF7; --paper-2:#F2EFE8; --teal:#15807A;
+    --slate:#5A6B82; --line:#D8D2C6;
+    --display:'Archivo', system-ui, -apple-system, "Segoe UI", sans-serif;
+    --body:'Public Sans', system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono:ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; }
+  body{
+    font-family:var(--body); color:var(--ink);
+    background:radial-gradient(120% 80% at 50% -10%, #fff 0%, var(--paper) 55%, var(--paper-2) 100%);
+    min-height:100svh; display:flex; justify-content:center;
+    padding:env(safe-area-inset-top) 14px calc(env(safe-area-inset-bottom) + 14px);
+  }
+  .app{ width:100%; max-width:520px; display:flex; flex-direction:column; }
+
+  header{ padding:18px 2px 12px; }
+  .brandline{ display:flex; align-items:center; gap:10px; }
+  .mark{ width:30px; height:30px; border-radius:7px; background:var(--red);
+    display:grid; place-items:center; flex:none; box-shadow:0 2px 0 var(--red-deep); }
+  .mark svg{ width:17px; height:17px; }
+  h1{ font-family:var(--display); font-weight:800; font-size:21px; letter-spacing:-.01em; margin:0; line-height:1; }
+  .tag{ font-size:12px; color:var(--slate); margin:6px 0 0; letter-spacing:.02em; text-transform:uppercase; font-weight:600; }
+  .subrow{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .levelseg{ display:flex; align-items:center; gap:6px; flex:none; }
+  .lvlcap{ font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--slate); font-weight:700; }
+  .lvbtn{ font-family:var(--mono); font-weight:700; font-size:13px; width:30px; height:28px; border-radius:8px;
+    border:1px solid var(--line); background:var(--paper); color:var(--slate); cursor:pointer; transition:background .15s,color .15s; }
+  .lvbtn.on{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  .lang-wrap{ margin-left:auto; display:flex; align-items:center; gap:6px; color:var(--slate); }
+  .lang-wrap svg{ width:16px; height:16px; flex:none; }
+  select#lang{ font-family:var(--body); font-weight:600; font-size:13px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:9px; padding:7px 26px 7px 9px;
+    -webkit-appearance:none; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235A6B82' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 9px center; }
+
+  .board{ display:flex; gap:8px; margin-top:16px; }
+  .stat{ flex:1; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:9px 11px; }
+  .stat .k{ font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--slate); font-weight:700; }
+  .stat .v{ font-family:var(--mono); font-size:22px; font-weight:600; line-height:1.1; margin-top:2px; }
+  .stat.best{ background:var(--ink); border-color:var(--ink); }
+  .stat.best .k{ color:#9fb0c8; } .stat.best .v{ color:#fff; }
+
+  main{ margin-top:16px; flex:1; }
+  .ballot{ position:relative; background:var(--paper); border:1px solid var(--line); border-radius:18px;
+    padding:18px 16px 16px; box-shadow:0 1px 0 #fff inset, 0 10px 30px -18px rgba(20,35,58,.35); }
+  .ballot::before{ content:""; position:absolute; left:16px; right:16px; top:0; height:4px; background:var(--red); border-radius:0 0 4px 4px; }
+  .eyebrow{ display:flex; align-items:center; gap:8px; margin-bottom:14px;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--red-deep); font-weight:700; }
+  .eyebrow .n{ font-family:var(--mono); color:var(--slate); letter-spacing:0; margin-left:auto; }
+
+  .line{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; min-height:52px; padding-bottom:4px; }
+  .slot, .tile{ font-family:var(--body); font-size:17px; font-weight:600; border-radius:10px; line-height:1;
+    border:1.5px solid transparent; transition:transform .12s ease, background .15s, border-color .15s, color .15s; }
+  .slot{ min-width:46px; min-height:42px; padding:0 13px; display:inline-flex; align-items:center; justify-content:center;
+    background:var(--paper-2); border:1.5px dashed var(--line); color:var(--slate); }
+  .slot.filled{ background:#fff; border:1.5px solid var(--ink); color:var(--ink); cursor:pointer; }
+  .slot.filled:active{ transform:translateY(1px); }
+  .slot.locked{ background:#eef4f3; border:1.5px solid var(--teal); color:var(--ink); cursor:default; font-weight:700; }
+  .slot.right{ background:#e6f3f0; border:1.5px solid var(--teal); color:var(--ink); font-weight:700; }
+  .slot.right::after{ content:"✓"; font-size:11px; color:var(--teal); margin-left:6px; font-weight:700; }
+  .slot.wrong{ background:#fdeceb; border:1.5px solid var(--red); color:var(--ink); }
+
+  .bank-label{ margin:18px 0 9px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate);
+    font-weight:700; display:flex; align-items:center; gap:8px; }
+  .bank-label::after{ content:""; flex:1; height:1px; background:var(--line); }
+  .bank{ display:flex; flex-wrap:wrap; gap:8px; min-height:42px; }
+  .tile{ background:var(--ink); color:#fff; padding:11px 14px; cursor:pointer; box-shadow:0 2px 0 #0b1626; }
+  .tile:hover{ transform:translateY(-1px); }
+  .tile:active{ transform:translateY(1px); box-shadow:0 1px 0 #0b1626; }
+  .tile.spent{ visibility:hidden; }
+
+  .controls{ display:flex; gap:8px; margin-top:18px; }
+  button.act{ font-family:var(--display); font-weight:700; font-size:15px; letter-spacing:.01em; border:none;
+    border-radius:12px; padding:13px 10px; cursor:pointer; flex:1; transition:transform .1s, filter .15s, background .15s; }
+  button.act:active{ transform:translateY(1px); }
+  .primary{ background:var(--red); color:#fff; box-shadow:0 3px 0 var(--red-deep); flex:1.6; }
+  .primary:disabled{ background:#d9b4b7; box-shadow:0 3px 0 #c79a9e; cursor:not-allowed; }
+  .ghost{ background:transparent; color:var(--ink); border:1.5px solid var(--line) !important; }
+  .ghost:disabled{ color:#b9c0cb; cursor:not-allowed; }
+
+  .feedback{ margin-top:14px; min-height:24px; font-size:14px; font-weight:600; }
+  .feedback.bad{ color:var(--red-deep); } .feedback.good{ color:var(--teal); }
+  .fact{ margin-top:10px; background:#eef4f3; border:1px solid #cfe3e0; border-radius:12px; padding:12px 13px;
+    font-size:14px; color:var(--ink); display:none; }
+  .fact.show{ display:block; } .fact b{ color:var(--teal); }
+  .anec{ margin-top:9px; padding-top:9px; border-top:1px dashed #cfe3e0; font-size:13px; line-height:1.45; color:var(--ink); }
+  .anec span{ display:inline-block; margin-right:6px; color:var(--red-deep); font-weight:700; font-size:9px; letter-spacing:.1em; text-transform:uppercase; }
+
+  .stamp{ position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; }
+  .stamp span{ font-family:var(--display); font-weight:800; font-size:32px; letter-spacing:.06em; color:var(--red);
+    border:4px solid var(--red); border-radius:10px; padding:6px 16px; transform:rotate(-11deg) scale(.4); opacity:0; }
+  .stamp.go span{ animation:stamp .5s cubic-bezier(.2,1.4,.4,1) forwards; }
+  @keyframes stamp{ 0%{opacity:0; transform:rotate(-11deg) scale(1.7);} 60%{opacity:1; transform:rotate(-11deg) scale(.92);} 100%{opacity:.92; transform:rotate(-11deg) scale(1);} }
+  .pts{ position:absolute; right:18px; top:14px; font-family:var(--mono); font-weight:700; font-size:18px; color:var(--teal); opacity:0; }
+  .pts.go{ animation:fly 1s ease forwards; }
+  @keyframes fly{ 0%{opacity:0; transform:translateY(8px);} 25%{opacity:1;} 100%{opacity:0; transform:translateY(-22px);} }
+  .shake{ animation:shake .35s; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-6px);} 40%,80%{transform:translateX(6px);} }
+
+  footer{ margin-top:18px; text-align:center; font-size:11px; color:var(--slate); }
+  footer a{ color:var(--slate); }
+  .install{ display:none; margin:14px auto 0; background:var(--ink); color:#fff; border:none; border-radius:10px;
+    padding:10px 16px; font-family:var(--display); font-weight:700; font-size:13px; cursor:pointer; }
+
+  .done{ text-align:center; padding:10px 4px; }
+  .done h2{ font-family:var(--display); font-size:24px; margin:6px 0; }
+  .done .score-big{ font-family:var(--mono); font-size:46px; font-weight:700; color:var(--red); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    .stamp span{ opacity:.92; transform:rotate(-11deg) scale(1); }
+  }
+  :focus-visible{ outline:3px solid var(--teal); outline-offset:2px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brandline">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M5 5 L19 19 M19 5 L5 19"/></svg>
+      </span>
+      <h1>Vote Wordlet</h1>
+      <div class="lang-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>
+        </svg>
+        <select id="lang" aria-label="Language / Idioma / Język / Limbă / Език">
+          <option value="en">English</option>
+          <option value="pt">Português</option>
+          <option value="pl">Polski</option>
+          <option value="ro">Română</option>
+          <option value="bg">Български</option>
+        </select>
+      </div>
+    </div>
+    <div class="subrow">
+      <p class="tag" id="tag"></p>
+      <div class="levelseg" role="group" aria-label="Difficulty level">
+        <span class="lvlcap" id="lvlcap">Level</span>
+        <button type="button" id="lv1" class="lvbtn">1</button>
+        <button type="button" id="lv2" class="lvbtn">2</button>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="stat"><div class="k" id="kScore"></div><div class="v" id="score">0</div></div>
+      <div class="stat"><div class="k" id="kStreak"></div><div class="v" id="streak">0</div></div>
+      <div class="stat best"><div class="k" id="kBest"></div><div class="v" id="best">0</div></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="ballot" id="ballot">
+      <div class="eyebrow"><span id="cat"></span><span class="n" id="prog"></span></div>
+      <div class="line" id="line" aria-label="Build the sentence in order"></div>
+      <div class="bank-label" id="bankLabel"></div>
+      <div class="bank" id="bank"></div>
+      <div class="controls">
+        <button class="act primary" id="check"></button>
+        <button class="act ghost" id="hint"></button>
+        <button class="act ghost" id="skip"></button>
+      </div>
+      <p class="feedback" id="feedback" aria-live="polite"></p>
+      <div class="fact" id="fact" aria-live="polite"></div>
+      <div class="stamp" id="stamp" aria-hidden="true"><span>VOTED ✓</span></div>
+      <div class="pts" id="pts" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <button class="install" id="install">Install game</button>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+/* ===================== UI strings ===================== */
+const UI = {
+  en:{ tag:'Jersey · why your vote matters', score:'Score', streak:'Streak', best:'Best', bank:'Word bank',
+    check:'Check answer', next:'Next sentence →', result:'See result →', hint:'Hint −25', skip:'Skip',
+    fill:'Fill every slot first — tap words from the bank.',
+    green:(n,t)=>`Green words are in the right place — ${n} of ${t}. Move the rest.`,
+    clean:(g,s)=>`Spot on! Clean solve +${g}`+(s>1?` · streak ×${s}`:''), correct:(g)=>`Correct +${g}`,
+    did:'Did you know?', eg:'A real example', lvl:'Level', hintPlaced:'Hint placed — one word locked in.', complete:'Looks complete — press Check answer.',
+    resultLabel:'Result', bestScore:'Best score', again:'Play again', install:'Install game',
+    footer:'Facts from <a href="https://www.vote.je" target="_blank" rel="noopener">vote.je</a> · the official guide to Jersey elections',
+    cats:{reason:'Reason to vote', system:'How Jersey works', who:'Who can vote', choose:'Make a choice', how:'How to vote', think:'Think first', stake:"What's at stake"},
+    high:'Outstanding — you know why your vote counts.', mid:'Nicely done. Your vote, your voice.', low:'Good start — play again to climb the board.' },
+
+  pt:{ tag:'Jersey · porque o teu voto conta', score:'Pontos', streak:'Sequência', best:'Recorde', bank:'Banco de palavras',
+    check:'Verificar', next:'Próxima frase →', result:'Ver resultado →', hint:'Pista −25', skip:'Saltar',
+    fill:'Preenche primeiro todos os espaços — toca nas palavras.',
+    green:(n,t)=>`As palavras a verde estão no lugar certo — ${n} de ${t}. Move as outras.`,
+    clean:(g,s)=>`Perfeito! Sem erros +${g}`+(s>1?` · sequência ×${s}`:''), correct:(g)=>`Correto +${g}`,
+    did:'Sabias que?', eg:'Um exemplo real', lvl:'Nível', hintPlaced:'Pista colocada — uma palavra fixada.', complete:'Parece completo — carrega em Verificar.',
+    resultLabel:'Resultado', bestScore:'Melhor pontuação', again:'Jogar de novo', install:'Instalar jogo',
+    footer:'Factos de <a href="https://www.vote.je" target="_blank" rel="noopener">vote.je</a> · o guia oficial das eleições de Jersey',
+    cats:{reason:'Razão para votar', system:'Como funciona Jersey', who:'Quem pode votar', choose:'Faz a tua escolha', how:'Como votar', think:'Pensa primeiro', stake:'O que está em jogo'},
+    high:'Excelente — sabes porque o teu voto conta.', mid:'Muito bem. O teu voto, a tua voz.', low:'Bom começo — joga de novo para subir.' },
+
+  pl:{ tag:'Jersey · dlaczego twój głos się liczy', score:'Punkty', streak:'Seria', best:'Rekord', bank:'Pula słów',
+    check:'Sprawdź', next:'Następne zdanie →', result:'Zobacz wynik →', hint:'Podpowiedź −25', skip:'Pomiń',
+    fill:'Najpierw wypełnij wszystkie pola — dotknij słów.',
+    green:(n,t)=>`Zielone słowa są na właściwym miejscu — ${n} z ${t}. Przesuń resztę.`,
+    clean:(g,s)=>`Doskonale! Bez błędu +${g}`+(s>1?` · seria ×${s}`:''), correct:(g)=>`Dobrze +${g}`,
+    did:'Czy wiesz, że?', eg:'Prawdziwy przykład', lvl:'Poziom', hintPlaced:'Podpowiedź — jedno słowo ustawione.', complete:'Wygląda na gotowe — naciśnij Sprawdź.',
+    resultLabel:'Wynik', bestScore:'Najlepszy wynik', again:'Zagraj ponownie', install:'Zainstaluj grę',
+    footer:'Fakty z <a href="https://www.vote.je" target="_blank" rel="noopener">vote.je</a> · oficjalny przewodnik po wyborach na Jersey',
+    cats:{reason:'Po co głosować', system:'Jak działa Jersey', who:'Kto może głosować', choose:'Dokonaj wyboru', how:'Jak głosować', think:'Najpierw pomyśl', stake:'O co toczy się gra'},
+    high:'Wspaniale — wiesz, dlaczego twój głos się liczy.', mid:'Dobra robota. Twój głos, twój wpływ.', low:'Dobry początek — zagraj jeszcze raz.' },
+
+  ro:{ tag:'Jersey · de ce contează votul tău', score:'Puncte', streak:'Serie', best:'Record', bank:'Banca de cuvinte',
+    check:'Verifică', next:'Propoziția următoare →', result:'Vezi rezultatul →', hint:'Indiciu −25', skip:'Sari',
+    fill:'Completează mai întâi toate spațiile — atinge cuvintele.',
+    green:(n,t)=>`Cuvintele verzi sunt la locul potrivit — ${n} din ${t}. Mută restul.`,
+    clean:(g,s)=>`Perfect! Fără greșeli +${g}`+(s>1?` · serie ×${s}`:''), correct:(g)=>`Corect +${g}`,
+    did:'Știai că?', eg:'Un exemplu real', lvl:'Nivel', hintPlaced:'Indiciu plasat — un cuvânt fixat.', complete:'Pare complet — apasă Verifică.',
+    resultLabel:'Rezultat', bestScore:'Cel mai bun scor', again:'Joacă din nou', install:'Instalează jocul',
+    footer:'Informații de la <a href="https://www.vote.je" target="_blank" rel="noopener">vote.je</a> · ghidul oficial al alegerilor din Jersey',
+    cats:{reason:'De ce să votezi', system:'Cum funcționează Jersey', who:'Cine poate vota', choose:'Fă o alegere', how:'Cum se votează', think:'Gândește întâi', stake:'Ce este în joc'},
+    high:'Excelent — știi de ce contează votul tău.', mid:'Bravo. Votul tău, vocea ta.', low:'Un început bun — joacă din nou.' },
+
+  bg:{ tag:'Джърси · защо твоят глас има значение', score:'Точки', streak:'Серия', best:'Рекорд', bank:'Банка с думи',
+    check:'Провери', next:'Следващо изречение →', result:'Виж резултата →', hint:'Подсказка −25', skip:'Пропусни',
+    fill:'Първо запълни всички полета — докосни думите.',
+    green:(n,t)=>`Зелените думи са на правилното място — ${n} от ${t}. Премести останалите.`,
+    clean:(g,s)=>`Отлично! Без грешки +${g}`+(s>1?` · серия ×${s}`:''), correct:(g)=>`Вярно +${g}`,
+    did:'Знаеш ли, че?', eg:'Реален пример', lvl:'Ниво', hintPlaced:'Подсказка — една дума е фиксирана.', complete:'Изглежда готово — натисни Провери.',
+    resultLabel:'Резултат', bestScore:'Най-добър резултат', again:'Играй отново', install:'Инсталирай играта',
+    footer:'Факти от <a href="https://www.vote.je" target="_blank" rel="noopener">vote.je</a> · официалният справочник за изборите в Джърси',
+    cats:{reason:'Защо да гласуваш', system:'Как работи Джърси', who:'Кой може да гласува', choose:'Направи избор', how:'Как се гласува', think:'Първо помисли', stake:'Какво е заложено'},
+    high:'Отлично — знаеш защо твоят глас има значение.', mid:'Браво. Твоят глас, твоето мнение.', low:'Добро начало — играй отново.' }
+};
+
+/* ===================== Puzzle data (per language) ===================== */
+const DATA = [
+  { cat:'reason', tr:{
+    en:{ w:["Your","vote","decides","who","represents","the","parish."], w2:["Every", "vote", "helps", "choose", "the", "people", "who", "will", "represent", "your", "parish."], f:'Jersey elects <b>12 Connétables</b> — one to represent each parish.', a:'In a 2013 referendum, islanders voted to keep the Connétables in the States Assembly.' },
+    pt:{ w:["O","teu","voto","decide","quem","representa","a","paróquia."], w2:["Cada", "voto", "ajuda", "a", "escolher", "as", "pessoas", "que", "vão", "representar", "a", "tua", "paróquia."], f:'Jersey elege <b>12 Connétables</b> — um para representar cada paróquia.', a:'Num referendo em 2013, os ilhéus votaram por manter os Connétables na Assembleia dos Estados.' },
+    pl:{ w:["Twój","głos","decyduje","kto","reprezentuje","twoją","parafię."], w2:["Każdy", "głos", "pomaga", "wybrać", "ludzi", "którzy", "będą", "reprezentować", "twoją", "parafię."], f:'Jersey wybiera <b>12 Connétables</b> — po jednym dla każdej parafii.', a:'W referendum w 2013 roku mieszkańcy zagłosowali za pozostawieniem Connétables w Zgromadzeniu Stanów.' },
+    ro:{ w:["Votul","tău","decide","cine","reprezintă","parohia","ta."], w2:["Fiecare", "vot", "ajută", "la", "alegerea", "celor", "care", "îți", "vor", "reprezenta", "parohia."], f:'Jersey alege <b>12 Connétables</b> — câte unul pentru fiecare parohie.', a:'Într-un referendum din 2013, locuitorii au votat pentru păstrarea Connétables în Adunarea Statelor.' },
+    bg:{ w:["Твоят","глас","решава","кой","представя","твоята","енория."], w2:["Всеки", "глас", "помага", "да", "изберем", "хората", "които", "ще", "представят", "твоята", "енория."], f:'Джърси избира <b>12 конетабли</b> — по един за всяка енория.', a:'На референдум през 2013 г. жителите гласуваха конетаблите да останат в Събранието.' } } },
+
+  { cat:'system', tr:{
+    en:{ w:["The","States","Assembly","makes","Jersey's","laws."], w2:["The", "States", "Assembly", "debates", "and", "passes", "nearly", "all", "of", "Jersey's", "laws."], f:'The <b>49-member</b> States Assembly debates and passes the island\'s laws.', a:'Jersey is a self-governing Crown Dependency — it is not part of the UK and makes most of its own laws.' },
+    pt:{ w:["A","Assembleia","dos","Estados","faz","as","leis."], w2:["A", "Assembleia", "dos", "Estados", "debate", "e", "aprova", "quase", "todas", "as", "leis", "de", "Jersey."], f:'A Assembleia dos Estados, com <b>49 membros</b>, aprova as leis da ilha.', a:'Jersey é uma Dependência da Coroa autónoma — não faz parte do Reino Unido e cria a maioria das suas próprias leis.' },
+    pl:{ w:["Zgromadzenie","Stanów","tworzy","prawo","na","Jersey."], w2:["Zgromadzenie", "Stanów", "debatuje", "i", "uchwala", "niemal", "wszystkie", "prawa", "wyspy", "Jersey."], f:'Liczące <b>49 osób</b> Zgromadzenie Stanów uchwala prawa wyspy.', a:'Jersey to samorządna Zależność Korony — nie należy do Wielkiej Brytanii i stanowi większość własnych praw.' },
+    ro:{ w:["Adunarea","Statelor","face","legile","din","Jersey."], w2:["Adunarea", "Statelor", "dezbate", "și", "adoptă", "aproape", "toate", "legile", "din", "Jersey."], f:'Adunarea Statelor, cu <b>49 de membri</b>, adoptă legile insulei.', a:'Jersey este o Dependență a Coroanei autonomă — nu face parte din Regatul Unit și își face majoritatea legilor.' },
+    bg:{ w:["Събранието","на","щатите","приема","законите","на","Джърси."], w2:["Събранието", "на", "щатите", "обсъжда", "и", "приема", "почти", "всички", "закони", "на", "Джърси."], f:'Събранието от <b>49 членове</b> приема законите на острова.', a:'Джърси е самоуправляваща се коронна зависимост — не е част от Обединеното кралство и сам приема повечето си закони.' } } },
+
+  { cat:'reason', tr:{
+    en:{ w:["Voting","is","your","voice","in","our","island."], w2:["Voting", "gives", "every", "islander", "a", "real", "voice", "in", "how", "we", "are", "governed."], f:'Voting is how islanders have a real say in decisions that affect them.', a:'Jersey’s election turnout is lower than in any OECD country, so every voice really does count.' },
+    pt:{ w:["Votar","é","a","tua","voz","na","ilha."], w2:["Votar", "dá", "a", "cada", "ilhéu", "uma", "voz", "real", "na", "forma", "como", "somos", "governados."], f:'Votar é a forma de os ilhéus terem voz nas decisões que os afetam.', a:'A participação nas eleições de Jersey é mais baixa do que em qualquer país da OCDE, por isso cada voz conta mesmo.' },
+    pl:{ w:["Głosowanie","to","twój","głos","na","naszej","wyspie."], w2:["Głosowanie", "daje", "każdemu", "mieszkańcowi", "realny", "głos", "w", "tym", "jak", "jesteśmy", "rządzeni."], f:'Dzięki głosowaniu mieszkańcy mają realny wpływ na decyzje.', a:'Frekwencja wyborcza na Jersey jest niższa niż w jakimkolwiek kraju OECD, więc każdy głos naprawdę się liczy.' },
+    ro:{ w:["Votul","este","vocea","ta","pe","insula","noastră."], w2:["Votul", "oferă", "fiecărui", "locuitor", "o", "voce", "reală", "în", "modul", "în", "care", "suntem", "guvernați."], f:'Prin vot, locuitorii au un cuvânt de spus în deciziile care îi privesc.', a:'Prezența la vot în Jersey este mai mică decât în orice țară OCDE, așa că fiecare voce chiar contează.' },
+    bg:{ w:["Гласуването","е","твоят","глас","на","нашия","остров."], w2:["Гласуването", "дава", "на", "всеки", "жител", "истински", "глас", "за", "това", "как", "сме", "управлявани."], f:'Чрез гласуване жителите имат думата при решенията.', a:'Избирателната активност в Джърси е по-ниска от тази във всяка страна от ОИСР, затова всеки глас наистина има значение.' } } },
+
+  { cat:'who', tr:{
+    en:{ w:["Islanders","aged","sixteen","and","over","can","vote."], w2:["Anyone", "living", "here", "who", "is", "sixteen", "or", "older", "is", "allowed", "to", "vote."], f:'Automatic registration means most people <b>aged 16+</b> are already on the roll.', a:'Jersey was one of the first places in the British Isles to let 16- and 17-year-olds vote.' },
+    pt:{ w:["Quem","tem","dezasseis","anos","ou","mais","vota."], w2:["Qualquer", "pessoa", "que", "viva", "aqui", "e", "tenha", "dezasseis", "anos", "ou", "mais", "pode", "votar."], f:'O registo automático inscreve quase todos a partir dos <b>16 anos</b>.', a:'Jersey foi um dos primeiros lugares nas Ilhas Britânicas a permitir que jovens de 16 e 17 anos votassem.' },
+    pl:{ w:["Głosować","mogą","mieszkańcy","od","szesnastego","roku","życia."], w2:["Każdy", "kto", "tu", "mieszka", "i", "ma", "szesnaście", "lat", "lub", "więcej", "może", "głosować."], f:'Automatyczna rejestracja obejmuje większość osób od <b>16 roku życia</b>.', a:'Jersey było jednym z pierwszych miejsc na Wyspach Brytyjskich, gdzie głosować mogą osoby w wieku 16 i 17 lat.' },
+    ro:{ w:["Locuitorii","de","la","șaisprezece","ani","pot","vota."], w2:["Oricine", "locuiește", "aici", "și", "are", "șaisprezece", "ani", "sau", "mai", "mult", "poate", "vota."], f:'Înregistrarea automată include majoritatea persoanelor de <b>peste 16 ani</b>.', a:'Jersey a fost unul dintre primele locuri din Insulele Britanice care a permis tinerilor de 16 și 17 ani să voteze.' },
+    bg:{ w:["Жителите","на","шестнайсет","и","повече","години","гласуват."], w2:["Всеки", "който", "живее", "тук", "и", "е", "на", "шестнайсет", "или", "повече", "може", "да", "гласува."], f:'Автоматичната регистрация обхваща повечето хора над <b>16 години</b>.', a:'Джърси беше едно от първите места на Британските острови, където могат да гласуват хора на 16 и 17 години.' } } },
+
+  { cat:'choose', tr:{
+    en:{ w:["Read","manifestos","to","choose","your","candidate","wisely."], w2:["Reading", "each", "candidate's", "manifesto", "carefully", "helps", "you", "choose", "the", "right", "person."], f:'Every candidate publishes a <b>manifesto</b> setting out what they plan to do.', a:'In 2022, 47% of candidates stood for a party — nearly double the 25% who did in 2018.' },
+    pt:{ w:["Lê","os","manifestos","para","escolheres","o","candidato."], w2:["Ler", "com", "atenção", "o", "manifesto", "de", "cada", "candidato", "ajuda-te", "a", "escolher", "bem."], f:'Cada candidato publica um <b>manifesto</b> com aquilo que pretende fazer.', a:'Em 2022, 47% dos candidatos concorreram por um partido — quase o dobro dos 25% de 2018.' },
+    pl:{ w:["Czytaj","manifesty","aby","mądrze","wybrać","swojego","kandydata."], w2:["Uważne", "czytanie", "manifestu", "każdego", "kandydata", "pomaga", "wybrać", "właściwą", "osobę."], f:'Każdy kandydat publikuje <b>manifest</b> z planami swoich działań.', a:'W 2022 roku 47% kandydatów startowało z ramienia partii — niemal dwa razy więcej niż 25% w 2018 roku.' },
+    ro:{ w:["Citește","manifestele","ca","să","alegi","candidatul","potrivit."], w2:["Citirea", "atentă", "a", "manifestului", "fiecărui", "candidat", "te", "ajută", "să", "alegi", "bine."], f:'Fiecare candidat publică un <b>manifest</b> cu ceea ce își propune.', a:'În 2022, 47% dintre candidați au candidat pentru un partid — aproape dublu față de 25% în 2018.' },
+    bg:{ w:["Чети","манифестите","за","да","избереш","правилния","кандидат."], w2:["Внимателното", "четене", "на", "манифеста", "на", "всеки", "кандидат", "помага", "да", "избереш", "правилно."], f:'Всеки кандидат публикува <b>манифест</b> с това, което планира.', a:'През 2022 г. 47% от кандидатите се явиха от партия — почти двойно повече от 25% през 2018 г.' } } },
+
+  { cat:'how', tr:{
+    en:{ w:["There","are","three","ways","to","vote","here."], w2:["There", "are", "three", "different", "ways", "that", "you", "can", "cast", "your", "vote", "here."], f:'You can vote at a <b>polling station</b>, by <b>post</b>, or early at <b>pre-poll</b>.', a:'Pre-poll voting stations open in the days before election day, so you need not wait for polling day itself.' },
+    pt:{ w:["Há","três","formas","de","votar","em","Jersey."], w2:["Existem", "três", "formas", "diferentes", "de", "poderes", "exercer", "o", "teu", "direito", "de", "voto."], f:'Podes votar numa <b>assembleia de voto</b>, por <b>correio</b> ou <b>antecipadamente</b>.', a:'As mesas de voto antecipado abrem nos dias antes das eleições, por isso não tens de esperar pelo dia da votação.' },
+    pl:{ w:["Są","trzy","sposoby","aby","zagłosować","na","Jersey."], w2:["Istnieją", "trzy", "różne", "sposoby", "na", "to", "aby", "oddać", "swój", "głos", "na", "Jersey."], f:'Możesz głosować <b>w lokalu</b>, <b>korespondencyjnie</b> lub <b>wcześniej</b>.', a:'Lokale do wcześniejszego głosowania otwierają się w dniach przed wyborami, więc nie musisz czekać na sam dzień głosowania.' },
+    ro:{ w:["Există","trei","moduri","de","a","vota","aici."], w2:["Există", "trei", "moduri", "diferite", "prin", "care", "îți", "poți", "exprima", "votul", "aici."], f:'Poți vota la <b>secție</b>, prin <b>poștă</b> sau <b>în avans</b>.', a:'Secțiile de vot anticipat se deschid în zilele dinaintea alegerilor, așa că nu trebuie să aștepți ziua votului.' },
+    bg:{ w:["Има","три","начина","да","гласуваш","в","Джърси."], w2:["Има", "три", "различни", "начина", "по", "които", "можеш", "да", "подадеш", "своя", "глас."], f:'Може да гласуваш в <b>секция</b>, по <b>пощата</b> или <b>предварително</b>.', a:'Секциите за предварително гласуване отварят в дните преди изборите, така че не е нужно да чакаш изборния ден.' } } },
+
+  { cat:'choose', tr:{
+    en:{ w:["Hustings","let","you","question","the","candidates","directly."], w2:["At", "hustings", "events", "you", "can", "meet", "the", "candidates", "and", "question", "them", "directly."], f:'At <b>hustings</b> you can meet candidates and put your questions to them.', a:'The word ‘hustings’ comes from the Old Norse ‘húsþing’, a house assembly — fitting for Jersey’s Norse roots.' },
+    pt:{ w:["Os","hustings","deixam-te","questionar","os","candidatos","diretamente."], w2:["Nos", "encontros", "de", "hustings", "podes", "conhecer", "os", "candidatos", "e", "questioná-los", "diretamente."], f:'Nos <b>hustings</b> podes conhecer os candidatos e fazer-lhes perguntas.', a:'A palavra ‘hustings’ vem do nórdico antigo ‘húsþing’, uma assembleia caseira — apropriado para as raízes nórdicas de Jersey.' },
+    pl:{ w:["Hustings","pozwalają","ci","zapytać","kandydatów","wprost","dziś."], w2:["Na", "spotkaniach", "hustings", "możesz", "poznać", "kandydatów", "i", "zadawać", "im", "pytania", "wprost."], f:'Na <b>hustings</b> spotkasz kandydatów i zadasz im pytania.', a:'Słowo ‘hustings’ pochodzi od staronordyckiego ‘húsþing’, zgromadzenia domowego — co pasuje do nordyckich korzeni Jersey.' },
+    ro:{ w:["Dezbaterile","îți","permit","să","întrebi","candidații","direct."], w2:["La", "întâlnirile", "hustings", "poți", "cunoaște", "candidații", "și", "le", "poți", "pune", "întrebări", "direct."], f:'La <b>dezbateri</b> poți cunoaște candidații și le poți pune întrebări.', a:'Cuvântul ‘hustings’ provine din nordica veche ‘húsþing’, o adunare casnică — potrivit pentru rădăcinile nordice ale insulei Jersey.' },
+    bg:{ w:["Дебатите","ти","позволяват","да","питаш","кандидатите","директно."], w2:["На", "събитията", "hustings", "можеш", "да", "срещнеш", "кандидатите", "и", "да", "ги", "питаш", "директно."], f:'На <b>дебатите</b> можеш да срещнеш кандидатите и да им зададеш въпроси.', a:'Думата ‘hustings’ идва от старонорвежкото ‘húsþing’ — домашно събрание, което подхожда на скандинавските корени на Джърси.' } } },
+
+  { cat:'reason', tr:{
+    en:{ w:["If","you","skip","voting","others","decide","instead."], w2:["If", "you", "do", "not", "vote", "then", "other", "people", "will", "decide", "for", "you."], f:'Low turnout means <b>fewer people</b> end up deciding for everyone.', a:'In recent elections about 53% of over-65s voted, but only 17% of under-35s did.' },
+    pt:{ w:["Se","não","votares","outros","decidem","por","ti."], w2:["Se", "não", "fores", "votar", "então", "serão", "outras", "pessoas", "a", "decidir", "por", "ti."], f:'Pouca participação significa <b>menos pessoas</b> a decidir por todos.', a:'Em eleições recentes, cerca de 53% dos maiores de 65 anos votaram, mas apenas 17% dos menores de 35.' },
+    pl:{ w:["Jeśli","nie","głosujesz","inni","decydują","za","ciebie."], w2:["Jeśli", "nie", "zagłosujesz", "to", "inni", "ludzie", "będą", "decydować", "za", "ciebie."], f:'Niska frekwencja oznacza, że decyduje <b>mniej osób</b>.', a:'W ostatnich wyborach głosowało około 53% osób po 65. roku życia, ale tylko 17% osób poniżej 35 lat.' },
+    ro:{ w:["Dacă","nu","votezi","alții","decid","pentru","tine."], w2:["Dacă", "nu", "mergi", "să", "votezi", "atunci", "alți", "oameni", "vor", "decide", "pentru", "tine."], f:'Prezența scăzută înseamnă că decid <b>mai puțini oameni</b>.', a:'La alegerile recente au votat circa 53% dintre cei peste 65 de ani, dar doar 17% dintre cei sub 35.' },
+    bg:{ w:["Ако","не","гласуваш","други","решават","вместо","теб."], w2:["Ако", "ти", "не", "гласуваш", "тогава", "други", "хора", "ще", "решават", "вместо", "теб."], f:'Ниската активност означава, че решават <b>по-малко хора</b>.', a:'На последните избори са гласували около 53% от хората над 65 години, но само 17% от тези под 35.' } } },
+
+  { cat:'stake', tr:{
+    en:{ w:["Schools","housing","and","health","depend","on","votes."], w2:["Schools,", "housing", "and", "health", "services", "all", "depend", "on", "the", "choices", "voters", "make."], f:'States Members vote on budgets for <b>schools, housing and health</b>.', a:'Each year States Members debate the island’s Budget, setting the money for schools, hospitals and homes.' },
+    pt:{ w:["Escolas","habitação","e","saúde","dependem","dos","votos."], w2:["As", "escolas,", "a", "habitação", "e", "a", "saúde", "dependem", "das", "escolhas", "dos", "eleitores."], f:'Os membros votam orçamentos para <b>escolas, habitação e saúde</b>.', a:'Todos os anos os membros debatem o Orçamento da ilha, definindo o dinheiro para escolas, hospitais e habitação.' },
+    pl:{ w:["Szkoły","mieszkania","i","zdrowie","zależą","od","głosów."], w2:["Szkoły,", "mieszkania", "i", "opieka", "zdrowotna", "zależą", "od", "wyborów", "dokonanych", "przez", "głosujących."], f:'Członkowie głosują nad budżetem na <b>szkoły, mieszkania i zdrowie</b>.', a:'Co roku członkowie Zgromadzenia debatują nad budżetem wyspy, ustalając środki na szkoły, szpitale i mieszkania.' },
+    ro:{ w:["Școlile","locuințele","și","sănătatea","depind","de","voturi."], w2:["Școlile,", "locuințele", "și", "sănătatea", "depind", "toate", "de", "alegerile", "pe", "care", "le", "fac", "votanții."], f:'Membrii votează bugete pentru <b>școli, locuințe și sănătate</b>.', a:'În fiecare an, membrii dezbat bugetul insulei, stabilind banii pentru școli, spitale și locuințe.' },
+    bg:{ w:["Училища","жилища","и","здраве","зависят","от","гласовете."], w2:["Училищата,", "жилищата", "и", "здравеопазването", "зависят", "от", "изборите", "които", "правят", "гласоподавателите."], f:'Членовете гласуват бюджети за <b>училища, жилища и здраве</b>.', a:'Всяка година членовете обсъждат бюджета на острова и определят парите за училища, болници и жилища.' } } },
+
+  { cat:'think', tr:{
+    en:{ w:["Stop","and","think","before","you","trust","everything."], w2:["Always", "stop", "and", "think", "carefully", "before", "you", "trust", "or", "share", "something", "online."], f:'The JEA\'s <b>\u2018Stop and Think\u2019</b> guidance warns about misleading election content.', a:'For 2026, election officials urged voters to ‘Stop and Think’ before believing or sharing online posts.' },
+    pt:{ w:["Para","e","pensa","antes","de","acreditares","tudo."], w2:["Para", "sempre", "e", "pensa", "com", "cuidado", "antes", "de", "acreditares", "ou", "partilhares", "algo", "online."], f:'A campanha <b>\u2018Para e Pensa\u2019</b> alerta para conteúdos eleitorais enganadores.', a:'Para 2026, os responsáveis eleitorais pediram aos eleitores para ‘Parar e Pensar’ antes de acreditarem ou partilharem publicações online.' },
+    pl:{ w:["Zatrzymaj","się","i","pomyśl","zanim","uwierzysz","wszystkiemu."], w2:["Zawsze", "zatrzymaj", "się", "i", "pomyśl", "zanim", "uwierzysz", "lub", "udostępnisz", "coś", "w", "sieci."], f:'Kampania <b>\u201EStop i Pomyśl\u201D</b> ostrzega przed mylącymi treściami.', a:'Na 2026 rok organizatorzy wyborów zachęcali wyborców, by ‘Zatrzymali się i pomyśleli’, zanim uwierzą lub udostępnią wpisy w sieci.' },
+    ro:{ w:["Oprește-te","și","gândește","înainte","să","crezi","totul."], w2:["Oprește-te", "mereu", "și", "gândește", "cu", "atenție", "înainte", "să", "crezi", "sau", "să", "distribui", "ceva."], f:'Campania <b>\u201EOprește-te și gândește\u201D</b> avertizează asupra informațiilor înșelătoare.', a:'Pentru 2026, organizatorii alegerilor au îndemnat alegătorii să se ‘Oprească și să gândească’ înainte de a crede sau distribui postări online.' },
+    bg:{ w:["Спри","и","помисли","преди","да","повярваш","всичко."], w2:["Винаги", "спирай", "и", "мисли", "внимателно", "преди", "да", "повярваш", "или", "споделиш", "нещо", "онлайн."], f:'Кампанията <b>\u201EСпри и помисли\u201C</b> предупреждава за подвеждащо съдържание.', a:'За 2026 г. изборните власти призоваха гласоподавателите да ‘Спрат и помислят’, преди да повярват или споделят онлайн публикации.' } } },
+
+  { cat:'reason', tr:{
+    en:{ w:["One","vote","can","change","a","close","election."], w2:["A", "single", "vote", "can", "sometimes", "change", "the", "result", "of", "a", "close", "election."], f:'Close races have been decided by just a <b>handful of votes</b>.', a:'In 2017 a tied seat in Virginia (USA) was decided by drawing a name from a bowl — settling control of the whole chamber.' },
+    pt:{ w:["Um","voto","pode","mudar","uma","eleição","renhida."], w2:["Um", "único", "voto", "pode", "por", "vezes", "mudar", "o", "resultado", "de", "uma", "eleição", "renhida."], f:'Eleições renhidas já foram decididas por um <b>punhado de votos</b>.', a:'Em 2017, um lugar empatado na Virgínia (EUA) foi decidido tirando um nome de uma taça — definindo o controlo de toda a câmara.' },
+    pl:{ w:["Jeden","głos","może","zmienić","wynik","bliskich","wyborów."], w2:["Pojedynczy", "głos", "potrafi", "czasem", "zmienić", "wynik", "bardzo", "wyrównanych", "wyborów."], f:'Wyrównane wybory rozstrzygała <b>garstka głosów</b>.', a:'W 2017 roku remisowy mandat w Wirginii (USA) rozstrzygnięto, losując nazwisko z misy — co przesądziło o kontroli nad całą izbą.' },
+    ro:{ w:["Un","vot","poate","schimba","o","alegere","strânsă."], w2:["Un", "singur", "vot", "poate", "uneori", "schimba", "rezultatul", "unei", "alegeri", "foarte", "strânse."], f:'Alegeri strânse au fost decise de o <b>mână de voturi</b>.', a:'În 2017, un loc la egalitate în Virginia (SUA) a fost decis prin extragerea unui nume dintr-un bol — stabilind controlul întregii camere.' },
+    bg:{ w:["Един","глас","може","да","промени","оспорван","вот."], w2:["Един", "единствен", "глас", "понякога", "може", "да", "промени", "изхода", "на", "оспорван", "вот."], f:'Оспорвани избори са решавани от <b>шепа гласове</b>.', a:'През 2017 г. равен резултат за място във Вирджиния (САЩ) бе решен с теглене на име от купа — което определи контрола над цялата камара.' } } },
+
+  { cat:'stake', tr:{
+    en:{ w:["Your","choice","helps","build","the","island's","future."], w2:["The", "choice", "you", "make", "today", "helps", "shape", "the", "island's", "future", "for", "everyone."], f:'<b>49 Members</b> are elected together to run the island for four years.', a:'The members elected in June 2026 will run the island until the next general election in 2030.' },
+    pt:{ w:["A","tua","escolha","ajuda","a","construir","o","futuro."], w2:["A", "escolha", "que", "fazes", "hoje", "ajuda", "a", "moldar", "o", "futuro", "da", "ilha."], f:'São eleitos <b>49 membros</b> para governar a ilha durante quatro anos.', a:'Os membros eleitos em junho de 2026 vão governar a ilha até às próximas eleições gerais, em 2030.' },
+    pl:{ w:["Twój","wybór","pomaga","budować","przyszłość","naszej","wyspy."], w2:["Wybór", "którego", "dokonasz", "dziś", "pomaga", "kształtować", "przyszłość", "wyspy", "dla", "wszystkich."], f:'Wybieranych jest <b>49 członków</b>, którzy rządzą wyspą przez cztery lata.', a:'Członkowie wybrani w czerwcu 2026 roku będą rządzić wyspą do następnych wyborów powszechnych w 2030 roku.' },
+    ro:{ w:["Alegerea","ta","ajută","să","construim","viitorul","insulei."], w2:["Alegerea", "pe", "care", "o", "faci", "azi", "ajută", "la", "modelarea", "viitorului", "insulei."], f:'Sunt aleși <b>49 de membri</b> care conduc insula timp de patru ani.', a:'Membrii aleși în iunie 2026 vor conduce insula până la următoarele alegeri generale, în 2030.' },
+    bg:{ w:["Твоят","избор","помага","да","градим","бъдещето","днес."], w2:["Изборът", "който", "правиш", "днес", "помага", "да", "оформим", "бъдещето", "на", "острова."], f:'Избират се <b>49 членове</b>, които управляват острова четири години.', a:'Членовете, избрани през юни 2026 г., ще управляват острова до следващите общи избори през 2030 г.' } } },
+
+  { cat:'system', tr:{
+    en:{ w:["Senators","represent","the","whole","island."], w2:["Nine", "senators", "are", "elected", "across", "the", "whole", "island", "to", "represent", "every", "parish."], f:'<b>9 Senators</b> are elected to represent the whole island.', a:'Senators were abolished in 2022, then brought back for the 2026 election just four years later.' },
+    pt:{ w:["Os","Senadores","representam","toda","a","ilha."], w2:["Nove", "senadores", "são", "eleitos", "em", "toda", "a", "ilha", "para", "representarem", "todas", "as", "paróquias."], f:'São eleitos <b>9 Senadores</b> para representar toda a ilha.', a:'Os Senadores foram abolidos em 2022 e voltaram para as eleições de 2026, apenas quatro anos depois.' },
+    pl:{ w:["Senatorowie","reprezentują","całą","naszą","wyspę."], w2:["Dziewięciu", "senatorów", "wybiera", "się", "na", "całej", "wyspie", "aby", "reprezentowali", "wszystkie", "parafie."], f:'Wybieranych jest <b>9 senatorów</b> reprezentujących całą wyspę.', a:'Senatorów zniesiono w 2022 roku, a przywrócono ich na wybory w 2026 roku, zaledwie cztery lata później.' },
+    ro:{ w:["Senatorii","reprezintă","întreaga","noastră","insulă."], w2:["Nouă", "senatori", "sunt", "aleși", "pe", "toată", "insula", "pentru", "a", "reprezenta", "fiecare", "parohie."], f:'Sunt aleși <b>9 senatori</b> care reprezintă întreaga insulă.', a:'Senatorii au fost desființați în 2022, apoi readuși pentru alegerile din 2026, doar patru ani mai târziu.' },
+    bg:{ w:["Сенаторите","представят","целия","ни","остров."], w2:["Девет", "сенатори", "се", "избират", "на", "целия", "остров", "за", "да", "представят", "всяка", "енория."], f:'Избират се <b>9 сенатори</b>, които представят целия остров.', a:'Сенаторите бяха премахнати през 2022 г. и върнати за изборите през 2026 г. — само четири години по-късно.' } } },
+
+  { cat:'system', tr:{
+    en:{ w:["Deputies","represent","your","local","constituency."], w2:["Deputies", "are", "elected", "to", "represent", "the", "local", "district", "where", "you", "live."], f:'<b>28 Deputies</b> represent constituencies; you vote for two to four.', a:'In 2022 a candidate could top the poll in some districts with fewer than 1,000 votes.' },
+    pt:{ w:["Os","Deputados","representam","a","tua","circunscrição."], w2:["Os", "Deputados", "são", "eleitos", "para", "representar", "o", "distrito", "local", "onde", "tu", "vives."], f:'<b>28 Deputados</b> representam as circunscrições; votas em dois a quatro.', a:'Em 2022, em alguns círculos um candidato podia ficar em primeiro com menos de 1000 votos.' },
+    pl:{ w:["Deputowani","reprezentują","twój","lokalny","okręg."], w2:["Deputowani", "są", "wybierani", "aby", "reprezentować", "lokalny", "okręg", "w", "którym", "mieszkasz."], f:'<b>28 deputowanych</b> reprezentuje okręgi; głosujesz na dwóch do czterech.', a:'W 2022 roku w niektórych okręgach kandydat mógł wygrać z wynikiem poniżej 1000 głosów.' },
+    ro:{ w:["Deputații","reprezintă","circumscripția","ta","locală."], w2:["Deputații", "sunt", "aleși", "pentru", "a", "reprezenta", "districtul", "local", "în", "care", "trăiești."], f:'<b>28 de deputați</b> reprezintă circumscripțiile; votezi între doi și patru.', a:'În 2022, în unele circumscripții un candidat putea ieși pe primul loc cu mai puțin de 1000 de voturi.' },
+    bg:{ w:["Депутатите","представят","твоя","местен","район."], w2:["Депутатите", "се", "избират", "за", "да", "представят", "местния", "район", "в", "който", "живееш."], f:'<b>28 депутати</b> представят районите; гласуваш за двама до четирима.', a:'През 2022 г. в някои райони кандидат можеше да оглави вота с под 1000 гласа.' } } },
+
+  { cat:'how', tr:{
+    en:{ w:["You","can","vote","early","by","post."], w2:["You", "can", "ask", "for", "a", "postal", "ballot", "and", "vote", "before", "election", "day."], f:'A <b>postal vote</b> lets you vote before election day.', a:'Postal ballots are sent out before election day, so you can vote even while away from the island.' },
+    pt:{ w:["Podes","votar","antecipadamente","por","correio."], w2:["Podes", "pedir", "um", "boletim", "de", "voto", "por", "correio", "e", "votar", "antes", "das", "eleições."], f:'O <b>voto por correio</b> permite votar antes do dia das eleições.', a:'Os boletins por correio são enviados antes do dia das eleições, por isso podes votar mesmo estando fora da ilha.' },
+    pl:{ w:["Możesz","zagłosować","wcześniej","drogą","pocztową."], w2:["Możesz", "poprosić", "o", "kartę", "do", "głosowania", "korespondencyjnego", "i", "zagłosować", "przed", "wyborami."], f:'<b>Głos korespondencyjny</b> pozwala zagłosować przed dniem wyborów.', a:'Karty do głosowania korespondencyjnego wysyłane są przed dniem wyborów, więc możesz głosować nawet będąc poza wyspą.' },
+    ro:{ w:["Poți","vota","din","timp","prin","poștă."], w2:["Poți", "cere", "un", "buletin", "de", "vot", "prin", "poștă", "și", "vota", "înainte", "de", "alegeri."], f:'<b>Votul prin poștă</b> îți permite să votezi înainte de ziua alegerilor.', a:'Buletinele prin poștă sunt trimise înainte de ziua alegerilor, așa că poți vota chiar și când ești plecat de pe insulă.' },
+    bg:{ w:["Можеш","да","гласуваш","предварително","по","пощата."], w2:["Можеш", "да", "поискаш", "бюлетина", "по", "пощата", "и", "да", "гласуваш", "преди", "изборите."], f:'<b>Гласуването по пощата</b> позволява да гласуваш преди изборния ден.', a:'Бюлетините по пощата се изпращат преди изборния ден, така че можеш да гласуваш дори когато си извън острова.' } } },
+
+  { cat:'who', tr:{
+    en:{ w:["You","need","not","be","British","to","vote."], w2:["You", "do", "not", "need", "to", "be", "British", "to", "register", "and", "vote", "here."], f:'You do <b>not</b> have to be a British citizen to register in Jersey.', a:'Many islanders from Jersey’s Portuguese, Polish and Romanian communities can vote once they have lived here long enough.' },
+    pt:{ w:["Não","precisas","de","ser","britânico","para","votar."], w2:["Não", "precisas", "de", "ser", "britânico", "para", "te", "recenseares", "e", "votares", "em", "Jersey."], f:'<b>Não</b> tens de ser cidadão britânico para te registares em Jersey.', a:'Muitos residentes das comunidades portuguesa, polaca e romena de Jersey podem votar depois de cá viverem tempo suficiente.' },
+    pl:{ w:["Nie","musisz","być","Brytyjczykiem","aby","głosować."], w2:["Nie", "musisz", "być", "Brytyjczykiem", "aby", "zarejestrować", "się", "i", "głosować", "na", "Jersey."], f:'<b>Nie</b> musisz być obywatelem brytyjskim, aby zarejestrować się na Jersey.', a:'Wielu mieszkańców ze społeczności portugalskiej, polskiej i rumuńskiej na Jersey może głosować, gdy mieszkają tu wystarczająco długo.' },
+    ro:{ w:["Nu","trebuie","să","fii","britanic","ca","să","votezi."], w2:["Nu", "trebuie", "să", "fii", "britanic", "ca", "să", "te", "înregistrezi", "și", "să", "votezi", "aici."], f:'<b>Nu</b> trebuie să fii cetățean britanic ca să te înregistrezi în Jersey.', a:'Mulți locuitori din comunitățile portugheză, poloneză și română din Jersey pot vota după ce locuiesc aici suficient de mult.' },
+    bg:{ w:["Не","трябва","да","си","британец","за","да","гласуваш."], w2:["Не", "е", "нужно", "да", "си", "британец", "за", "да", "се", "регистрираш", "и", "гласуваш."], f:'<b>Не</b> е нужно да си британски гражданин, за да се регистрираш в Джърси.', a:'Много жители от португалската, полската и румънската общност в Джърси могат да гласуват, след като живеят тук достатъчно дълго.' } } },
+
+  { cat:'choose', tr:{
+    en:{ w:["Choosing","none","rejects","every","listed","candidate."], w2:["If", "nobody", "stands", "against", "them", "you", "may", "still", "reject", "all", "the", "candidates."], f:'<b>\u2018None of the candidates\u2019</b> is a real option on the ballot paper.', a:'When an election is uncontested, Jersey voters can still tick ‘none of the candidates’ to reject them.' },
+    pt:{ w:["Escolher","nenhum","rejeita","todos","os","candidatos."], w2:["Se", "ninguém", "concorrer", "contra", "eles", "ainda", "podes", "rejeitar", "todos", "os", "candidatos."], f:'<b>\u2018Nenhum dos candidatos\u2019</b> é uma opção real no boletim de voto.', a:'Quando uma eleição não é disputada, os eleitores de Jersey ainda podem marcar ‘nenhum dos candidatos’ para os rejeitar.' },
+    pl:{ w:["Wybór","żadnego","odrzuca","wszystkich","zgłoszonych","kandydatów."], w2:["Jeśli", "nikt", "nie", "startuje", "przeciw", "nim", "i", "tak", "możesz", "odrzucić", "wszystkich", "kandydatów."], f:'<b>\u201EŻaden z kandydatów\u201D</b> to realna opcja na karcie do głosowania.', a:'Gdy w wyborach jest tylu kandydatów co miejsc, wyborcy na Jersey i tak mogą zaznaczyć ‘żaden z kandydatów’, by ich odrzucić.' },
+    ro:{ w:["Alegerea","niciunuia","respinge","toți","candidații","înscriși."], w2:["Dacă", "nimeni", "nu", "candidează", "împotriva", "lor", "poți", "totuși", "respinge", "toți", "candidații."], f:'<b>\u201ENiciunul dintre candidați\u201D</b> este o opțiune reală pe buletin.', a:'Când alegerile nu sunt disputate, alegătorii din Jersey pot bifa totuși ‘niciunul dintre candidați’ pentru a-i respinge.' },
+    bg:{ w:["Избор","на","никой","отхвърля","всички","кандидати."], w2:["Ако", "никой", "не", "се", "изправи", "срещу", "тях", "пак", "можеш", "да", "отхвърлиш", "всички", "кандидати."], f:'<b>\u201EНикой от кандидатите\u201C</b> е реална опция в бюлетината.', a:'Когато изборите са без конкуренция, гласоподавателите в Джърси все пак могат да отбележат ‘никой от кандидатите’, за да ги отхвърлят.' } } },
+
+  { cat:'think', tr:{
+    en:{ w:["Check","the","source","before","you","share."], w2:["Always", "check", "carefully", "who", "created", "something", "before", "you", "decide", "to", "share", "it."], f:'Look for an <b>imprint</b> showing who created the material.', a:'By law, printed election material must carry an ‘imprint’ naming who produced it.' },
+    pt:{ w:["Verifica","a","fonte","antes","de","partilhares."], w2:["Verifica", "sempre", "com", "cuidado", "quem", "criou", "algo", "antes", "de", "decidires", "partilhá-lo."], f:'Procura um <b>imprint</b> que mostre quem criou o material.', a:'Por lei, o material eleitoral impresso tem de incluir um ‘imprint’ que identifique quem o produziu.' },
+    pl:{ w:["Sprawdź","źródło","zanim","coś","dalej","udostępnisz."], w2:["Zawsze", "dokładnie", "sprawdzaj", "kto", "coś", "stworzył", "zanim", "zdecydujesz", "się", "to", "udostępnić."], f:'Szukaj <b>oznaczenia</b> wskazującego, kto stworzył materiał.', a:'Zgodnie z prawem drukowane materiały wyborcze muszą zawierać ‘oznaczenie’ wskazujące, kto je wykonał.' },
+    ro:{ w:["Verifică","sursa","înainte","să","distribui","ceva."], w2:["Verifică", "mereu", "cu", "atenție", "cine", "a", "creat", "ceva", "înainte", "să", "decizi", "să-l", "distribui."], f:'Caută un <b>imprint</b> care arată cine a creat materialul.', a:'Conform legii, materialele electorale tipărite trebuie să poarte un ‘imprint’ care arată cine le-a produs.' },
+    bg:{ w:["Провери","източника","преди","да","споделяш","нещо."], w2:["Винаги", "проверявай", "внимателно", "кой", "е", "създал", "нещо", "преди", "да", "решиш", "да", "го", "споделиш."], f:'Потърси <b>обозначение</b>, което показва кой е създал съдържанието.', a:'По закон печатните предизборни материали трябва да носят ‘обозначение’ кой ги е създал.' } } },
+
+  { cat:'stake', tr:{
+    en:{ w:["States","Members","choose","the","Chief","Minister."], w2:["After", "the", "election", "States", "Members", "meet", "to", "choose", "the", "new", "Chief", "Minister."], f:'The new Assembly meets to choose Jersey\'s <b>Chief Minister</b>.', a:'After the 2022 election, States Members chose Kristina Moore as Chief Minister, beating Sam Mézec by 39 votes to 10.' },
+    pt:{ w:["Os","membros","escolhem","o","Ministro-Chefe."], w2:["Depois", "das", "eleições", "os", "membros", "reúnem-se", "para", "escolher", "o", "novo", "Ministro-Chefe."], f:'A nova Assembleia reúne-se para escolher o <b>Ministro-Chefe</b> de Jersey.', a:'Após as eleições de 2022, os membros escolheram Kristina Moore como Ministra-Chefe, batendo Sam Mézec por 39 votos a 10.' },
+    pl:{ w:["Członkowie","Zgromadzenia","wybierają","Głównego","Ministra."], w2:["Po", "wyborach", "członkowie", "Zgromadzenia", "spotykają", "się", "by", "wybrać", "nowego", "Głównego", "Ministra."], f:'Nowe Zgromadzenie wybiera <b>Głównego Ministra</b> Jersey.', a:'Po wyborach w 2022 roku członkowie Zgromadzenia wybrali Kristinę Moore na Główną Minister, pokonując Sama Mézeca 39 głosami do 10.' },
+    ro:{ w:["Membrii","Adunării","aleg","apoi","Ministrul-Șef."], w2:["După", "alegeri", "membrii", "Adunării", "se", "reunesc", "pentru", "a", "alege", "noul", "Ministru-Șef."], f:'Noua Adunare se reunește pentru a alege <b>Ministrul-Șef</b> al insulei.', a:'După alegerile din 2022, membrii au ales-o pe Kristina Moore drept Ministru-Șef, învingându-l pe Sam Mézec cu 39 de voturi la 10.' },
+    bg:{ w:["Членовете","на","Събранието","избират","главен","министър."], w2:["След", "изборите", "членовете", "се", "събират", "за", "да", "изберат", "новия", "главен", "министър."], f:'Новото Събрание избира <b>главния министър</b> на Джърси.', a:'След изборите през 2022 г. членовете избраха Кристина Мур за главен министър, побеждавайки Сам Мезек с 39 на 10 гласа.' } } },
+
+  { cat:'reason', tr:{
+    en:{ w:["Elections","happen","here","every","four","years."], w2:["A", "general", "election", "is", "held", "right", "across", "the", "island", "every", "four", "years."], f:'Island-wide elections are held <b>every four years</b>.', a:'The 2026 election was Jersey’s first in recent history held on a Sunday instead of the usual Wednesday.' },
+    pt:{ w:["As","eleições","realizam-se","a","cada","quatro","anos."], w2:["Uma", "eleição", "geral", "realiza-se", "em", "toda", "a", "ilha", "a", "cada", "quatro", "anos."], f:'As eleições para toda a ilha realizam-se <b>de quatro em quatro anos</b>.', a:'As eleições de 2026 foram, em história recente, as primeiras de Jersey realizadas num domingo em vez da habitual quarta-feira.' },
+    pl:{ w:["Wybory","odbywają","się","tu","co","cztery","lata."], w2:["Wybory", "powszechne", "odbywają", "się", "na", "całej", "wyspie", "co", "cztery", "lata."], f:'Wybory na całej wyspie odbywają się <b>co cztery lata</b>.', a:'Wybory w 2026 roku były, w najnowszej historii, pierwszymi na Jersey przeprowadzonymi w niedzielę zamiast zwyczajowej środy.' },
+    ro:{ w:["Alegerile","au","loc","aici","la","patru","ani."], w2:["Alegerile", "generale", "au", "loc", "pe", "toată", "insula", "o", "dată", "la", "patru", "ani."], f:'Alegerile pentru toată insula au loc <b>o dată la patru ani</b>.', a:'Alegerile din 2026 au fost, în istoria recentă, primele din Jersey ținute duminica în loc de obișnuita zi de miercuri.' },
+    bg:{ w:["Изборите","се","провеждат","тук","на","четири","години."], w2:["Общи", "избори", "се", "провеждат", "на", "целия", "остров", "на", "всеки", "четири", "години."], f:'Изборите за целия остров се провеждат <b>на всеки четири години</b>.', a:'Изборите през 2026 г. бяха, в новата история, първите в Джърси, проведени в неделя вместо в обичайната сряда.' } } }
+];
+
+/* ===================== Safe storage ===================== */
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+
+/* ===================== State ===================== */
+const CORRECT_BASE=100, WRONG_PENALTY=15, HINT_COST=25, STREAK_BONUS=25;
+let lang = store.get('vw_lang');
+if(!lang){ const n=(navigator.language||'en').slice(0,2).toLowerCase(); lang = ['pt','pl','ro','bg'].includes(n)?n:'en'; }
+let level=parseInt(store.get('vw_level')||'1',10); if(level!==2) level=1;
+let idx=0, score=0, streak=0, curWords=[];
+let best=parseInt(store.get('vw_best')||'0',10)||0;
+let slots=[], bank=[], mistakes=0, hintsUsed=0, solved=false;
+
+const $=(id)=>document.getElementById(id);
+
+/* ===================== Static labels ===================== */
+function applyUI(){
+  const u=UI[lang];
+  document.documentElement.lang=lang;
+  $('tag').textContent=u.tag;
+  $('kScore').textContent=u.score; $('kStreak').textContent=u.streak; $('kBest').textContent=u.best;
+  if($('bankLabel')) $('bankLabel').textContent=u.bank;
+  if($('foot')) $('foot').innerHTML=u.footer;
+  if($('lang')) $('lang').value=lang;
+  if($('lvlcap')) $('lvlcap').textContent=u.lvl;
+  if($('lv1')) $('lv1').classList.toggle('on', level===1);
+  if($('lv2')) $('lv2').classList.toggle('on', level===2);
+  $('install').textContent=u.install;
+  if($('hint')) $('hint').textContent=u.hint;
+  if($('skip')) $('skip').textContent=u.skip;
+  if($('check') && !solved) $('check').textContent=u.check;
+}
+
+/* ===================== Round setup ===================== */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function loadRound(){
+  const p=DATA[idx].tr[lang];
+  const words=(level===2 && p.w2)?p.w2:p.w;
+  curWords=words;
+  mistakes=0; hintsUsed=0; solved=false;
+  $('cat').textContent=UI[lang].cats[DATA[idx].cat];
+  $('prog').textContent=String(idx+1).padStart(2,'0')+' / '+DATA.length;
+  $('feedback').textContent=''; $('feedback').className='feedback';
+  $('fact').className='fact'; $('fact').innerHTML='';
+  $('stamp').classList.remove('go');
+  $('check').disabled=false; $('hint').disabled=false; $('skip').disabled=false;
+
+  const last=words.length-1;
+  slots=words.map((w,i)=>{ const locked=(i===0||i===last); return {locked, word:locked?w:null, tileId:null, eval:null}; });
+  let middle=words.map((w,i)=>({w,i})).filter(o=>o.i!==0 && o.i!==last);
+  let order; do{ order=shuffle(middle.slice()); } while(middle.length>1 && order.map(o=>o.i).join(',')===middle.map(o=>o.i).join(','));
+  bank=order.map((o,k)=>({id:k, word:o.w, spent:false}));
+
+  applyUI();
+  render();
+}
+
+/* ===================== Render ===================== */
+function render(){
+  const line=$('line'); line.innerHTML='';
+  slots.forEach((s,i)=>{
+    const el=document.createElement(s.locked?'span':'button');
+    let cls='slot';
+    if(s.locked) cls+=' locked';
+    else if(s.eval==='right') cls+=' right';
+    else if(s.eval==='wrong') cls+=' wrong';
+    else if(s.word) cls+=' filled';
+    el.className=cls; el.textContent=s.word||'';
+    if(!s.locked){ el.type='button'; el.addEventListener('click',()=>removeFromSlot(i)); }
+    line.appendChild(el);
+  });
+  const bk=$('bank'); bk.innerHTML='';
+  bank.forEach(t=>{
+    const el=document.createElement('button');
+    el.type='button'; el.className='tile'+(t.spent?' spent':''); el.textContent=t.word; el.disabled=t.spent;
+    el.addEventListener('click',()=>placeTile(t.id));
+    bk.appendChild(el);
+  });
+}
+function clearEvals(){ slots.forEach(s=>{ if(!s.locked) s.eval=null; }); }
+
+function placeTile(id){
+  if(solved) return;
+  const t=bank.find(b=>b.id===id); if(!t||t.spent) return;
+  const slot=slots.find(s=>!s.locked && !s.word); if(!slot) return;
+  slot.word=t.word; slot.tileId=id; t.spent=true; clearEvals();
+  $('feedback').textContent=''; $('feedback').className='feedback';
+  render();
+}
+function removeFromSlot(i){
+  if(solved) return;
+  const s=slots[i]; if(s.locked||!s.word) return;
+  const t=bank.find(b=>b.id===s.tileId); if(t) t.spent=false;
+  s.word=null; s.tileId=null; clearEvals(); render();
+}
+
+/* ===================== Scoring ===================== */
+function setScore(n){ score=Math.max(0,n); $('score').textContent=score;
+  if(score>best){ best=score; $('best').textContent=best; store.set('vw_best',String(best)); } }
+function flyPoints(n){ const el=$('pts'); el.textContent=(n>=0?'+':'')+n; el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
+
+/* ===================== Check ===================== */
+function check(){
+  if(solved) return;
+  const u=UI[lang];
+  if(slots.some(s=>!s.word)){ $('feedback').textContent=u.fill; $('feedback').className='feedback bad'; return; }
+  const want=curWords;
+  const target=want.join(' ').toLowerCase();
+  const attempt=slots.map(s=>s.word).join(' ').toLowerCase();
+
+  if(attempt===target){
+    solved=true;
+    const clean=(mistakes===0 && hintsUsed===0);
+    let gained=CORRECT_BASE;
+    if(clean){ streak++; gained+=streak*STREAK_BONUS; } else { streak=0; }
+    $('streak').textContent=streak;
+    setScore(score+gained); flyPoints(gained);
+    $('feedback').className='feedback good';
+    $('feedback').textContent = clean ? u.clean(gained,streak) : u.correct(gained);
+    $('fact').innerHTML='<b>'+u.did+'</b> '+DATA[idx].tr[lang].f+'<div class=\"anec\"><span>'+u.eg+'</span> '+DATA[idx].tr[lang].a+'</div>'; $('fact').classList.add('show');
+    const st=$('stamp'); st.classList.remove('go'); void st.offsetWidth; st.classList.add('go');
+    $('hint').disabled=true; $('skip').disabled=true;
+    $('check').textContent=(idx<DATA.length-1)?u.next:u.result; $('check').disabled=false;
+  } else {
+    let inPlace=0, total=0;
+    slots.forEach((s,i)=>{ if(s.locked) return; total++; if(s.word===want[i]){ s.eval='right'; inPlace++; } else s.eval='wrong'; });
+    render();
+    mistakes++; streak=0; $('streak').textContent=streak;
+    setScore(score-WRONG_PENALTY); flyPoints(-WRONG_PENALTY);
+    $('feedback').className='feedback bad'; $('feedback').textContent=u.green(inPlace,total);
+    $('ballot').classList.remove('shake'); void $('ballot').offsetWidth; $('ballot').classList.add('shake');
+  }
+}
+
+/* ===================== Hint ===================== */
+function hint(){
+  if(solved) return;
+  const want=curWords;
+  for(let i=0;i<slots.length;i++){
+    if(slots[i].locked) continue;
+    if(slots[i].word!==want[i]){
+      if(slots[i].word){ const t=bank.find(b=>b.id===slots[i].tileId); if(t) t.spent=false; slots[i].word=null; slots[i].tileId=null; }
+      const src=slots.find((s,j)=>!s.locked && s.word===want[i] && j!==i);
+      if(src){ const tt=bank.find(b=>b.id===src.tileId); if(tt) tt.spent=false; src.word=null; src.tileId=null; }
+      const free=bank.find(b=>b.word===want[i] && !b.spent);
+      if(free){ free.spent=true; slots[i].word=want[i]; slots[i].tileId=free.id; }
+      hintsUsed++; setScore(score-HINT_COST); flyPoints(-HINT_COST); clearEvals();
+      $('feedback').className='feedback'; $('feedback').textContent=UI[lang].hintPlaced; render(); return;
+    }
+  }
+  $('feedback').textContent=UI[lang].complete;
+}
+
+/* ===================== Flow ===================== */
+function next(){ if(idx<DATA.length-1){ idx++; loadRound(); window.scrollTo({top:0,behavior:'smooth'}); } else finish(); }
+function skip(){ if(solved) return; streak=0; $('streak').textContent=streak; next(); }
+
+function finish(){
+  const u=UI[lang];
+  const pct=Math.round((score/(DATA.length*CORRECT_BASE))*100);
+  const msg = pct>=85?u.high : pct>=55?u.mid : u.low;
+  $('ballot').innerHTML=
+    '<div class="done">'+
+    '<div class="eyebrow" style="justify-content:center">'+u.resultLabel+'</div>'+
+    '<div class="score-big">'+score+'</div>'+
+    '<h2>'+msg+'</h2>'+
+    '<p style="color:var(--slate);font-size:14px;margin:4px 0 16px">'+u.bestScore+': '+best+'</p>'+
+    '<button class="act primary" id="again" style="max-width:240px;margin:0 auto;flex:none;width:100%">'+u.again+'</button>'+
+    '</div>';
+  $('again').addEventListener('click',()=>{ idx=0; score=0; streak=0; setScore(0); $('streak').textContent=0; rebuildBallot(); loadRound(); });
+}
+
+function rebuildBallot(){
+  $('ballot').innerHTML=
+    '<div class="eyebrow"><span id="cat"></span><span class="n" id="prog"></span></div>'+
+    '<div class="line" id="line"></div>'+
+    '<div class="bank-label" id="bankLabel"></div>'+
+    '<div class="bank" id="bank"></div>'+
+    '<div class="controls">'+
+      '<button class="act primary" id="check"></button>'+
+      '<button class="act ghost" id="hint"></button>'+
+      '<button class="act ghost" id="skip"></button>'+
+    '</div>'+
+    '<p class="feedback" id="feedback" aria-live="polite"></p>'+
+    '<div class="fact" id="fact" aria-live="polite"></div>'+
+    '<div class="stamp" id="stamp" aria-hidden="true"><span>VOTED ✓</span></div>'+
+    '<div class="pts" id="pts" aria-hidden="true"></div>';
+  wireControls();
+}
+
+function wireControls(){
+  $('check').addEventListener('click',()=>{ solved?next():check(); });
+  $('hint').addEventListener('click',hint);
+  $('skip').addEventListener('click',skip);
+}
+
+function changeLevel(n){
+  if(level===n) return;
+  level=n; store.set('vw_level',String(n));
+  if(!$('line')){ idx=0; score=0; streak=0; setScore(0); $('streak').textContent=0; rebuildBallot(); }
+  loadRound();
+}
+
+function changeLang(v){
+  lang=v; store.set('vw_lang',lang); applyUI();
+  if(!$('line')){ idx=0; score=0; streak=0; setScore(0); $('streak').textContent=0; rebuildBallot(); }
+  loadRound();
+}
+
+/* ===================== Boot ===================== */
+$('lang').value=lang;
+$('lang').addEventListener('change',(e)=>changeLang(e.target.value));
+$('lv1').addEventListener('click',()=>changeLevel(1));
+$('lv2').addEventListener('click',()=>changeLevel(2));
+$('best').textContent=best;
+wireControls();
+applyUI();
+loadRound();
+
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{})); }
+let deferred;
+window.addEventListener('beforeinstallprompt',(e)=>{ e.preventDefault(); deferred=e; $('install').style.display='block'; });
+$('install').addEventListener('click',async()=>{ if(!deferred) return; deferred.prompt(); await deferred.userChoice; deferred=null; $('install').style.display='none'; });
+</script>
+</body>
+</html>

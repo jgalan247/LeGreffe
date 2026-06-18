@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Motion Builder — write a motion worth debating</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A; --gold-d:#B9781F;
+    --ink:#1E293B; --muted:#64748B; --tint:#EEF4F7; --line:#D8E3EA; --bg:#F6F9FB;
+    --white:#fff; --green:#15807A; --amber:#B9781F; --red:#A6492E;
+    --serif:Georgia,"Times New Roman",serif; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px}
+  header{background:var(--navy);color:#fff;padding:13px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .eyebrow{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px;margin-top:2px}
+  .counter{font-size:12px;background:rgba(255,255,255,.12);padding:5px 11px;border-radius:999px;white-space:nowrap}
+  .screen{display:none;padding:20px 0 44px}
+  .screen.show{display:block}
+  h1{font-family:var(--serif);color:var(--deep);font-size:27px;margin:0 0 10px;line-height:1.15}
+  h2{font-family:var(--serif);color:var(--deep);font-size:21px;margin:0 0 4px}
+  .stagetag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+  p.lede{font-size:15px;color:var(--ink);margin:0 0 14px}
+  .btn{border:0;border-radius:12px;padding:13px 18px;font-weight:700;font-size:15px;cursor:pointer;font-family:var(--sans)}
+  .btn.gold{background:var(--gold);color:var(--navy);box-shadow:0 2px 0 var(--gold-d)}
+  .btn.ghost{background:#fff;color:var(--deep);border:1.5px solid var(--line);text-align:left}
+  .btn.ghost:hover{border-color:var(--teal)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+  .card.tint{background:var(--tint);border:none}
+  .choice{width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;display:block}
+  .choice:hover{border-color:var(--teal)}
+  .choice .t{font-weight:700;color:var(--deep);font-size:15px}
+  .choice .d{font-size:12.5px;color:var(--muted);margin-top:3px}
+  /* progress dots */
+  .dots{display:flex;gap:5px;margin-top:10px}
+  .dots .d{flex:1;height:5px;border-radius:999px;background:rgba(255,255,255,.18)}
+  .dots .d.on{background:var(--gold)} .dots .d.done{background:var(--teal)}
+  /* live motion box */
+  .motionbox{background:var(--navy);color:#fff;border-radius:16px;padding:16px 18px;margin-bottom:14px;position:sticky;top:0;z-index:5}
+  .motionbox .lab{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+  .motionbox .m{font-family:var(--serif);font-size:18px;line-height:1.4}
+  .motionbox .m .hl{color:var(--gold);font-style:normal}
+  .motionbox .m .ghost{opacity:.4}
+  .motionbox .because{display:block;margin-top:7px;font-size:14px;opacity:.9}
+  /* teaching tip */
+  .tip{background:#FFF6E9;border:1px solid #F0D9B5;border-radius:12px;padding:11px 13px;margin-bottom:14px;font-size:13px;color:#7a5618}
+  .tip b{color:var(--gold-d)}
+  .opt{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+  .feedback{font-size:14px;border-radius:12px;padding:13px 15px;margin-top:14px}
+  .fb-good{background:#E7F1F0;color:var(--green)}
+  .fb-bad{background:#FBEEE6;color:var(--red)}
+  /* score checks */
+  .check{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+  .check:first-child{border-top:0}
+  .check .ic{flex:none;width:26px;height:26px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
+  .check .nm{font-weight:700;color:var(--deep);font-size:14px}
+  .check .ds{font-size:12.5px;color:var(--ink)}
+  .ba{display:flex;flex-direction:column;gap:8px}
+  .ba .b{background:#FBEEE6;border-radius:10px;padding:10px 12px;font-size:13px}
+  .ba .a{background:#E7F1F0;border-radius:10px;padding:10px 12px;font-size:13px}
+  .ba .tagx{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:2px}
+  .sides{display:flex;gap:10px;margin-top:6px}
+  .sides>div{flex:1;border-radius:10px;padding:10px 12px;font-size:13px}
+  .sides .for{background:#E7F1F0;color:var(--green)}
+  .sides .ag{background:#FBEEE6;color:var(--red)}
+  .reflect{background:var(--navy);color:#fff;border-radius:14px;padding:16px;margin-top:14px;font-size:14px}
+  .reflect b{color:var(--gold)}
+  .note{font-size:12px;color:var(--muted);margin-top:14px}
+  .row-btns{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .row-btns .btn{flex:1;min-width:140px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div style="flex:1"><div class="eyebrow">States Assembly of Jersey · Youth Assembly toolkit</div><div class="brand">Motion Builder</div>
+    <div class="dots" id="dots"></div></div>
+  <div class="counter" id="counter" style="display:none">Step 1 of 6</div>
+</div></header>
+
+<div class="wrap">
+  <!-- START -->
+  <div class="screen show" id="start">
+    <h1>Turn a feeling into a motion worth debating</h1>
+    <p class="lede">A debate can't begin without a good <b>motion</b>. A strong one is <b>clear</b>, <b>specific</b>, <b>arguable</b>, <b>actionable</b> and <b>neutral</b>. Pick something you care about — then build a vague gripe into a real motion in six steps, learning a debating skill at each one.</p>
+    <div id="picks"></div>
+    <p class="note">A Youth Assembly skill-builder. The goal isn't to win the argument — it's to write a motion the Assembly could actually debate and vote on.</p>
+  </div>
+
+  <!-- BUILD -->
+  <div class="screen" id="build">
+    <div class="motionbox"><div class="lab" id="mLab">Your motion so far</div><div class="m" id="mText">—</div></div>
+    <div id="buildBody"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="result"><div id="resultBody"></div>
+    <div class="row-btns"><button class="btn gold" data-action="restart">Build another motion 🔁</button></div>
+    <p class="note">In a real debate the proposer reads the motion as “This Assembly would…”. A motion you can argue <i>either</i> way is the sign you've done it right — try it in Steelman next.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  // 6 steps: diagnose, verb, specific, scope, neutral, rationale
+  var TOPICS=[
+    {
+      id:"hours", icon:"⏰", label:"School day length", gripe:"\u201CSchool days are way too long and stressful.\u201D",
+      diagnosis:[
+        {t:"It's too vague — no one could tell what would change",good:true,d:"Right: \u201Ctoo long\u201D and \u201Cstressful\u201D don't name an action."},
+        {t:"It's too detailed",good:false,d:"The opposite is true — it has no detail at all."},
+        {t:"Nothing — it's fine as a motion",good:false,d:"As written there's nothing specific to debate or vote on."}
+      ],
+      verb:[ {t:"trial",good:true,d:"A trial is easier to win support for — it invites evidence."},
+             {t:"abolish",good:false,d:"Strong verbs sound bold but make a motion harder to pass."} ],
+      specific:[ {t:"a 9.30am start",good:true,d:"A precise, checkable change."},
+                 {t:"a better timetable",good:false,d:"Still vague — \u201Cbetter\u201D means different things to everyone."} ],
+      scope:[ {t:"in Jersey secondary schools",good:true,d:"Clear who and where."},
+              {t:"everywhere, somehow",good:false,d:"Unbounded — impossible to debate or cost."} ],
+      neutral:[ {t:"keep it plain — no emotive words to cut",good:true,d:"It's already neutral once the gripe is gone."},
+                {t:"add \u201Cobviously\u201D for emphasis",good:false,d:"Loaded words turn a motion into a slogan."} ],
+      rationale:[ {t:"to support teenage wellbeing and focus",good:true,d:"A reason the Assembly can weigh — and oppose."},
+                  {t:"because mornings are the worst",good:false,d:"A feeling, not a reason others can engage with."} ],
+      forArg:"It could improve focus and wellbeing for tired teenagers.",
+      agArg:"It may clash with parents' working hours and bus timetables."
+    },
+    {
+      id:"phones", icon:"📵", label:"Phones in school", gripe:"\u201CPhones are ruining school and should be banned.\u201D",
+      diagnosis:[
+        {t:"It's a slogan — the wording tells you how to feel",good:true,d:"\u201CRuining\u201D is emotive; a motion should be neutral."},
+        {t:"It's too cautious",good:false,d:"It's the opposite — it's a strong, loaded claim."},
+        {t:"It already proposes a clear action",good:false,d:"\u201CBanned\u201D needs defining: where, when, for whom?"}
+      ],
+      verb:[ {t:"require",good:true,d:"\u201CRequire\u201D states a clear, enforceable rule."},
+             {t:"crush",good:false,d:"Emotive verbs belong in a speech, not a motion."} ],
+      specific:[ {t:"phones kept away during lessons",good:true,d:"A specific rule you can picture."},
+                 {t:"sorting out the phone problem",good:false,d:"Names no actual action."} ],
+      scope:[ {t:"in secondary lessons, not at break",good:true,d:"A fair, defined boundary."},
+              {t:"at all times, everywhere",good:false,d:"So broad it's hard to defend or pass."} ],
+      neutral:[ {t:"cut \u201Cruining\u201D — describe it plainly",good:true,d:"Now it can be argued either way."},
+                {t:"keep \u201Cruining\u201D — it's true",good:false,d:"Opinion-as-fact closes the debate down."} ],
+      rationale:[ {t:"to reduce distraction in class",good:true,d:"A reason that can be supported or challenged."},
+                  {t:"because phones are bad",good:false,d:"A blanket judgement, not an argument."} ],
+      forArg:"It could cut distraction and help concentration in lessons.",
+      agArg:"Phones are also learning and accessibility tools, so a blanket rule loses that."
+    },
+    {
+      id:"vote", icon:"🗳️", label:"Youth representation", gripe:"\u201CYoung people should obviously have way more of a say.\u201D",
+      diagnosis:[
+        {t:"It's a feeling, not an action — it says nothing the Assembly would do",good:true,d:"\u201CHave more of a say\u201D isn't something you can enact or count."},
+        {t:"It's far too specific",good:false,d:"It has no specifics at all."},
+        {t:"It's already neutral and balanced",good:false,d:"\u201CObviously\u201D pre-judges the answer."}
+      ],
+      verb:[ {t:"establish",good:true,d:"\u201CEstablish\u201D creates something concrete and lasting."},
+             {t:"demand",good:false,d:"\u201CDemand\u201D is confrontational — it loses waverers."} ],
+      specific:[ {t:"a standing Youth Assembly with a yearly slot to address Members",good:true,d:"A concrete body and mechanism."},
+                 {t:"more youth involvement generally",good:false,d:"Undefined — involvement in what?"} ],
+      scope:[ {t:"reporting to the States each year",good:true,d:"Defines how it connects to the Assembly."},
+              {t:"doing various things",good:false,d:"Vague — what things?"} ],
+      neutral:[ {t:"cut \u201Cobviously\u201D",good:true,d:"It assumes the answer; a motion must allow disagreement."},
+                {t:"keep \u201Cobviously\u201D for confidence",good:false,d:"It pre-judges the debate, so opponents can't engage fairly."} ],
+      rationale:[ {t:"to give young Islanders a formal route into decisions",good:true,d:"A clear, debatable purpose."},
+                  {t:"because adults don't listen",good:false,d:"An accusation, not a reason." } ],
+      forArg:"It gives young people a structured, lasting voice in decisions.",
+      agArg:"It has a running cost and may duplicate existing consultation routes."
+    },
+    {
+      id:"buses", icon:"🚌", label:"Public transport", gripe:"\u201CThe buses are rubbish and need sorting out.\u201D",
+      diagnosis:[
+        {t:"It's too vague — \u201Csorting out\u201D names no action",good:true,d:"Nobody could tell exactly what would change."},
+        {t:"It's too technical",good:false,d:"There's no detail at all, let alone technical detail."},
+        {t:"It's neutral and ready to debate",good:false,d:"\u201CRubbish\u201D is opinion-as-fact."}
+      ],
+      verb:[ {t:"increase",good:true,d:"A clear, measurable change in provision."},
+             {t:"revolutionise",good:false,d:"Grand verbs promise more than a motion can define."} ],
+      specific:[ {t:"evening and weekend services",good:true,d:"Specific and checkable."},
+                 {t:"the service in general",good:false,d:"Too loose to argue or cost."} ],
+      scope:[ {t:"on the main routes into St Helier",good:true,d:"Defines where."},
+              {t:"all over the place",good:false,d:"Unbounded."} ],
+      neutral:[ {t:"cut \u201Crubbish\u201D — describe the gap",good:true,d:"Neutral wording invites real debate."},
+                {t:"keep \u201Crubbish\u201D — everyone agrees",good:false,d:"If everyone agreed, there'd be no debate."} ],
+      rationale:[ {t:"to support people who work or study off-peak",good:true,d:"A concrete, weighable reason."},
+                  {t:"because the buses annoy me",good:false,d:"Personal annoyance isn't a policy reason."} ],
+      forArg:"It helps shift-workers and students who travel outside peak hours.",
+      agArg:"Extra services cost money and may run with few passengers."
+    },
+    {
+      id:"environment", icon:"🌱", label:"Environment", gripe:"\u201CJersey needs to take climate way more seriously.\u201D",
+      diagnosis:[
+        {t:"It's a feeling — it doesn't say what the Assembly would do",good:true,d:"\u201CTake it seriously\u201D can't be enacted or measured."},
+        {t:"It's overly precise",good:false,d:"It has no precision at all."},
+        {t:"It's ready to vote on",good:false,d:"There's no action to vote on yet."}
+      ],
+      verb:[ {t:"require",good:true,d:"Creates a clear obligation that can be checked."},
+             {t:"transform",good:false,d:"Sweeping verbs are hard to define or deliver."} ],
+      specific:[ {t:"new public buildings to include solar power",good:true,d:"A concrete, checkable measure."},
+                 {t:"greener choices somehow",good:false,d:"Undefined and unmeasurable."} ],
+      scope:[ {t:"on States-owned new builds from next year",good:true,d:"Clear what, where and when."},
+              {t:"on everything eventually",good:false,d:"Too broad to debate or cost."} ],
+      neutral:[ {t:"state it plainly, no emotive words",good:true,d:"Neutral wording keeps it debatable."},
+                {t:"add \u201Cbefore it's too late\u201D",good:false,d:"Alarmist phrasing makes it a slogan."} ],
+      rationale:[ {t:"to cut emissions and energy costs over time",good:true,d:"A reason others can weigh — including the cost."},
+                  {t:"because the planet is dying",good:false,d:"A slogan, not a debatable reason."} ],
+      forArg:"It cuts long-term emissions and energy bills on public buildings.",
+      agArg:"It raises upfront building costs that fall on the public purse."
+    },
+    {
+      id:"sport", icon:"⚽", label:"Sport & leisure", gripe:"\u201CThere's nothing for young people to do here.\u201D",
+      diagnosis:[
+        {t:"It's vague — it names no action and no specifics",good:true,d:"\u201CNothing to do\u201D is a complaint, not a proposal."},
+        {t:"It's too narrow",good:false,d:"It's extremely broad, not narrow."},
+        {t:"It already proposes something",good:false,d:"It proposes nothing concrete."}
+      ],
+      verb:[ {t:"fund",good:true,d:"Names a clear, deliverable commitment."},
+             {t:"sort",good:false,d:"\u201CSort\u201D is informal and undefined."} ],
+      specific:[ {t:"free evening access to sports halls for under-18s",good:true,d:"Specific, checkable provision."},
+                 {t:"more things for teenagers",good:false,d:"Vague — what things?"} ],
+      scope:[ {t:"at parish facilities, two evenings a week",good:true,d:"Clear where and when."},
+              {t:"around the island, sometimes",good:false,d:"Loose and unmeasurable."} ],
+      neutral:[ {t:"keep it factual",good:true,d:"No emotive words to remove."},
+                {t:"add \u201Cfinally\u201D to make a point",good:false,d:"Editorialising weakens a motion."} ],
+      rationale:[ {t:"to support young people's health and wellbeing",good:true,d:"A clear, weighable purpose."},
+                  {t:"because we're bored",good:false,d:"Boredom isn't a policy case."} ],
+      forArg:"It supports wellbeing and gives teenagers somewhere safe to go.",
+      agArg:"Opening and staffing facilities for free has a real cost to parishes."
+    }
+  ];
+
+  var STEP_KEYS=["diagnosis","verb","specific","scope","neutral","rationale"];
+  var STEP_META=[
+    {tag:"Step 1 · Diagnose", h:"What's wrong with this as a motion?", tip:"Every strong motion fixes a weakness in the vague version. Naming the flaw is the first skill.", lead:"Before building, work out what stops this being debatable."},
+    {tag:"Step 2 · Choose the verb", h:"What should the Assembly <i>do</i>?", tip:"The verb is the motion. <b>Trial, review, require, fund</b> commit differently — and a milder verb is often easier to pass.", lead:"Pick the action word that sets up a winnable debate."},
+    {tag:"Step 3 · Make it specific", h:"Pin down the change", tip:"Swap vague words (<i>better, more, improved</i>) for something you could actually check happened.", lead:"Turn the idea into a concrete, checkable change."},
+    {tag:"Step 4 · Set the scope", h:"Who, where, when?", tip:"An unbounded motion can't be debated or costed. Boundaries make it fair and real.", lead:"Define exactly who or where it applies to."},
+    {tag:"Step 5 · Keep it neutral", h:"Make it arguable, not a slogan", tip:"A motion should let people take <i>either</i> side. Emotive words tell people how to feel — cut them.", lead:"Remove loaded language so both sides can engage."},
+    {tag:"Step 6 · Add the reason", h:"Signal <i>why</i>", tip:"A motion implies an argument. A clear reason others can weigh — and challenge — makes it stronger.", lead:"Give the Assembly a reason it can debate."}
+  ];
+
+  var S={topic:null,step:0,picks:{},fb:null};
+  function $(id){return document.getElementById(id);}
+  function show(id){["start","build","result"].forEach(function(s){$(s).classList.toggle("show",s===id);});window.scrollTo(0,0);}
+
+  function renderPicks(){
+    var h="";
+    TOPICS.forEach(function(t){
+      h+='<button class="choice" data-action="pick" data-id="'+t.id+'"><div class="t">'+t.icon+'  '+t.label+'</div><div class="d">'+t.gripe+'</div></button>';
+    });
+    $("picks").innerHTML=h;
+  }
+  function renderDots(){
+    var h=""; for(var i=0;i<6;i++){h+='<div class="d '+(i<S.step?"done":(i===S.step?"on":""))+'"></div>';}
+    $("dots").innerHTML=h;
+  }
+
+  function chosen(key){ var i=S.picks[key]; return i!=null ? S.topic[key][i] : null; }
+  function motionHTML(){
+    var t=S.topic;
+    var verb=chosen("verb"), spec=chosen("specific"), scope=chosen("scope"), rat=chosen("rationale");
+    var v = verb ? verb.t : '<span class="ghost">…do…</span>';
+    var s = spec ? spec.t : (S.step>=2?'<span class="ghost">…what…</span>':'');
+    var sc = scope ? scope.t : (S.step>=3?'<span class="ghost">…for whom…</span>':'');
+    var txt='“This Assembly would <span class="hl">'+v+'</span>';
+    if(s) txt+=' <span class="hl">'+s+'</span>';
+    if(sc) txt+=' <span class="hl">'+sc+'</span>';
+    txt+='.';
+    if(rat) txt+='<span class="because"><span class="hl">'+cap(rat.t)+'</span>.</span>';
+    txt+='”';
+    return txt;
+  }
+  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+  function renderMotion(){ $("mText").innerHTML=motionHTML(); $("mLab").textContent = S.step===0?"The vague version":"Your motion so far"; if(S.step===0) $("mText").innerHTML='“'+S.topic.gripe.replace(/[\u201C\u201D]/g,"")+'” — let\'s fix it.'; }
+
+  function renderBuild(){
+    var t=S.topic, key=STEP_KEYS[S.step], meta=STEP_META[S.step];
+    $("counter").style.display="inline-block";
+    $("counter").textContent="Step "+(S.step+1)+" of 6";
+    renderDots(); renderMotion();
+    var fb = S.fb ? '<div class="feedback '+(S.fb.good?"fb-good":"fb-bad")+'">'+S.fb.txt+'</div>' : "";
+    var h='<div class="stagetag">'+meta.tag+'</div><h2>'+meta.h+'</h2>'+
+      '<div class="tip">💡 <b>Skill:</b> '+meta.tip+'</div>'+
+      '<p class="lede">'+meta.lead+'</p>'+fb+'<div class="opt">';
+    // shuffle option order so the strong one isn't always first; data-i keeps original index
+    var opts=t[key], order=opts.map(function(_,i){return i;});
+    for(var z=order.length-1;z>0;z--){var j=Math.floor(Math.random()*(z+1));var tmp=order[z];order[z]=order[j];order[j]=tmp;}
+    order.forEach(function(i){var o=opts[i];h+='<button class="btn ghost" data-action="choose" data-i="'+i+'"><div style="font-weight:700">'+o.t+'</div><div style="font-size:12px;color:var(--muted)">'+o.d+'</div></button>';});
+    h+='</div>';
+    $("buildBody").innerHTML=h;
+  }
+
+  function renderResult(){
+    var t=S.topic;
+    function ok(key){var c=chosen(key);return c&&c.good;}
+    var clear = ok("specific") && ok("diagnosis");
+    var checks=[
+      {nm:"Clear",ok:ok("diagnosis")&&ok("specific"),ds:(ok("diagnosis")&&ok("specific"))?"You diagnosed the flaw and made the change concrete.":"Naming the flaw and choosing a specific change make it clear."},
+      {nm:"Specific",ok:ok("specific"),ds:ok("specific")?"A checkable change, not a vague wish.":"Swap vague wording for something you could check happened."},
+      {nm:"Actionable",ok:ok("verb"),ds:ok("verb")?"A clear action verb the Assembly could enact.":"A precise verb (trial, require, fund) makes it enactable."},
+      {nm:"Bounded",ok:ok("scope"),ds:ok("scope")?"A defined scope — debatable and costable.":"Set who/where/when, or it can't be debated fairly."},
+      {nm:"Neutral",ok:ok("neutral"),ds:ok("neutral")?"No loaded words — both sides can engage.":"Emotive wording makes it a slogan, not a motion."},
+      {nm:"Reasoned",ok:ok("rationale"),ds:ok("rationale")?"A reason others can weigh and challenge.":"A debatable reason strengthens the motion."}
+    ];
+    var score=checks.filter(function(c){return c.ok;}).length;
+    // assemble final motion from best-effort picks
+    var v=chosen("verb"), s=chosen("specific"), sc=chosen("scope"), r=chosen("rationale");
+    var motion='“This Assembly would '+(v?v.t:"…")+' '+(s?s.t:"…")+' '+(sc?sc.t:"…")+'. '+(r?cap(r.t)+'.':'')+'”';
+    var h='<div class="stagetag">Your finished motion</div><div class="card tint"><div style="font-family:var(--serif);font-size:19px;color:var(--deep);line-height:1.4">'+motion+'</div></div>';
+    // before/after
+    h+='<div class="card"><div class="ba"><div><span class="tagx">Where you started</span><div class="b">'+t.gripe+'</div></div>'+
+       '<div><span class="tagx">Where you ended</span><div class="a">'+motion+'</div></div></div></div>';
+    // checks
+    h+='<div class="card">';
+    checks.forEach(function(c){h+='<div class="check"><div class="ic" style="background:'+(c.ok?"var(--green)":"var(--amber)")+'">'+(c.ok?"✓":"!")+'</div><div><div class="nm">'+c.nm+'</div><div class="ds">'+c.ds+'</div></div></div>';});
+    h+='</div>';
+    // proof it's debatable both ways
+    h+='<div class="card"><div style="font-weight:700;color:var(--deep);font-family:var(--serif);margin-bottom:8px">The real test: can it be argued both ways?</div>'+
+       '<div class="sides"><div class="for"><b>For:</b> '+t.forArg+'</div><div class="ag"><b>Against:</b> '+t.agArg+'</div></div>'+
+       '<div style="font-size:12px;color:var(--muted);margin-top:8px">If both sides have a fair case, you\'ve written a real motion.</div></div>';
+    var msg = score>=5 ? "That's a strong, debatable motion — clear, specific, actionable, bounded, neutral and reasoned."
+      : score>=3 ? "A workable motion with a couple of weak spots. Tighten those and it's debate-ready."
+      : "This would be hard to debate as it stands. Work each property and watch it come alive.";
+    h+='<div class="reflect"><b>'+score+' of 6.</b> '+msg+'<br><br>The hardest test is <b>neutral + arguable</b>: if no one could reasonably oppose your motion, there\'s no debate to be had. A motion you can argue <i>either</i> way is the goal. Take this one into <b>Steelman</b> and argue the side you didn\'t pick.</div>';
+    $("resultBody").innerHTML=h;
+    show("result");
+  }
+
+  document.addEventListener("click",function(e){
+    var el=e.target.closest("[data-action]"); if(!el)return;
+    var a=el.getAttribute("data-action"), i=el.getAttribute("data-i"), id=el.getAttribute("data-id");
+    if(a==="pick"){ S={topic:TOPICS.find(function(x){return x.id===id;}),step:0,picks:{},fb:null}; renderBuild(); show("build"); return; }
+    if(a==="choose"){
+      i=parseInt(i,10);
+      var key=STEP_KEYS[S.step], o=S.topic[key][i];
+      S.picks[key]=i;
+      if(S.step<5){
+        S.fb={good:o.good,txt:(o.good?"✓ Strong choice. ":"Weaker choice — ")+o.d};
+        S.step++; renderBuild();
+      } else { renderResult(); }
+      return;
+    }
+    if(a==="restart"){ renderPicks(); show("start"); $("counter").style.display="none"; $("dots").innerHTML=""; return; }
+  });
+
+  renderPicks();
+})();
+</script>
+</body>
+</html>

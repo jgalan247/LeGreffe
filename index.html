@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What's it to me? — a proposal for discussion · States Greffe Education &amp; Outreach</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A;
+    --ink:#1E293B; --muted:#64748B; --tint:#EEF4F7; --line:#D8E3EA;
+    --bg:#F6F9FB; --white:#fff; --rust:#A6492E;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.62;font-size:16px}
+  .wrap{max-width:920px;margin:0 auto;padding:0 22px}
+  .serif{font-family:var(--serif)}
+  a{color:var(--teal)}
+
+  /* sticky nav */
+  header.bar{position:sticky;top:0;z-index:50;background:rgba(18,38,58,.97);backdrop-filter:blur(6px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+  header.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:11px;padding-bottom:11px;flex-wrap:wrap}
+  .brand{font-family:var(--serif);font-weight:700;font-size:16px;white-space:nowrap}
+  .brand .eyebrow{display:block;color:var(--gold);font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase}
+  nav.menu{display:flex;gap:4px;flex-wrap:wrap}
+  nav.menu a{color:#CBD9E4;text-decoration:none;font-size:13px;font-weight:600;padding:6px 10px;border-radius:999px}
+  nav.menu a:hover{color:#fff;background:rgba(255,255,255,.10)}
+  nav.menu a.active{color:#fff;background:var(--teal)}
+
+  /* hero */
+  .hero{background:linear-gradient(165deg,var(--navy),var(--deep));color:#fff;padding:64px 0 56px}
+  .hero .kicker{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+  .hero h1{font-family:var(--serif);font-size:40px;line-height:1.14;margin:0 0 18px;max-width:760px;font-weight:700}
+  .hero p.lede{font-size:18px;color:#D6E4EE;max-width:720px;margin:0 0 14px}
+  .hero p.soft{font-size:14px;color:#9FB6C8;max-width:680px;margin:18px 0 0;font-style:italic}
+  .agenda{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+  .agenda a{background:rgba(255,255,255,.10);color:#fff;text-decoration:none;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600}
+  .agenda a:hover{background:rgba(255,255,255,.18)}
+
+  /* sections */
+  section{padding:54px 0;border-bottom:1px solid var(--line)}
+  section:nth-of-type(even){background:var(--white)}
+  .label{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+  h2{font-family:var(--serif);font-size:29px;line-height:1.2;color:var(--deep);margin:0 0 14px;font-weight:700}
+  h3{font-family:var(--serif);color:var(--deep);font-size:19px;margin:0 0 6px}
+  p{margin:0 0 16px;max-width:760px}
+  .muted{color:var(--muted)}
+  .small{font-size:14px}
+
+  /* generic cards */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card.tint{background:var(--tint);border-color:transparent}
+  .card h3{margin-bottom:8px}
+  .card p{font-size:14px;margin:0;color:var(--ink)}
+
+  /* stat cards */
+  .stat{background:var(--deep);color:#fff;border-radius:14px;padding:20px;text-align:center}
+  .stat .big{font-family:var(--serif);font-size:40px;font-weight:700;line-height:1}
+  .stat .sub{color:#CADCFC;font-size:13px;margin-top:8px;line-height:1.4}
+  .stat .src{color:var(--gold);font-size:11px;font-style:italic;margin-top:8px}
+
+  /* MyTurn note */
+  .note{display:flex;gap:14px;align-items:flex-start;background:var(--tint);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:16px 18px;margin:22px 0}
+  .note .tag{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+  .note p{margin:6px 0 0;font-size:15px}
+
+  /* numbered steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+  .step{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative}
+  .step .n{width:34px;height:34px;border-radius:999px;background:var(--deep);color:#fff;font-family:var(--serif);font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+
+  /* explainer mockup */
+  .mock{max-width:430px;margin:8px 0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 14px 34px rgba(18,38,58,.12)}
+  .mock .top{background:var(--navy);color:#fff;padding:16px 18px}
+  .mock .top .t{font-family:var(--serif);font-size:15px}
+  .mock .top .s{color:#9FB6C8;font-size:12px;margin-top:3px}
+  .mock .body{padding:16px 18px}
+  .mock .topic{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--gold);text-transform:uppercase}
+  .mock h4{font-family:var(--serif);color:var(--deep);font-size:17px;margin:5px 0 14px;line-height:1.3}
+  .mock .field{margin-bottom:12px}
+  .mock .field .lab{font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--gold);text-transform:uppercase;margin-bottom:2px}
+  .mock .field .val{font-size:14px;color:var(--ink)}
+  .mock .act{background:var(--navy);border-radius:12px;padding:12px 14px;margin-top:14px}
+  .mock .act .lab{font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+  .mock .act .row{display:flex;justify-content:space-between;align-items:center;color:#E5EEF4;font-size:13px;font-weight:600;padding:6px 0;border-top:1px solid rgba(255,255,255,.08)}
+  .mock .act .row:first-of-type{border-top:0}
+  .caption{font-size:13px;color:var(--muted);font-style:italic;margin-top:10px;max-width:430px}
+
+  /* workflow */
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:22px 0}
+  .flow .f{flex:1;min-width:130px;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+  .flow .f.gate{background:var(--tint);border-color:var(--gold)}
+  .flow .f .k{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+  .flow .f .d{font-size:13.5px;color:var(--ink)}
+  .flow .arrow{display:flex;align-items:center;color:var(--line);font-size:20px}
+
+  /* phases */
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+  .phase:first-of-type{border-top:0}
+  .phase .when{font-family:var(--serif);font-weight:700;color:var(--deep)}
+  .phase .when span{display:block;font-family:var(--sans);font-weight:600;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+  .phase .what h3{font-size:17px;margin-bottom:4px}
+  .phase .what p{font-size:14px;margin:0}
+
+  /* journey */
+  .journey{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0;align-items:stretch}
+  .leg{flex:1;min-width:150px;border-radius:12px;padding:14px;color:#fff}
+  .leg .age{font-size:11px;font-weight:700;letter-spacing:.5px;opacity:.85}
+  .leg h3{color:#fff;font-size:16px;margin:4px 0 4px}
+  .leg p{font-size:13px;margin:0;opacity:.92}
+  .leg .badge{display:inline-block;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 9px;margin-top:8px}
+
+  /* open questions */
+  ul.q{list-style:none;padding:0;margin:18px 0;max-width:760px}
+  ul.q li{background:var(--white);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:10px;font-size:15px}
+  ul.checks{margin:14px 0;padding-left:20px;max-width:760px}
+  ul.checks li{margin-bottom:7px;font-size:15px}
+
+  /* footnotes */
+  sup.fnref{font-size:11px;font-weight:700;line-height:0}
+  sup.fnref a{color:var(--teal);text-decoration:none}
+  .fn{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.5}
+  .fn ol{margin:0;padding-left:20px}
+  .fn li{margin-bottom:8px;max-width:820px}
+  .fn a{color:var(--teal)}
+
+  /* wider toolkit */
+  .toolkit{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}
+  a.tool{display:block;text-decoration:none;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:14px 16px;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+  a.tool:hover{border-color:var(--teal);box-shadow:0 6px 18px rgba(18,38,58,.08)}
+  a.tool .stage{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gold)}
+  a.tool .name{font-family:var(--serif);color:var(--deep);font-size:16px;margin:3px 0 3px}
+  a.tool .name .ext{font-family:var(--sans);font-size:12px;color:var(--teal);font-weight:600}
+  a.tool .seen{display:inline-block;font-size:10px;font-weight:700;background:var(--tint);color:var(--deep);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+  .tool.ph{opacity:.66;cursor:default}
+  .tool.ph:hover{border-color:var(--line);box-shadow:none}
+  .soon{display:inline-block;font-size:10px;font-weight:700;background:#FBEEE6;color:var(--rust);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+  a.tool p{font-size:13px;color:var(--muted);margin:0}
+  a.leg{text-decoration:none;display:block;transition:transform .15s,box-shadow .15s}
+  a.leg:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(18,38,58,.18)}
+  a.leg .open{font-size:11px;font-weight:700;opacity:.85;margin-top:8px}
+  .placeholder-note{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:6px}
+
+  footer{background:var(--navy);color:#9FB6C8;font-size:13px;padding:28px 0;text-align:center}
+  footer p{max-width:none;margin:4px 0}
+
+  @media(max-width:720px){
+    .hero h1{font-size:30px}
+    .grid3,.grid2,.steps,.journey{grid-template-columns:1fr;display:grid}
+    .phase{grid-template-columns:1fr;gap:4px}
+    nav.menu{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="brand"><span class="eyebrow">States Greffe · Education &amp; Outreach</span>What's it to me?</div>
+    <nav class="menu">
+      <a href="#overview">Overview</a>
+      <a href="#gap">The gap</a>
+      <a href="#idea">The idea</a>
+      <a href="#example">An example</a>
+      <a href="#planning">Planning</a>
+      <a href="#delivery">Delivery</a>
+      <a href="#discussion">Discussion</a>
+    </nav>
+  </div>
+</header>
+
+<!-- OVERVIEW -->
+<section id="overview" class="hero" style="border-bottom:none">
+  <div class="wrap">
+    <div class="kicker">A proposal for discussion</div>
+    <h1 class="serif">Bringing the Assembly's work to the Islanders it reaches least</h1>
+    <p class="lede">This is a starting point rather than a finished plan — an initiative I'd like to think through with you, and one I'd expect to change as we test it.</p>
+    <p class="lede">It builds directly on something you've already seen: <strong style="color:#fff">MyTurn</strong>, the civics trainer for young Islanders. The question this proposal opens is what comes <em>after</em> school — how the same habit of engagement carries through to the adults the Assembly currently reaches least.</p>
+    <div class="agenda">
+      <a href="#gap">1 · Where engagement falls away</a>
+      <a href="#idea">2 · The idea</a>
+      <a href="#example">3 · What it might look like</a>
+      <a href="#planning">4 · How I'd plan it</a>
+      <a href="#delivery">5 · Putting it into practice</a>
+      <a href="#discussion">6 · Knowing it works — and your steer</a>
+    </div>
+    <p class="soft">The figures here are illustrative and drawn from official sources (Vote.je, the States Assembly). I'd want to verify the assumptions with the team before committing to any of them.</p>
+  </div>
+</section>
+
+<!-- THE GAP -->
+<section id="gap">
+  <div class="wrap">
+    <div class="label">1 · The gap</div>
+    <h2>Where engagement tends to fall away</h2>
+    <p>It's worth being careful with the 2026 headline. Turnout was widely reported as having "fallen" from 41.6% to 32.4% — but that drop is largely arithmetic, not a collapse in interest. In raw numbers, <strong>more</strong> Islanders voted than in 2022, and the most in over a decade.<sup class="fnref"><a href="#fn1">1</a></sup></p>
+    <p>What changed is the measure. Automatic registration added roughly 25,000 names to the roll, so the same act of voting is now counted against a much larger electorate. The more useful reading is the opposite of the headline: auto-registration has, for the first time, put almost every eligible Islander on the register — which makes <em>visible</em> just how many are not yet taking part. That, rather than a falling percentage, is the engagement gap.</p>
+
+    <div class="grid3">
+      <div class="stat">
+        <div class="big">27,691</div>
+        <div class="sub">votes cast in June 2026 — about 2,200 more than in 2022, and the most in over a decade</div>
+        <div class="src">Policy Centre Jersey<sup class="fnref"><a href="#fn1">1</a></sup></div>
+      </div>
+      <div class="stat">
+        <div class="big">60,701&nbsp;→&nbsp;85,470</div>
+        <div class="sub">the electoral roll after automatic registration — the larger denominator, not falling participation, is why turnout "dropped" to 32.4%</div>
+        <div class="src">Policy Centre Jersey<sup class="fnref"><a href="#fn1">1</a></sup></div>
+      </div>
+      <div class="stat">
+        <div class="big">17% / 53%</div>
+        <div class="sub">turnout among under-35s against the over-65s in 2022 — the clearest sign of who isn't yet carried through to adult participation</div>
+        <div class="src">Policy Centre Jersey<sup class="fnref"><a href="#fn2">2</a></sup></div>
+      </div>
+    </div>
+
+    <p class="small">And the gap is patterned, not random. In 2022 turnout among <strong>tenants was 16%</strong> against <strong>41% for owner-occupiers</strong>, and in 2026 it ran from <strong>21.9% in St&nbsp;Helier to 52.6% in rural St&nbsp;Mary</strong>.<sup class="fnref"><a href="#fn2">2</a></sup> Renters, younger and English-as-an-additional-language Islanders — who vote least — tend to cluster in town. These are the people this initiative is for.</p>
+
+    <div class="note">
+      <div>
+        <div class="tag">Building on MyTurn</div>
+        <p>You've seen <strong>MyTurn</strong> working at the school-age end of this journey, and it's encouraging that it resonated. That success is also what frames the gap: if engagement is healthy in school but under-35 turnout sits at 17%, the open question is what happens once young people leave that environment — and how we keep the connection alive into adult life.</p>
+      </div>
+    </div>
+
+    <p class="muted small">Talking to people, I think we'd hear three things again and again — and they're worth testing rather than assuming:</p>
+    <div class="grid3">
+      <div class="card tint"><h3>"What's this got to do with me?"</h3><p>Assembly business can feel remote from housing, wages, schools and roads — the things people actually feel day to day.</p></div>
+      <div class="card tint"><h3>"Who can actually read this?"</h3><p>Propositions and debates are long and dense. The facts exist, but not always in a form most people will sit down and read.</p></div>
+      <div class="card tint"><h3>"Where would I even see it?"</h3><p>Engagement often waits on the website for people to come to it, rather than meeting them where they already are.</p></div>
+    </div>
+
+    <div class="fn">
+      <ol>
+        <li id="fn1">2026 turnout (provisional) 32.4% from 27,691 votes, against 41.6% from 25,264 votes in 2022 — about 2,200 more voters. Automatic registration increased the electoral roll from 60,701 to 85,470, which accounts for most of the percentage fall despite higher participation. Sources: <a href="https://www.policy.je/papers/2026-general-election/" target="_blank" rel="noopener">Policy Centre Jersey — 2026 General Election</a>; <a href="https://www.bailiwickexpress.com/news/did-jerseys-election-2026-voting-reforms-work-early-figures-paint-a-mixed-picture/" target="_blank" rel="noopener">Bailiwick Express</a>; <a href="https://channeleye.media/jersey-election-2026-sees-32-turnout-a-10-reduction-on-previous-election/" target="_blank" rel="noopener">Channel Eye</a>.</li>
+        <li id="fn2">Turnout by group: in 2022, under-35s 17% against over-65s 53%, and tenants 16% against owner-occupiers 41%; in 2026, St Helier 21.9% and St Mary 52.6% were the lowest and highest parish turnouts. Source: <a href="https://www.policy.je/papers/election-turnout-in-jersey/" target="_blank" rel="noopener">Policy Centre Jersey — Election turnout in Jersey</a>. Figures provisional pending official release by <a href="https://www.vote.je/" target="_blank" rel="noopener">Vote.je</a>.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- THE IDEA -->
+<section id="idea">
+  <div class="wrap">
+    <div class="label">2 · The idea</div>
+    <h2>A plain-language layer, rather than more content</h2>
+    <p>My instinct is not to create yet more material, but to <strong>translate what already exists</strong> into plain, personal terms, take it to where people are, and point them towards the action they can already take. The Assembly produces a great deal of good information; the difficulty is the form it arrives in. So the proposal is really about a thin layer on top of existing work, not a new stream of it.</p>
+
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Translate</h3><p>Turn live propositions into short "what this means for you" explainers — drafted with AI assistance, and always checked by a person for accuracy and impartiality.</p></div>
+      <div class="step"><div class="n">2</div><h3>Place</h3><p>Take them to where adults already are — workplaces, parish halls, community hubs and social feeds — in plain English and key community languages.</p></div>
+      <div class="step"><div class="n">3</div><h3>Activate</h3><p>End every explainer with a clear route into tools that already exist: sharing views with Scrutiny, signing or starting a petition, contacting a Member.</p></div>
+    </div>
+
+    <div class="note">
+      <div>
+        <div class="tag">The part I'd most want to get right</div>
+        <p>Impartiality. For the Greffe this isn't a feature, it's the whole basis of trust — so I'd build the process around a human sign-off: AI only ever drafts, an officer reviews and approves every word before anything is published, explainers <em>describe and attribute</em> rather than advocate, and each one links back to the official record. I'd genuinely welcome the panel's view on where that line should sit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLE -->
+<section id="example">
+  <div class="wrap">
+    <div class="label">3 · An example</div>
+    <h2>What one explainer might look like</h2>
+    <p>To make it concrete, here is a sketch of a single explainer on a real proposition — social housing rents and "rental stress" (P.29/2025). It is illustrative, and every word would be officer-checked before publishing.</p>
+
+    <div class="grid2" style="align-items:start">
+      <div>
+        <div class="mock">
+          <div class="top">
+            <div class="t">What's it to me?</div>
+            <div class="s">The Assembly, in plain language · EN / PT</div>
+          </div>
+          <div class="body">
+            <div class="topic">Housing</div>
+            <h4>Social housing rents: what's being decided?</h4>
+            <div class="field"><div class="lab">What's proposed</div><div class="val">From 2027, social housing rents would be set so they don't leave tenants in "rental stress" — paying over 30% of their income on rent.</div></div>
+            <div class="field"><div class="lab">The case for</div><div class="val">Supporters say it would protect lower-income tenants and could reduce money spent on income support.</div></div>
+            <div class="field"><div class="lab">The case to weigh</div><div class="val">Others note any change must stay financially sustainable for housing providers and Government, so costs need working out first.</div></div>
+            <div class="field"><div class="lab">Where it stands</div><div class="val">The Assembly agreed to review the policy. No change to rents has been made yet.</div></div>
+            <div class="act">
+              <div class="lab">What you can do</div>
+              <div class="row"><span>Share your views with Scrutiny</span><span>↗</span></div>
+              <div class="row"><span>Sign or start a petition</span><span>↗</span></div>
+              <div class="row"><span>Find and contact your Members</span><span>↗</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="caption">A sketch, not a live tool — shown to convey the format and tone. A fuller working <a href="whats-it-to-me.html" target="_blank" rel="noopener">prototype</a> exists if you'd like to explore it, but the proposal stands on the idea, not the build.</p>
+      </div>
+      <div>
+        <h3>Why this shape</h3>
+        <p class="small">It leads with the everyday question, not the proposition number. It gives <em>both</em> sides plainly and attributes them. It's honest about status — "no change has been made yet" — which matters for trust. And it closes on something a reader can actually do today.</p>
+        <h3 style="margin-top:18px">Why bilingual from the start</h3>
+        <p class="small">A meaningful share of the Islanders who vote least speak Portuguese or Polish at home. Offering explainers in key community languages isn't an add-on — it's much of the point. I'd want to confirm which languages to prioritise with the team and community partners.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANNING -->
+<section id="planning">
+  <div class="wrap">
+    <div class="label">4 · Planning</div>
+    <h2>How I'd approach planning it</h2>
+    <p>I'd rather start small and learn than launch broadly and hope. So my approach would be a contained pilot, designed from the outset to be evaluated, with the explicit option of stopping or reshaping it if the evidence doesn't support scaling.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Start with a pilot</h3>
+        <p>One topic that people clearly feel — housing is a natural candidate — in one parish, over roughly six to eight weeks. Small enough to run carefully, real enough to learn something true.</p>
+      </div>
+      <div class="card">
+        <h3>Work through partners</h3>
+        <p>The Greffe doesn't need to reach everyone directly. Parishes and Connétables, Scrutiny, employers, libraries and community-language groups already have the trust and the footfall — the role is to equip them.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:8px">Assumptions I'd want to test first</h3>
+    <ul class="checks">
+      <li>Whether a plain-language explainer actually changes how understood or able to act people feel — not just whether they read it.</li>
+      <li>Which channels genuinely reach the adults we're missing, rather than the already-engaged.</li>
+      <li>How much officer time the review-and-sign-off step realistically takes, at the pace propositions move.</li>
+      <li>Where the impartiality line sits in practice on a genuinely contested topic.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section id="delivery">
+  <div class="wrap">
+    <div class="label">5 · Delivery</div>
+    <h2>Putting it into practice</h2>
+    <p>If the pilot is encouraging, this is roughly how it could move from a single topic to something sustained — with a decision point built in, not assumed.</p>
+
+    <div class="phase">
+      <div class="when">Phase 1<span>weeks 1–8</span></div>
+      <div class="what"><h3>Pilot</h3><p>One topic, one parish. Draft, review and publish a small set of explainers; place them through partners; set a clear baseline to measure against.</p></div>
+    </div>
+    <div class="phase">
+      <div class="when">Phase 2<span>weeks 9–12</span></div>
+      <div class="what"><h3>Listen and evaluate</h3><p>Gather reach and feedback, talk to partners and readers, and be honest about what didn't work. Decide openly whether to continue, adjust or stop.</p></div>
+    </div>
+    <div class="phase">
+      <div class="when">Phase 3<span>if supported</span></div>
+      <div class="what"><h3>Decide and scale</h3><p>Extend to more topics, parishes and languages at a pace the sign-off process can sustain — keeping quality and impartiality ahead of volume.</p></div>
+    </div>
+
+    <h3 style="margin-top:26px">The sign-off workflow, as a process</h3>
+    <p class="small muted">The safeguard isn't a promise, it's a sequence — and the officer gate is the fixed point everything else serves.</p>
+    <div class="flow">
+      <div class="f"><div class="k">Source</div><div class="d">A live proposition on the official record</div></div>
+      <div class="arrow">→</div>
+      <div class="f"><div class="k">Draft</div><div class="d">AI assists with a plain-language first draft</div></div>
+      <div class="arrow">→</div>
+      <div class="f gate"><div class="k">Officer review</div><div class="d">Both sides shown · neutral wording · headline fair · source linked</div></div>
+      <div class="arrow">→</div>
+      <div class="f"><div class="k">Publish</div><div class="d">In English and key community languages</div></div>
+      <div class="arrow">→</div>
+      <div class="f"><div class="k">Activate</div><div class="d">Links to Scrutiny, petitions, Members</div></div>
+    </div>
+
+    <div class="grid2" style="margin-top:8px">
+      <div class="card tint"><h3>Cost</h3><p>Modest. The publishing layer is light and builds on tools and channels that largely exist; the real investment is officer time on review.</p></div>
+      <div class="card tint"><h3>Main risk</h3><p>An inaccurate or one-sided explainer would do real damage to trust. The review gate exists precisely to carry that risk — which is why it's never optional.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCUSSION -->
+<section id="discussion" style="border-bottom:none">
+  <div class="wrap">
+    <div class="label">6 · Discussion</div>
+    <h2>Knowing whether it works — and where I'd welcome your steer</h2>
+    <p>I'd want to be honest that engagement is hard to attribute, so I'd measure modestly and read the numbers with care rather than claim too much from them.</p>
+
+    <div class="grid3">
+      <div class="card"><h3>Reach</h3><p>How many people see an explainer, where, and in which language — broken down enough to tell whether we're reaching new people or the already-engaged.</p></div>
+      <div class="card"><h3>Action</h3><p>How often a reader follows through to a real step — a Scrutiny submission, a petition, an email to a Member — as a sign the "activate" part is landing.</p></div>
+      <div class="card"><h3>The long view</h3><p>A baseline against which to watch participation over time, held loosely — turnout has many causes, and this would only ever be one of them.</p></div>
+    </div>
+
+    <h3 style="margin-top:14px">The bigger picture this sits in</h3>
+    <p class="small">The ambition isn't a single tool but a continuous habit of engagement, from the classroom through to adult life. MyTurn already does real work at the young end; this proposal is about the adult end of the same journey.</p>
+    <div class="journey">
+      <div class="leg" style="background:var(--teal)"><div class="age">Primary · KS2</div><h3>Vote Stars</h3><p>First choices — the idea that decisions get made together.</p><div class="open">In progress</div></div>
+      <div class="leg" style="background:var(--deep)"><div class="age">Secondary · KS3–4</div><h3>MyTurn</h3><p>How the Assembly works, as a habit.<span class="badge">you've seen this ✓</span></p></div>
+      <a class="leg" style="background:#14807A" href="games/motion-builder.html" target="_blank" rel="noopener"><div class="age">Sixth form · 16+</div><h3>Having a say</h3><p>Debate, motions and first votes.</p><div class="open">Open ↗</div></a>
+      <a class="leg" style="background:var(--rust)" href="whats-it-to-me.html" target="_blank" rel="noopener"><div class="age">Adults · the gap</div><h3>What's it to me?</h3><p>Keeping the connection alive.<span class="badge">this proposal</span></p><div class="open">Open ↗</div></a>
+    </div>
+
+    <h3 style="margin-top:26px">The wider toolkit I've been prototyping</h3>
+    <p class="small">None of this has to be built from scratch. Alongside MyTurn, I've sketched a set of small, self-contained pieces that the journey above could draw on — each one a habit, a game or a tool aimed at a different stage. They're prototypes and starting points, not finished products, and I'd expect to keep, drop or rework them based on what we learn.</p>
+
+    <!-- Cards marked "coming soon" (Vote Stars, MyTurn, Pass the Law, Democracy Journey) are not in this collection yet; swap them to <a class="tool" href="..."> once hosted. -->
+    <div class="toolkit">
+      <div class="tool ph">
+        <div class="stage">Early years · KS2</div>
+        <div class="name">Vote Stars <span class="soon">coming soon</span></div>
+        <p>"Choosing together" — a first, playful sense that decisions get made as a group.</p>
+      </div>
+      <div class="tool ph">
+        <div class="stage">Secondary · KS3–4</div>
+        <div class="name">MyTurn <span class="seen">panel has seen this</span></div>
+        <p>A short, daily civics trainer — voting, the States, parishes, courts — built as a habit.</p>
+      </div>
+      <div class="tool ph">
+        <div class="stage">Secondary · role-play</div>
+        <div class="name">Pass the Law <span class="soon">coming soon</span></div>
+        <p>Guide a proposition through the real Jersey stages — lodge, support, amend, debate, vote.</p>
+      </div>
+      <a class="tool" href="games/youre-the-minister.html" target="_blank" rel="noopener">
+        <div class="stage">Secondary · role-play</div>
+        <div class="name">You're the Minister <span class="ext">↗</span></div>
+        <p>A budget game of trade-offs, Scrutiny and Assembly votes, from the executive side.</p>
+      </a>
+      <a class="tool" href="games/order-order.html" target="_blank" rel="noopener">
+        <div class="stage">Secondary · role-play</div>
+        <div class="name">Order, Order <span class="ext">↗</span></div>
+        <p>Chair a sitting as the presiding officer — points of order, relevance, the vote.</p>
+      </a>
+      <a class="tool" href="games/motion-builder.html" target="_blank" rel="noopener">
+        <div class="stage">Sixth form · debate</div>
+        <div class="name">Motion Builder <span class="ext">↗</span></div>
+        <p>Turn a vague frustration into a clear, debatable motion — a Youth Assembly warm-up.</p>
+      </a>
+      <a class="tool" href="games/steelman.html" target="_blank" rel="noopener">
+        <div class="stage">Sixth form · debate</div>
+        <div class="name">Steelman <span class="ext">↗</span></div>
+        <p>Build the strongest case for a side you may disagree with — listening before arguing.</p>
+      </a>
+      <a class="tool" href="vote-wordlet/" target="_blank" rel="noopener">
+        <div class="stage">Adults · everyday hook</div>
+        <div class="name">Vote Wordlet <span class="ext">↗</span></div>
+        <p>A short daily word game on why a vote matters — a light way to keep the topic present.</p>
+      </a>
+      <a class="tool" href="whats-it-to-me.html" target="_blank" rel="noopener">
+        <div class="stage">Adults · this proposal</div>
+        <div class="name">What's it to me? <span class="ext">↗</span></div>
+        <p>Plain-language explainers on live propositions — the working prototype behind this site.</p>
+      </a>
+      <div class="tool ph">
+        <div class="stage">The strategy on a page</div>
+        <div class="name">The Democracy Journey <span class="soon">coming soon</span></div>
+        <p>The KS2-to-35 voting-habit picture that ties these pieces into one throughline.</p>
+      </div>
+    </div>
+    <p class="placeholder-note">The live links open the prototypes that are published here. Pieces marked <em>coming soon</em> are built but not yet hosted in this collection — I'll add them as they go live.</p>
+
+    <h3 style="margin-top:26px">Questions I'd genuinely like to talk through with you</h3>
+    <ul class="q">
+      <li>Where would you draw the line between explaining a proposition and being seen to take a side?</li>
+      <li>Which topic, and which part of the Island, would be the most useful place to start?</li>
+      <li>Are there partners — parishes, employers, community groups — you'd reach for first?</li>
+      <li>What would make this feel like a success to you, twelve months in?</li>
+    </ul>
+    <p class="muted">None of this is fixed. I've brought a clear starting point on purpose, but the value is in shaping it together — so I'd rather end on these questions than on conclusions.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong style="color:#fff">"What's it to me?"</strong> — a proposal prepared for discussion</p>
+    <p>States Greffe · Education &amp; Outreach interview · figures illustrative and drawn from official sources, to be verified before use</p>
+  </div>
+</footer>
+
+<script>
+  // Lightweight scrollspy to keep the nav in step with the section in view.
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.menu a'));
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('active'); });
+        if(map[e.target.id]) map[e.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+</script>
+
+</body>
+</html>

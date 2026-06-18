@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>You're the Minister — a term in office</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A; --gold-d:#B9781F;
+    --ink:#1E293B; --muted:#64748B; --tint:#EEF4F7; --line:#D8E3EA; --bg:#F6F9FB;
+    --white:#fff; --green:#15807A; --red:#A6492E;
+    --serif:Georgia,"Times New Roman",serif; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px}
+  header{background:var(--navy);color:#fff;padding:13px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .eyebrow{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px;margin-top:2px}
+  .yearpill{background:var(--gold);color:var(--navy);border-radius:999px;padding:5px 13px;font-size:13px;font-weight:700}
+  .screen{display:none;padding:20px 0 44px}
+  .screen.show{display:block}
+  h1{font-family:var(--serif);color:var(--deep);font-size:28px;margin:0 0 10px;line-height:1.15}
+  h2{font-family:var(--serif);color:var(--deep);font-size:22px;margin:0 0 6px}
+  p.lede{font-size:15px;color:var(--ink);margin:0 0 16px}
+  .btn{border:0;border-radius:12px;padding:13px 20px;font-weight:700;font-size:15px;cursor:pointer;font-family:var(--sans)}
+  .btn.gold{background:var(--gold);color:var(--navy);box-shadow:0 2px 0 var(--gold-d)}
+  .btn.deep{background:var(--deep);color:#fff}
+  .btn.ghost{background:transparent;color:var(--deep);border:1.5px solid var(--line)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+  .card.tint{background:var(--tint);border:none}
+  .dash{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+  .ind{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 10px}
+  .ind .lab{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:flex;justify-content:space-between;align-items:center}
+  .ind .delta{font-size:10px;font-weight:700}
+  .ind .bar{height:7px;background:var(--tint);border-radius:999px;overflow:hidden;margin-top:6px}
+  .ind .bar>span{display:block;height:100%;border-radius:999px;transition:width .3s}
+  .up{color:var(--green)} .down{color:var(--red)}
+  .potbar{position:sticky;top:0;z-index:5;background:var(--navy);color:#fff;border-radius:0 0 16px 16px;padding:13px 16px;margin-bottom:14px;box-shadow:0 8px 20px -12px rgba(0,0,0,.4)}
+  .potbar .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .potbar .big{font-family:var(--serif);font-size:28px;font-weight:700}
+  .potbar .lab{font-size:11px;color:#9FB3C8}
+  .potbar .chip{font-size:12px;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:999px}
+  .track{height:7px;background:rgba(255,255,255,.15);border-radius:999px;margin-top:8px;overflow:hidden}
+  .track>span{display:block;height:100%;background:var(--gold);border-radius:999px;transition:width .2s}
+  .bid{display:flex;gap:11px;align-items:flex-start}
+  .bid .emoji{font-size:24px;flex:none;width:40px;height:40px;border-radius:10px;background:var(--tint);display:flex;align-items:center;justify-content:center}
+  .bid .name{font-family:var(--serif);font-weight:700;color:var(--deep);font-size:15px}
+  .bid .base{font-size:11px;color:var(--muted)}
+  .bid .desc{font-size:12.5px;color:var(--ink);margin:3px 0 0}
+  .alloc{display:flex;align-items:center;gap:9px;margin-top:11px}
+  .step{width:33px;height:33px;border-radius:9px;border:1.5px solid var(--line);background:#fff;font-size:18px;font-weight:700;color:var(--deep);cursor:pointer;flex:none}
+  .step:disabled{opacity:.35;cursor:not-allowed}
+  .amt{font-family:var(--serif);font-weight:700;font-size:17px;color:var(--ink);min-width:70px;text-align:center}
+  .ask{font-size:10px;color:var(--muted);font-family:var(--sans);font-weight:400}
+  .fill{flex:1;height:7px;background:var(--tint);border-radius:999px;overflow:hidden}
+  .fill>span{display:block;height:100%;background:var(--teal);border-radius:999px;transition:width .15s}
+  .ev{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);font-size:13.5px}
+  .ev:first-child{border-top:0}
+  .ev .ic{flex:none;font-size:18px}
+  .panel{border-left:4px solid var(--teal);background:var(--tint);border-radius:10px;padding:13px 14px;margin-bottom:12px}
+  .panel .who{font-size:11px;font-weight:700;color:var(--deep);letter-spacing:.5px;text-transform:uppercase}
+  .panel .txt{font-size:14px;color:var(--ink);margin-top:5px}
+  .amd{border-left:4px solid var(--gold);background:var(--tint);border-radius:10px;padding:12px 14px;margin-bottom:11px}
+  .amd .who{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;text-transform:uppercase}
+  .amd .txt{font-size:14px;color:var(--ink);margin:4px 0 10px}
+  .amd .ctl{display:flex;gap:8px}
+  .amd .ctl .btn{flex:1;padding:9px;font-size:13px}
+  .chosen-acc{background:var(--green)!important;color:#fff!important;border-color:var(--green)!important}
+  .chosen-res{background:var(--red)!important;color:#fff!important;border-color:var(--red)!important}
+  .tally{text-align:center;padding:6px 0}
+  .tally .num{font-family:var(--serif);font-size:50px;font-weight:700;color:var(--deep);line-height:1}
+  .tally .of{font-size:13px;color:var(--muted)}
+  .votebar{display:flex;height:16px;border-radius:999px;overflow:hidden;margin:13px 0;border:1px solid var(--line)}
+  .votebar .for{background:var(--green)} .votebar .ag{background:var(--red)}
+  .verdict{text-align:center;font-family:var(--serif);font-size:21px;font-weight:700;margin:6px 0}
+  .pass{color:var(--green)} .fail{color:var(--red)}
+  .conseq{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+  .reflect{background:var(--navy);color:#fff;border-radius:14px;padding:16px;margin-top:14px;font-size:14px}
+  .reflect b{color:var(--gold)}
+  .note{font-size:12px;color:var(--muted);margin-top:14px}
+  .row-btns{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .row-btns .btn{flex:1;min-width:140px}
+  .scoreline{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div><div class="eyebrow">States Assembly of Jersey · learning game</div><div class="brand">You're the Minister</div></div>
+  <div class="yearpill" id="yearPill" style="display:none">Year 1 of 3</div>
+</div></header>
+
+<div class="wrap">
+  <div class="screen show" id="start">
+    <h1>A term in office. Three Budgets. One Assembly to keep on side.</h1>
+    <p class="lede">You're a Minister for a three-year term. Each year you propose a Budget from a limited pot, a Scrutiny Panel reviews it, the States Assembly amends and votes, and your choices ripple into the years that follow. Neglect something and it comes back to bite. Spread yourself too thin and the Assembly won't back you.</p>
+    <div class="card tint"><div style="font-size:14px"><b>Each year:</b> share out the money → face the Scrutiny Panel → the Assembly amends &amp; votes (25 of 49 needed) → live with the consequences next year.<br><br>Most Members are <b>independents</b> and no party holds a majority, so you have no guaranteed votes — every Budget must be <b>negotiated</b> with individual Members to win a majority.</div></div>
+    <button class="btn gold" data-action="newgame">Take office →</button>
+    <p class="note">Figures illustrative, based on Jersey's 2026 Budget (total net spending ~£1,278m; Health £381m, Education £188m, Housing &amp; Social Security £113m).</p>
+  </div>
+
+  <div class="screen" id="brief"><div id="briefBody"></div></div>
+  <div class="screen" id="play">
+    <div class="potbar">
+      <div class="row">
+        <div><div class="lab">New money to allocate</div><div class="big" id="potLeft">£55m</div></div>
+        <div style="text-align:right"><div class="lab">Reserves</div><div class="chip" id="reservesChip">£25m</div></div>
+      </div>
+      <div class="track"><span id="potTrack" style="width:0%"></span></div>
+    </div>
+    <div class="dash" id="dash"></div>
+    <div id="bids"></div>
+    <button class="btn gold" data-action="lodge" style="width:100%;margin-top:4px">Send to the Scrutiny Panel →</button>
+  </div>
+  <div class="screen" id="scrutiny"><div id="scrutinyBody"></div></div>
+  <div class="screen" id="assembly">
+    <h2>The Assembly debates</h2>
+    <p class="lede">Most Members of the Assembly are independents, and no party holds a majority — so you have no guaranteed bloc of votes. You must <b>build a majority Member by Member</b>. Each amendment is a Member asking for something in return for support. Accept it (compromise — wins votes, but moves your money) or resist it (defend your plan, and risk the vote).</p>
+    <div id="amendments"></div>
+    <button class="btn deep" data-action="vote" style="width:100%">Hold the vote →</button>
+  </div>
+  <div class="screen" id="result"><div id="resultBody"></div></div>
+  <div class="screen" id="review"><div id="reviewBody"></div></div>
+  <div class="screen" id="term"><div id="termBody"></div>
+    <div class="row-btns"><button class="btn gold" data-action="newgame">Serve another term 🔁</button></div>
+    <p class="note">A learning game about trade-offs over time and how the States Assembly scrutinises, amends and approves a Budget. No allocation is "right" — every choice has a cost and a benefit, and no Minister governs alone.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var POT_BASE=55, STEP=5, YEARS=3;
+  var DEPTS=[
+    {id:"health",emoji:"🏥",name:"Health & Community Services",base:"Budget £381m",ask:25,ind:"health",
+     desc:"Cut waiting lists and staff the new healthcare facilities.",
+     up:"Waiting lists fall; the new facilities run well.",down:"Waiting lists lengthen; the hospital is under strain."},
+    {id:"housing",emoji:"🏠",name:"Housing & Social Security",base:"Budget £113m",ask:20,ind:"housing",
+     desc:"Build affordable homes and ease rental stress.",
+     up:"Affordable homes start; rental stress eases.",down:"The waitlist grows; rental stress deepens."},
+    {id:"edu",emoji:"🎓",name:"Education & Lifelong Learning",base:"Budget £188m",ask:15,ind:"education",
+     desc:"More teachers and stronger classroom support.",
+     up:"Smaller classes; better support.",down:"Posts go unfilled; support thins."},
+    {id:"children",emoji:"🧒",name:"Children & Families",base:"Early help & SEN",ask:12,ind:"education",
+     desc:"Early help, SEN provision and family support.",
+     up:"Earlier help reaches families who need it.",down:"SEN waits grow; early help is cut back."},
+    {id:"infra",emoji:"🌊",name:"Infrastructure",base:"Roads, drainage, sea defences",ask:15,ind:"environment",delayed:true,
+     desc:"Strengthen sea defences, roads and drainage.",
+     up:"Sea defences reinforced before winter.",down:"Coastal and drainage works deferred."},
+    {id:"police",emoji:"👮",name:"Justice & Home Affairs",base:"Policing & safety",ask:10,ind:"safety",
+     desc:"More officers and community safety work.",
+     up:"More officers; faster response.",down:"Recruitment stalls; policing scaled back."},
+    {id:"env",emoji:"🌱",name:"Environment & Climate",base:"Carbon-neutral roadmap",ask:12,ind:"environment",delayed:true,
+     desc:"Deliver the next stage of the carbon-neutral roadmap.",
+     up:"Climate projects proceed; targets on track.",down:"The roadmap slips; targets at risk."}
+  ];
+  var IND_LABELS={health:"Health",housing:"Housing",education:"Education",environment:"Environment",safety:"Safety",finances:"Finances"};
+  var IND_START={health:58,housing:42,education:60,environment:50,safety:62};
+
+  var S={};
+  function $(id){return document.getElementById(id);}
+  function show(id){["start","brief","play","scrutiny","assembly","result","review","term"].forEach(function(s){$(s).classList.toggle("show",s===id);});window.scrollTo(0,0);}
+  function spent(){return S.depts.reduce(function(a,d){return a+d.alloc;},0);}
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+  function depById(id){return S.depts.find(function(d){return d.id===id;});}
+  function fracs(){var f={};S.depts.forEach(function(d){f[d.id]=d.alloc/d.ask;});return f;}
+
+  function newGame(){
+    S={year:1,reserves:25,pot:POT_BASE,ind:Object.assign({},IND_START),
+       depts:DEPTS.map(function(d){return Object.assign({},d,{alloc:0});}),
+       history:[],votesWon:0,votesLost:0,events:[],scrutiny:null,amendments:[],revoteUsed:false,lastDelta:{}};
+    $("yearPill").style.display="inline-block";
+    enterYear(true);
+  }
+
+  function payEmergency(amount){
+    var fromReserves=Math.min(S.reserves,amount);
+    S.reserves-=fromReserves;
+    S.pot=(S.pot||POT_BASE)-(amount-fromReserves);
+  }
+
+  function enterYear(first){
+    S.depts.forEach(function(d){d.alloc=0;});
+    S.scrutiny=null;S.amendments=[];S.revoteUsed=false;S.events=[];
+    $("yearPill").textContent="Year "+S.year+" of "+YEARS;
+    var pot=POT_BASE;
+    if(!first){
+      var r=Math.random(),econ=r<0.33?-10:(r<0.66?0:10);
+      if(econ>0){S.events.push({ic:"📈",t:"Economy: a strong year. Tax receipts up — <b>+£10m</b> to the pot."});pot+=10;}
+      else if(econ<0){S.events.push({ic:"📉",t:"Economy: a downturn. Receipts down — <b>−£10m</b> from the pot."});pot-=10;}
+      else {S.events.push({ic:"➖",t:"Economy: a steady year. The pot is unchanged."});}
+      var prev=S.history[S.history.length-1];
+      S.pot=pot; // set before emergencies adjust it
+      if(prev){
+        if(prev.frac.housing>=0.8){S.events.push({ic:"🏠",t:"Last year's housing investment eased benefit demand — <b>+£5m</b> freed up."});S.pot+=5;}
+        if(prev.frac.env>=0.8){S.events.push({ic:"🌱",t:"Your climate progress secured an external grant — <b>+£8m</b>."});S.pot+=8;S.ind.environment=clamp(S.ind.environment+5,0,100);}
+        if(prev.frac.infra<0.5&&Math.random()<0.6){S.events.push({ic:"⛈️",t:"A winter storm flooded the undefended coast road. <b>Emergency £10m</b> — and Environment took a hit."});payEmergency(10);S.ind.environment=clamp(S.ind.environment-10,0,100);}
+        if(prev.frac.health<0.5&&Math.random()<0.5){S.events.push({ic:"🤒",t:"A winter health surge hit the underfunded service. <b>Emergency £8m</b>."});payEmergency(8);S.ind.health=clamp(S.ind.health-8,0,100);}
+      }
+      pot=S.pot;
+    }
+    S.pot=Math.max(20,pot);
+    renderBrief(first);show("brief");
+  }
+
+  function renderBrief(first){
+    var h='<h1>Year '+S.year+' — Budget time</h1>';
+    if(first){
+      h+='<p class="lede">You take office with £'+S.pot+'m of new money and reserves of £'+S.reserves+'m. Seven departments are bidding for far more than you have. Decide what to back.</p>';
+    } else {
+      h+='<p class="lede">A new Budget year. Here\'s what landed on your desk before you start:</p><div class="card">';
+      S.events.forEach(function(e){h+='<div class="ev"><span class="ic">'+e.ic+'</span><div>'+e.t+'</div></div>';});
+      h+='</div><p class="lede">You have <b>£'+S.pot+'m</b> of new money and reserves of <b>£'+S.reserves+'m</b>.</p>';
+    }
+    h+='<button class="btn gold" data-action="startYear">Open the Budget →</button>';
+    $("briefBody").innerHTML=h;
+  }
+
+  function indVal(k){return k==="finances"?clamp(Math.round(S.reserves*1.6),0,100):Math.round(S.ind[k]);}
+  function dashHTML(){
+    var h="";
+    ["health","housing","education","environment","safety","finances"].forEach(function(k){
+      var v=indVal(k),d=S.lastDelta[k]||0,col=v>=66?"var(--green)":(v>=40?"var(--teal)":"var(--red)");
+      h+='<div class="ind"><div class="lab"><span>'+IND_LABELS[k]+'</span>'+(d?'<span class="delta '+(d>0?"up":"down")+'">'+(d>0?"▲":"▼")+Math.abs(d)+'</span>':'')+'</div><div class="bar"><span style="width:'+v+'%;background:'+col+'"></span></div></div>';
+    });
+    return h;
+  }
+  function renderPot(){var sp=spent(),left=S.pot-sp;$("potLeft").textContent="£"+left+"m";$("reservesChip").textContent="Reserves £"+S.reserves+"m";$("potTrack").style.width=(100*sp/Math.max(1,S.pot))+"%";}
+  function renderBids(){
+    var left=S.pot-spent(),h="";
+    S.depts.forEach(function(d){
+      var frac=Math.round(100*d.alloc/d.ask);
+      h+='<div class="card"><div class="bid"><div class="emoji">'+d.emoji+'</div>'+
+         '<div style="flex:1"><div class="name">'+d.name+'</div><div class="base">'+d.base+'</div><div class="desc">'+d.desc+'</div></div></div>'+
+         '<div class="alloc"><button class="step" data-action="minus" data-id="'+d.id+'" '+(d.alloc<=0?"disabled":"")+'>–</button>'+
+         '<div class="amt">£'+d.alloc+'m<div class="ask">of £'+d.ask+'m ask</div></div>'+
+         '<button class="step" data-action="plus" data-id="'+d.id+'" '+((d.alloc>=d.ask||left<STEP)?"disabled":"")+'>+</button>'+
+         '<div class="fill"><span style="width:'+frac+'%"></span></div></div></div>';
+    });
+    $("bids").innerHTML=h;
+  }
+  function renderPlay(){$("dash").innerHTML=dashHTML();renderPot();renderBids();}
+
+  function buildScrutiny(){
+    var f=fracs(),serious=false,txt="";
+    if(S.reserves<6){txt="The Public Accounts Panel warns that reserves are running low, and questions whether the Budget is sustainable.";serious=true;}
+    else{
+      var pick=null;[["housing"],["health"],["education"]].forEach(function(o){if(!pick){
+        // map indicator 'education' to edu dept for the check
+        var did=o[0]==="education"?"edu":o[0];
+        if(f[did]<0.4)pick=did;
+      }});
+      if(pick){var d=depById(pick);txt="The "+d.name+" Scrutiny Panel warns the allocation to "+d.name+" is unlikely to meet demand this year.";serious=f[pick]<0.25;}
+      else{txt="The Scrutiny Panel reviewed your Budget and found it broadly balanced, with no major concerns.";}
+    }
+    S.scrutiny={txt:txt,serious:serious,revised:false};
+  }
+  function renderScrutiny(){
+    var sc=S.scrutiny;
+    $("scrutinyBody").innerHTML='<h2>The Scrutiny Panel reports</h2><p class="lede">Before any Budget is voted on, Scrutiny Panels examine it and publish findings. This is the Assembly holding the Government to account.</p>'+
+      '<div class="panel"><div class="who">Scrutiny finding'+(sc.serious?' · flagged as serious':'')+'</div><div class="txt">'+sc.txt+'</div></div>'+
+      '<div class="row-btns"><button class="btn ghost" data-action="revise">Go back and revise</button><button class="btn deep" data-action="proceed">Note it and proceed to debate →</button></div>';
+  }
+
+  function buildAmendments(){
+    var amds=[],sorted=S.depts.slice().sort(function(a,b){return b.alloc-a.alloc;}),richest=sorted[0];
+    ["health","housing","edu","children","infra","env","police"].forEach(function(pid){
+      if(amds.length>=3)return;
+      var d=depById(pid);if(!d)return;
+      if(d.alloc<d.ask*0.5&&richest&&richest.id!==d.id&&richest.alloc>=STEP){
+        var move=Math.min(STEP,richest.alloc);
+        amds.push({id:"a"+amds.length,fromId:richest.id,toId:d.id,move:move,choice:null,text:'Deputies propose moving £'+move+'m from '+richest.name+' to '+d.name+'.'});
+        richest={id:richest.id,name:richest.name,alloc:richest.alloc-move};
+        richest=S.depts.map(function(x){return x.id===richest.id?richest:x;}).slice().sort(function(a,b){return b.alloc-a.alloc;})[0];
+      }
+    });
+    if(amds.length===0){
+      var any=S.depts.find(function(x){return x.alloc>=STEP;});
+      if(any){var to=S.depts.find(function(x){return x.id!==any.id;});amds.push({id:"a0",fromId:any.id,toId:to.id,move:STEP,choice:null,text:'A Deputy proposes a small shift of £'+STEP+'m from '+any.name+' to '+to.name+' to broaden support.'});}
+      else amds.push({id:"a0",fromId:S.depts[0].id,toId:"health",move:0,choice:null,text:'With no new money allocated, Deputies urge the Minister to put the funds to use.'});
+    }
+    S.amendments=amds;
+  }
+  function renderAmendments(){
+    var h="";
+    S.amendments.forEach(function(a){
+      h+='<div class="amd"><div class="who">Amendment lodged</div><div class="txt">'+a.text+'</div><div class="ctl">'+
+         '<button class="btn ghost'+(a.choice==="acc"?" chosen-acc":"")+'" data-action="acc" data-id="'+a.id+'">Accept</button>'+
+         '<button class="btn ghost'+(a.choice==="res"?" chosen-res":"")+'" data-action="res" data-id="'+a.id+'">Resist</button></div></div>';
+    });
+    $("amendments").innerHTML=h;
+  }
+
+  function computeVote(){
+    S.amendments.forEach(function(a){if(a.choice==="acc"){var fr=depById(a.fromId),to=depById(a.toId);if(fr&&to){var m=Math.min(a.move,fr.alloc);fr.alloc-=m;to.alloc+=m;}}});
+    var support=15,f=fracs();
+    S.depts.forEach(function(d){var x=f[d.id];if(x>=0.5)support+=3;else if(x>0)support+=1;});
+    S.amendments.forEach(function(a){support+=(a.choice==="acc"?4:(a.choice==="res"?-3:0));});
+    if(S.scrutiny){if(S.scrutiny.revised)support+=3;else if(S.scrutiny.serious)support-=4;}
+    support+=Math.round(Math.random()*6)-3;
+    return clamp(support,4,49);
+  }
+
+  function renderResult(){
+    var support=computeVote(),pass=support>=25,pct=Math.round(100*support/49);
+    var h='<h2>The vote</h2><div class="tally"><div class="num">'+support+'</div><div class="of">of 49 Members in favour · 25 needed</div></div>'+
+      '<div class="votebar"><span class="for" style="width:'+pct+'%"></span><span class="ag" style="width:'+(100-pct)+'%"></span></div>'+
+      '<div class="verdict '+(pass?"pass":"fail")+'">'+(pass?"✓ Budget passed":"✗ No majority")+'</div>';
+    if(pass){
+      S.votesWon++;
+      h+='<p class="lede">The Assembly has adopted your Budget'+(S.amendments.some(function(a){return a.choice==="acc";})?" as amended":"")+'.</p><button class="btn gold" data-action="afterYear" style="width:100%">See the year\'s impact →</button>';
+    }else if(!S.revoteUsed){
+      h+='<p class="lede">Your Budget didn\'t reach 25 votes, so it does <b>not</b> pass — a Government can\'t spend money the Assembly hasn\'t approved. With most Members sitting as independents and no party holding a majority, support has to be <b>built</b>: by talking to Members, addressing their concerns and accepting amendments. Revise your plan and try once more — or, if you can\'t find agreement, the Budget falls.</p><div class="row-btns"><button class="btn ghost" data-action="reviseVote">Negotiate &amp; revise</button><button class="btn deep" data-action="holding">Can\'t agree — let it fall</button></div>';
+    }else{
+      S.votesLost++;
+      h+='<p class="lede">No agreement could be found, so the Budget <b>falls</b>. The Government doesn\'t get to proceed anyway — it must keep running on last year\'s approved settlement until it can bring back a Budget the Assembly will pass. Services get no new money, and several areas slip. Losing the Assembly\'s backing on your central Budget is a serious blow to a Minister.</p><button class="btn gold" data-action="holding" style="width:100%">Live with it →</button>';
+    }
+    $("resultBody").innerHTML=h;
+  }
+
+  function applyYear(holding){
+    var f=fracs(),delta={};
+    if(holding){
+      ["health","housing","education","environment","safety"].forEach(function(k){S.ind[k]=clamp(S.ind[k]-5,0,100);delta[k]=-5;});
+    }else{
+      var eff={};
+      S.depts.forEach(function(d){var x=d.alloc/d.ask,e=x>=0.8?10:(x>=0.5?5:(x>=0.25?-2:-8));eff[d.ind]=(eff[d.ind]||0)+e;});
+      Object.keys(eff).forEach(function(k){var e=clamp(eff[k],-14,16);S.ind[k]=clamp(S.ind[k]+e,0,100);delta[k]=e;});
+      var unspent=S.pot-spent();if(unspent>0)S.reserves+=unspent;
+    }
+    S.lastDelta=delta;
+    S.history.push({year:S.year,frac:{housing:f.housing,env:f.env,infra:f.infra,health:f.health},holding:!!holding});
+  }
+
+  function renderReview(){
+    var h='<h2>Year '+S.year+' — the impact</h2><div class="card">';
+    S.depts.forEach(function(d){var ok=d.alloc>=d.ask*0.5;h+='<div class="conseq"><span>'+(ok?"✅":"⚠️")+'</span><div><b>'+d.name+'</b> — £'+d.alloc+'m. '+(ok?d.up:d.down)+'</div></div>';});
+    h+='</div><div class="dash">'+dashHTML()+'</div><p class="lede" style="margin-top:8px">Reserves now <b>£'+S.reserves+'m</b>.</p>';
+    h+=(S.year<YEARS)?'<button class="btn gold" data-action="nextYear" style="width:100%">Continue to Year '+(S.year+1)+' →</button>':'<button class="btn gold" data-action="endTerm" style="width:100%">See your term in office →</button>';
+    $("reviewBody").innerHTML=h;
+  }
+
+  function renderTerm(){
+    var avg=Math.round(["health","housing","education","environment","safety"].reduce(function(a,k){return a+S.ind[k];},0)/5);
+    var verdict=avg>=66?"a strong legacy":(avg>=48?"a mixed legacy":"a difficult term");
+    var h='<h1>Your term in office</h1><p class="lede">Three Budgets done. Here\'s the Island you leave behind — and how the Assembly judged you.</p><div class="card"><div class="dash">'+dashHTML()+'</div></div>';
+    h+='<div class="card"><div class="scoreline"><span>Budgets passed by the Assembly</span><b>'+S.votesWon+' of 3</b></div><div class="scoreline"><span>Holding Budgets imposed</span><b>'+S.votesLost+'</b></div><div class="scoreline" style="border:0"><span>Reserves at end of term</span><b>£'+S.reserves+'m</b></div></div>';
+    h+='<div class="reflect"><b>What this taught.</b> Governing is choosing between good things when there isn\'t enough for all of them — and living with the consequences over time. But you never decided alone. A Government cannot spend money the Assembly hasn\'t approved: that <b>power of the purse</b> is the Assembly\'s, not the Minister\'s. And because most Members are <b>independents</b> and no party holds a majority, a Minister has no ready-made bloc of votes — every Budget has to be won by <b>negotiating, building alliances and compromising</b> with individual Members. The Scrutiny Panels examine you, the Assembly amends you, and 49 Members vote — 25 needed. There is no perfect answer, and no Minister governs alone. <b>That is what the States Assembly does.</b> You leave '+verdict+'.</div>';
+    $("termBody").innerHTML=h;
+  }
+
+  document.addEventListener("click",function(e){
+    var el=e.target.closest("[data-action]");if(!el)return;
+    var a=el.getAttribute("data-action"),id=el.getAttribute("data-id");
+    if(a==="newgame"){newGame();return;}
+    if(a==="startYear"){renderPlay();show("play");return;}
+    if(a==="plus"||a==="minus"){var d=depById(id);if(!d)return;var left=S.pot-spent();if(a==="plus"&&d.alloc<d.ask&&left>=STEP)d.alloc+=STEP;if(a==="minus"&&d.alloc>0)d.alloc-=STEP;renderPlay();return;}
+    if(a==="lodge"){buildScrutiny();renderScrutiny();show("scrutiny");return;}
+    if(a==="revise"){show("play");renderPlay();return;}
+    if(a==="proceed"){buildAmendments();renderAmendments();show("assembly");return;}
+    if(a==="acc"||a==="res"){var am=S.amendments.find(function(x){return x.id===id;});if(am){am.choice=(a==="acc"?"acc":"res");renderAmendments();}return;}
+    if(a==="vote"){if(S.amendments.some(function(x){return !x.choice;})){alert("Decide on each amendment first — accept or resist.");return;}renderResult();show("result");return;}
+    if(a==="reviseVote"){S.revoteUsed=true;if(S.scrutiny)S.scrutiny.revised=true;show("play");renderPlay();return;}
+    if(a==="holding"){applyYear(true);renderReview();show("review");return;}
+    if(a==="afterYear"){applyYear(false);renderReview();show("review");return;}
+    if(a==="nextYear"){S.year++;enterYear(false);return;}
+    if(a==="endTerm"){renderTerm();show("term");return;}
+  });
+})();
+</script>
+</body>
+</html>
