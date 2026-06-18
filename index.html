@@ -19,6 +19,13 @@
   .serif{font-family:var(--serif)}
   a{color:var(--teal)}
 
+  /* unofficial-prototype banner */
+  .disclaimer{background:var(--rust);color:#fff;font-size:13px;line-height:1.45;text-align:center;padding:9px 18px}
+  .disclaimer strong{color:#fff}
+  ol.protocol{margin:14px 0;padding-left:20px;max-width:800px}
+  ol.protocol li{margin-bottom:9px;font-size:14.5px}
+  ol.protocol li strong{color:var(--deep)}
+
   /* sticky nav */
   header.bar{position:sticky;top:0;z-index:50;background:rgba(18,38,58,.97);backdrop-filter:blur(6px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
   header.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:11px;padding-bottom:11px;flex-wrap:wrap}
@@ -184,6 +191,11 @@
 </style>
 </head>
 <body>
+
+<div class="disclaimer">
+  <strong>Interview prototype — not an official States Greffe website.</strong>
+  Prepared as a personal proposal for discussion. All figures and examples are illustrative and would require officer verification before any publication.
+</div>
 
 <header class="bar">
   <div class="wrap">
@@ -380,6 +392,18 @@
       <div class="card tint"><h3>Cost</h3><p>Modest, and controlled by triage — only the handful of items that affect daily life, so it's one or two explainers a week, not everything. The real investment is officer time on drafting and review.</p></div>
       <div class="card tint"><h3>Main risk</h3><p>An inaccurate or one-sided explainer would do real damage to trust. The review gate exists to carry that risk — it's never optional — and if one ever slips through, it's corrected fast and visibly, with the official source already a click away.</p>
     </div>
+
+    <h3 style="margin-top:26px">The impartiality protocol</h3>
+    <p class="small muted">Seven rules the sign-off enforces — so neutrality is a procedure, not a promise.</p>
+    <ol class="protocol">
+      <li><strong>Official source first.</strong> Every explainer starts from a lodged proposition, official report, Scrutiny review, Hansard extract or Vote.je / States Assembly source.</li>
+      <li><strong>No advocacy wording.</strong> Words like "should", "must", "failure", "crisis" or "unfair" appear only inside a quotation, attributed to whoever said them.</li>
+      <li><strong>Balanced structure.</strong> Every explainer follows one template: what's proposed, current status, what supporters say, what concerns are raised, what happens next.</li>
+      <li><strong>Named human sign-off.</strong> An officer is named against each explainer and approves every word before it publishes.</li>
+      <li><strong>Audit trail.</strong> Source link, date checked, reviewer and version history are all recorded.</li>
+      <li><strong>Open corrections.</strong> If anything is challenged, it's reviewed quickly and the correction shown openly.</li>
+      <li><strong>Election-period lockdown.</strong> Stricter neutrality during campaigns — no candidate comparisons, no preference tools, nothing that could be read as steering voters toward a person or party.</li>
+    </ol>
   </div>
 </section>
 
