@@ -33,31 +33,31 @@
   #links{position:absolute;left:0;top:0;width:4000px;height:3000px;overflow:visible;pointer-events:none}
   #links path{fill:none;stroke-width:2.5;opacity:.55}
 
-  .node{position:absolute;transform:translate(-50%,-50%);will-change:left,top}
-  .bubble{transition:transform .12s,box-shadow .12s;cursor:pointer;user-select:none}
-  .bubble:hover{transform:scale(1.05)}
+  .node{position:absolute;transform:translate(-50%,-50%)}
+  .bubble{transition:box-shadow .12s;cursor:grab;user-select:none;touch-action:none}
+  .bubble:active{cursor:grabbing}
+  .bubble:hover{box-shadow:0 12px 28px rgba(18,38,58,.28)}
 
-  .center .bubble{background:linear-gradient(160deg,var(--navy),var(--deep));color:#fff;border-radius:18px;
-     padding:18px 22px;text-align:center;width:210px;box-shadow:0 14px 34px rgba(18,38,58,.30)}
-  .center .bubble .t{font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.15}
-  .center .bubble .s{color:#CFE0EA;font-size:11.5px;margin-top:7px;line-height:1.35}
-  .center .bubble .hint{color:var(--gold);font-size:10.5px;margin-top:9px;font-weight:700;letter-spacing:.4px}
+  .center .bubble{background:linear-gradient(160deg,var(--navy),var(--deep));color:#fff;border-radius:20px;
+     padding:22px 26px;text-align:center;width:268px;box-shadow:0 16px 38px rgba(18,38,58,.32)}
+  .center .bubble .t{font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.12}
+  .center .bubble .s{color:#CFE0EA;font-size:14px;margin-top:9px;line-height:1.4}
+  .center .bubble .hint{color:var(--gold);font-size:11.5px;margin-top:11px;font-weight:700;letter-spacing:.4px}
 
-  .branch .bubble{background:var(--c);color:#fff;border-radius:13px;padding:11px 13px;width:172px;
-     box-shadow:0 8px 20px rgba(18,38,58,.18);display:flex;align-items:center;gap:8px}
-  .branch .bubble .lbl{font-family:var(--serif);font-weight:700;font-size:15px;flex:1;line-height:1.15}
-  .branch .bubble .toggle{width:20px;height:20px;flex:0 0 auto;border-radius:999px;background:rgba(255,255,255,.22);
-     display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;line-height:1}
-  .branch .bubble .open{color:#fff;text-decoration:none;font-size:13px;font-weight:700;opacity:.85;flex:0 0 auto}
+  .branch .bubble{background:var(--c);color:#fff;border-radius:14px;padding:14px 17px;width:230px;
+     box-shadow:0 9px 22px rgba(18,38,58,.20);display:flex;align-items:center;gap:10px}
+  .branch .bubble .lbl{font-family:var(--serif);font-weight:700;font-size:20px;flex:1;line-height:1.12}
+  .branch .bubble .toggle{width:26px;height:26px;flex:0 0 auto;border-radius:999px;background:rgba(255,255,255,.22);
+     display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;line-height:1}
+  .branch .bubble .open{color:#fff;text-decoration:none;font-size:17px;font-weight:700;opacity:.85;flex:0 0 auto;cursor:pointer}
   .branch .bubble .open:hover{opacity:1}
 
-  .leaf .bubble{background:#fff;color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--c);
-     border-radius:10px;padding:8px 11px;width:158px;font-size:12.5px;line-height:1.3;box-shadow:0 5px 14px rgba(18,38,58,.08)}
-  .node.leaf{transition:opacity .18s}
+  .leaf .bubble{background:#fff;color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--c);
+     border-radius:11px;padding:11px 14px;width:215px;font-size:16px;line-height:1.32;box-shadow:0 6px 16px rgba(18,38,58,.10)}
   .node.hidden{display:none}
 
-  .legend{position:absolute;left:14px;bottom:12px;background:rgba(255,255,255,.92);border:1px solid var(--line);
-     border-radius:10px;padding:9px 12px;font-size:11.5px;color:var(--muted);max-width:260px;line-height:1.5}
+  .legend{position:absolute;left:14px;bottom:12px;background:rgba(255,255,255,.93);border:1px solid var(--line);
+     border-radius:10px;padding:10px 13px;font-size:12.5px;color:var(--muted);max-width:300px;line-height:1.55}
   .legend b{color:var(--deep)}
   @media(max-width:560px){.legend{display:none}}
 </style>
@@ -76,7 +76,7 @@
     <button id="collapseAll">Collapse all</button>
     <button id="zoomIn">＋</button>
     <button id="zoomOut">－</button>
-    <button id="reset">Reset view</button>
+    <button id="reset">Reset layout</button>
     <a class="go" href="index.html">Open full proposal ↗</a>
   </div>
 </header>
@@ -87,7 +87,7 @@
   </div>
 </div>
 
-<div class="legend"><b>Drag</b> to pan · <b>scroll</b> to zoom · <b>click a branch</b> to expand its points · click the centre to toggle all · <b>↗</b> opens that section of the proposal.</div>
+<div class="legend"><b>Drag any node</b> to rearrange · <b>drag the background</b> to pan · <b>scroll</b> to zoom · <b>click a branch</b> to expand its points · click the centre to toggle all · <b>↗</b> opens that section.</div>
 
 <script>
 (function(){
@@ -118,65 +118,62 @@
   ];
 
   // ---- layout ------------------------------------------------------------
-  var CX=2000, CY=1500, R1=340;
+  var CX=2000, CY=1500, R1=400;
   var stage=document.getElementById("stage");
   var links=document.getElementById("links");
   var canvas=document.getElementById("canvas");
   var SVGNS="http://www.w3.org/2000/svg";
   function rad(d){return d*Math.PI/180;}
 
-  // compute positions
-  var branchPos=[], leafPos=[];
+  var DEFAULT={center:{x:CX,y:CY}, branches:[], leaves:[]};
   BRANCHES.forEach(function(b,i){
     var ang=-90+i*45;
-    var bx=CX+R1*Math.cos(rad(ang)), by=CY+R1*Math.sin(rad(ang));
-    branchPos.push({x:bx,y:by,ang:ang});
-    var n=b.leaves.length;
-    var per = n<=4?15:9.5;            // degrees between leaves
-    var arr=[];
+    DEFAULT.branches.push({x:CX+R1*Math.cos(rad(ang)), y:CY+R1*Math.sin(rad(ang))});
+    var n=b.leaves.length, per=n<=4?17:11, arr=[];
     b.leaves.forEach(function(lf,j){
-      var a=ang+(j-(n-1)/2)*per;
-      var lr=R1+150+(j%2)*78;         // alternate radius to reduce crowding
+      var a=ang+(j-(n-1)/2)*per, lr=R1+185+(j%2)*95;
       arr.push({x:CX+lr*Math.cos(rad(a)), y:CY+lr*Math.sin(rad(a))});
     });
-    leafPos.push(arr);
+    DEFAULT.leaves.push(arr);
   });
 
-  var expanded=BRANCHES.map(function(){return false;});
+  // working positions (deep copy so "Reset layout" can restore)
+  var centerPos, branchPos, leafPos, expanded;
+  function freshPositions(){
+    centerPos={x:DEFAULT.center.x,y:DEFAULT.center.y};
+    branchPos=DEFAULT.branches.map(function(p){return {x:p.x,y:p.y};});
+    leafPos=DEFAULT.leaves.map(function(a){return a.map(function(p){return {x:p.x,y:p.y};});});
+  }
+  freshPositions();
+  expanded=BRANCHES.map(function(){return false;});
 
   // ---- build nodes -------------------------------------------------------
   function el(cls,html){var d=document.createElement("div");d.className=cls;if(html!=null)d.innerHTML=html;return d;}
-  function place(node,x,y){node.style.left=x+"px";node.style.top=y+"px";stage.appendChild(node);}
+  function position(node,pos){node.style.left=pos.x+"px";node.style.top=pos.y+"px";}
 
   // centre
-  var centerNode=el("node center","<div class='bubble'><div class='t'>"+CENTER.t+"</div><div class='s'>"+CENTER.s+"</div><div class='hint'>click to expand / collapse all</div></div>");
-  place(centerNode,CX,CY);
-  centerNode.querySelector(".bubble").addEventListener("click",function(){
-    var anyClosed=expanded.some(function(e){return !e;});
-    setAll(anyClosed);
-  });
+  var centerNode=el("node center","<div class='bubble'><div class='t'>"+CENTER.t+"</div><div class='s'>"+CENTER.s+"</div><div class='hint'>click to expand / collapse all · drag to move</div></div>");
+  position(centerNode,centerPos); stage.appendChild(centerNode);
+  draggable(centerNode,centerPos,function(){ var anyClosed=expanded.some(function(e){return !e;}); setAll(anyClosed); });
 
-  var leafNodes=[];
+  var branchNodes=[], leafNodes=[];
   BRANCHES.forEach(function(b,i){
-    // branch
     var bn=el("branch node",
       "<div class='bubble' style='--c:"+b.color+"'>"+
         "<span class='toggle'>+</span>"+
         "<span class='lbl'>"+b.label+"</span>"+
         "<a class='open' href='index.html#"+b.anchor+"' title='Open this section' target='_blank' rel='noopener'>↗</a>"+
       "</div>");
-    bn.style.setProperty("--c",b.color);
-    place(bn,branchPos[i].x,branchPos[i].y);
+    position(bn,branchPos[i]); stage.appendChild(bn);
     bn.querySelector(".open").addEventListener("click",function(e){e.stopPropagation();});
-    bn.querySelector(".bubble").addEventListener("click",function(){toggle(i);});
-    branchPos[i].node=bn;
+    (function(idx){ draggable(bn,branchPos[idx],function(){ toggle(idx); }); })(i);
+    branchNodes.push(bn);
 
-    // leaves
     var lns=[];
     b.leaves.forEach(function(lf,j){
       var ln=el("leaf node hidden","<div class='bubble' style='--c:"+b.color+"'>"+lf+"</div>");
-      ln.style.setProperty("--c",b.color);
-      place(ln,leafPos[i][j].x,leafPos[i][j].y);
+      position(ln,leafPos[i][j]); stage.appendChild(ln);
+      draggable(ln,leafPos[i][j],null);
       lns.push(ln);
     });
     leafNodes.push(lns);
@@ -186,24 +183,21 @@
   function curve(x1,y1,x2,y2){
     var mx=(x1+x2)/2, my=(y1+y2)/2;
     var dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy)||1;
-    var ox=-dy/len, oy=dx/len, bow=len*0.10;      // gentle perpendicular bow
+    var ox=-dy/len, oy=dx/len, bow=len*0.10;
     return "M"+x1+" "+y1+" Q "+(mx+ox*bow)+" "+(my+oy*bow)+" "+x2+" "+y2;
-  }
-  function drawLinks(){
-    while(links.firstChild) links.removeChild(links.firstChild);
-    BRANCHES.forEach(function(b,i){
-      addPath(CX,CY,branchPos[i].x,branchPos[i].y,b.color,3);
-      if(expanded[i]){
-        leafPos[i].forEach(function(p){ addPath(branchPos[i].x,branchPos[i].y,p.x,p.y,b.color,2.2); });
-      }
-    });
   }
   function addPath(x1,y1,x2,y2,color,w){
     var p=document.createElementNS(SVGNS,"path");
     p.setAttribute("d",curve(x1,y1,x2,y2));
-    p.setAttribute("stroke",color);
-    p.setAttribute("stroke-width",w);
+    p.setAttribute("stroke",color); p.setAttribute("stroke-width",w);
     links.appendChild(p);
+  }
+  function drawLinks(){
+    while(links.firstChild) links.removeChild(links.firstChild);
+    BRANCHES.forEach(function(b,i){
+      addPath(centerPos.x,centerPos.y,branchPos[i].x,branchPos[i].y,b.color,3.2);
+      if(expanded[i]) leafPos[i].forEach(function(p){ addPath(branchPos[i].x,branchPos[i].y,p.x,p.y,b.color,2.4); });
+    });
   }
 
   // ---- expand / collapse -------------------------------------------------
@@ -211,39 +205,58 @@
   function setBranch(i,on){
     expanded[i]=on;
     leafNodes[i].forEach(function(ln){ ln.classList.toggle("hidden",!on); });
-    var tg=branchPos[i].node.querySelector(".toggle"); if(tg) tg.textContent=on?"–":"+";
+    var tg=branchNodes[i].querySelector(".toggle"); if(tg) tg.textContent=on?"–":"+";
   }
   function setAll(on){ BRANCHES.forEach(function(_,i){ setBranch(i,on); }); drawLinks(); }
 
-  // ---- pan & zoom --------------------------------------------------------
-  var tx=0,ty=0,scale=0.64;
-  function apply(){ stage.style.transform="translate("+tx+"px,"+ty+"px) scale("+scale+")"; }
-  function centerView(){
-    var r=canvas.getBoundingClientRect();
-    tx=r.width/2 - CX*scale; ty=r.height/2 - CY*scale; apply();
+  // ---- node dragging -----------------------------------------------------
+  function draggable(nodeEl,pos,onTap){
+    var bubble=nodeEl.querySelector(".bubble");
+    var down=false,moved=false,sx,sy,ox,oy,pid;
+    bubble.addEventListener("pointerdown",function(e){
+      if(e.target.closest(".open")) return;       // let the ↗ link work
+      down=true; moved=false; sx=e.clientX; sy=e.clientY; ox=pos.x; oy=pos.y; pid=e.pointerId;
+      try{bubble.setPointerCapture(pid);}catch(_){}
+      e.stopPropagation();                         // don't start a background pan
+    });
+    bubble.addEventListener("pointermove",function(e){
+      if(!down) return;
+      if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)>4) moved=true;
+      pos.x=ox+(e.clientX-sx)/scale; pos.y=oy+(e.clientY-sy)/scale;
+      position(nodeEl,pos); drawLinks();
+    });
+    function up(e){
+      if(!down) return; down=false;
+      try{bubble.releasePointerCapture(pid);}catch(_){}
+      if(!moved && onTap) onTap();
+    }
+    bubble.addEventListener("pointerup",up);
+    bubble.addEventListener("pointercancel",up);
   }
+
+  // ---- pan & zoom --------------------------------------------------------
+  var tx=0,ty=0,scale=0.78;
+  function apply(){ stage.style.transform="translate("+tx+"px,"+ty+"px) scale("+scale+")"; }
+  function centerView(){ var r=canvas.getBoundingClientRect(); tx=r.width/2-CX*scale; ty=r.height/2-CY*scale; apply(); }
   function zoomAt(mx,my,factor){
-    var ns=Math.max(0.3,Math.min(2.4,scale*factor));
+    var ns=Math.max(0.3,Math.min(2.6,scale*factor));
     var sx=(mx-tx)/scale, sy=(my-ty)/scale;
     scale=ns; tx=mx-sx*scale; ty=my-sy*scale; apply();
   }
 
   canvas.addEventListener("wheel",function(e){
-    e.preventDefault();
-    var r=canvas.getBoundingClientRect();
+    e.preventDefault(); var r=canvas.getBoundingClientRect();
     zoomAt(e.clientX-r.left, e.clientY-r.top, e.deltaY<0?1.12:1/1.12);
   },{passive:false});
 
   var panning=false,psx,psy,ptx,pty;
   canvas.addEventListener("pointerdown",function(e){
-    if(e.target.closest(".node")) return;       // let nodes handle their own clicks
+    if(e.target.closest(".node")) return;
     panning=true; canvas.classList.add("panning");
-    psx=e.clientX; psy=e.clientY; ptx=tx; pty=ty;
-    canvas.setPointerCapture(e.pointerId);
+    psx=e.clientX; psy=e.clientY; ptx=tx; pty=ty; canvas.setPointerCapture(e.pointerId);
   });
   canvas.addEventListener("pointermove",function(e){
-    if(!panning) return;
-    tx=ptx+(e.clientX-psx); ty=pty+(e.clientY-psy); apply();
+    if(!panning) return; tx=ptx+(e.clientX-psx); ty=pty+(e.clientY-psy); apply();
   });
   function endPan(){ panning=false; canvas.classList.remove("panning"); }
   canvas.addEventListener("pointerup",endPan);
@@ -252,13 +265,18 @@
   // ---- controls ----------------------------------------------------------
   document.getElementById("expandAll").addEventListener("click",function(){setAll(true);});
   document.getElementById("collapseAll").addEventListener("click",function(){setAll(false);});
-  document.getElementById("reset").addEventListener("click",function(){scale=0.64;centerView();});
   document.getElementById("zoomIn").addEventListener("click",function(){var r=canvas.getBoundingClientRect();zoomAt(r.width/2,r.height/2,1.18);});
   document.getElementById("zoomOut").addEventListener("click",function(){var r=canvas.getBoundingClientRect();zoomAt(r.width/2,r.height/2,1/1.18);});
+  document.getElementById("reset").addEventListener("click",function(){
+    freshPositions();
+    position(centerNode,centerPos);
+    branchNodes.forEach(function(bn,i){ position(bn,branchPos[i]); });
+    leafNodes.forEach(function(lns,i){ lns.forEach(function(ln,j){ position(ln,leafPos[i][j]); }); });
+    scale=0.78; centerView(); drawLinks();
+  });
 
   // ---- init --------------------------------------------------------------
-  drawLinks();
-  centerView();
+  drawLinks(); centerView();
   window.addEventListener("resize",centerView);
 })();
 </script>
