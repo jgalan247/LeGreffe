@@ -45,6 +45,13 @@
   .agenda{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
   .agenda a{background:rgba(255,255,255,.10);color:#fff;text-decoration:none;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600}
   .agenda a:hover{background:rgba(255,255,255,.18)}
+  .summary{background:#fff;color:var(--ink);border-radius:16px;padding:20px 22px;margin:24px 0 6px;box-shadow:0 14px 34px rgba(0,0,0,.22)}
+  .summary .lab{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+  .summary .one{font-family:var(--serif);font-size:18px;color:var(--deep);line-height:1.42;margin:0 0 14px;max-width:none}
+  .summary .pts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 18px}
+  .summary .pt{font-size:13.5px;line-height:1.45}
+  .summary .pt b{color:var(--deep)}
+  @media(max-width:600px){.summary .pts{grid-template-columns:1fr}}
 
   /* sections */
   section{padding:54px 0;border-bottom:1px solid var(--line)}
@@ -218,7 +225,19 @@
     <div class="kicker">A proposal for discussion</div>
     <h1 class="serif">Helping more Islanders see how the Assembly's work affects them</h1>
     <p class="lede">This is a starting point rather than a finished plan — an initiative I'd like to think through with you, and one I'd expect to change as we test it.</p>
-    <p class="lede">It builds directly on something you've already seen: <strong style="color:#fff">MyTurn</strong>, the civics trainer for young Islanders. The question this proposal opens is what comes <em>after</em> school — how the same habit of engagement carries through to the adults the Assembly currently reaches least.</p>
+    <p class="lede">It builds directly on something you've already seen: <strong style="color:#fff">MyTurn</strong>, the civics trainer for young Islanders. The question this proposal opens is what comes <em>after</em> school — how the same habit of engagement carries through into adult life.</p>
+
+    <div class="summary">
+      <div class="lab">In one sentence</div>
+      <p class="one">A six-to-eight-week pilot creating impartial, plain-language explainers that help adults understand how live Assembly issues affect them — and how they can take part.</p>
+      <div class="pts">
+        <div class="pt"><b>Problem.</b> Many adults are registered but not engaged.</div>
+        <div class="pt"><b>Intervention.</b> Short, neutral explainers in plain English and key community languages.</div>
+        <div class="pt"><b>Safeguard.</b> Officer sign-off, official sources, balanced wording, visible corrections.</div>
+        <div class="pt"><b>Measure.</b> Reach, understanding, and follow-through to Scrutiny, petitions or Members.</div>
+      </div>
+    </div>
+
     <div class="agenda">
       <a href="#gap">1 · Where engagement falls away</a>
       <a href="#idea">2 · The idea</a>
@@ -236,23 +255,23 @@
   <div class="wrap">
     <div class="label">1 · The gap</div>
     <h2>Where engagement tends to fall away</h2>
-    <p>It's worth being careful with the 2026 headline. Turnout was widely reported as having "fallen" from 41.7% to 32.4% — but that drop is largely arithmetic, not a collapse in interest. In raw numbers the count of people voting <strong>rose from 25,334 to 27,691</strong> — about 2,357 more, and the most in over a decade.<sup class="fnref"><a href="#fn1">1</a></sup></p>
+    <p>It's worth being careful with the 2026 headline. Turnout was widely reported as having "fallen" from 41.6% to 32.4% — but that drop is largely arithmetic, not a collapse in interest. In raw numbers the count of people voting <strong>rose from 25,264 to 27,691</strong> — about 2,427 more, and the most in over a decade.<sup class="fnref"><a href="#fn1">1</a></sup></p>
     <p>What changed is the measure. Automatic registration added roughly 25,000 names to the roll, so the same act of voting is now counted against a much larger electorate. The more useful reading is the opposite of the headline: auto-registration has, for the first time, put almost every eligible Islander on the register — which makes <em>visible</em> just how many are not yet taking part. That, rather than a falling percentage, is the engagement gap.</p>
 
     <div class="grid3">
       <div class="stat">
         <div class="big">27,691</div>
-        <div class="sub">votes cast in June 2026 — about 2,357 more than in 2022, and the most in over a decade</div>
-        <div class="src">Policy Centre Jersey<sup class="fnref"><a href="#fn1">1</a></sup></div>
+        <div class="sub">votes cast in June 2026 — about 2,427 more than in 2022, and the most in over a decade</div>
+        <div class="src">Vote.je (official)<sup class="fnref"><a href="#fn1">1</a></sup></div>
       </div>
       <div class="stat">
         <div class="big">60,701&nbsp;→&nbsp;85,470</div>
         <div class="sub">the electoral roll after automatic registration — the larger denominator, not falling participation, is why turnout "dropped" to 32.4%</div>
-        <div class="src">Policy Centre Jersey<sup class="fnref"><a href="#fn1">1</a></sup></div>
+        <div class="src">Vote.je (official)<sup class="fnref"><a href="#fn1">1</a></sup></div>
       </div>
       <div class="stat">
         <div class="big">17% / 53%</div>
-        <div class="sub">turnout among under-35s against the over-65s in 2022 — the clearest sign of who isn't yet carried through to adult participation</div>
+        <div class="sub">turnout among under-35s against the over-65s in 2022 — which suggests a challenge in sustaining participation after school-age civic education</div>
         <div class="src">Policy Centre Jersey<sup class="fnref"><a href="#fn2">2</a></sup></div>
       </div>
     </div>
@@ -275,7 +294,7 @@
 
     <div class="fn">
       <ol>
-        <li id="fn1">2026 turnout (provisional) 32.4% from 27,691 votes, against 41.7% from 25,334 votes in 2022 — an increase of 2,357 voters. Automatic registration increased the electoral roll from 60,701 to 85,470, which accounts for most of the percentage fall despite higher participation. Sources: <a href="https://www.policy.je/papers/2026-general-election/" target="_blank" rel="noopener">Policy Centre Jersey — 2026 General Election</a>; <a href="https://www.bailiwickexpress.com/news/did-jerseys-election-2026-voting-reforms-work-early-figures-paint-a-mixed-picture/" target="_blank" rel="noopener">Bailiwick Express</a>; <a href="https://channeleye.media/jersey-election-2026-sees-32-turnout-a-10-reduction-on-previous-election/" target="_blank" rel="noopener">Channel Eye</a>.</li>
+        <li id="fn1">2026 turnout 32.4% from 27,691 votes, against 41.6% from 25,264 votes in 2022 — an increase of 2,427 voters. Automatic registration increased the electoral register from 60,701 to 85,470, which accounts for most of the percentage fall despite higher participation. Official source: <a href="https://www.vote.je/news/more-voters-in-2026-election/" target="_blank" rel="noopener">Vote.je — More voters in 2026 Election</a>; analysis: <a href="https://www.policy.je/papers/2026-general-election/" target="_blank" rel="noopener">Policy Centre Jersey</a>.</li>
         <li id="fn2">Turnout by group: in 2022, under-35s 17% against over-65s 53%, and tenants 16% against owner-occupiers 41%; in 2026, St Helier 22.2% and St Mary 53.1% were the lowest and highest parish turnouts. Source: <a href="https://www.policy.je/papers/election-turnout-in-jersey/" target="_blank" rel="noopener">Policy Centre Jersey — Election turnout in Jersey</a>. Figures provisional pending official release by <a href="https://www.vote.je/" target="_blank" rel="noopener">Vote.je</a>.</li>
       </ol>
     </div>
