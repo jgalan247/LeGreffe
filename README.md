@@ -13,6 +13,7 @@ is plain HTML/CSS/JS with no build step.
 |------|------|
 | Landing / proposal (condensed) | `index.html` |
 | Landing / proposal (full version) | `index-full.html` |
+| Interactive mind map | `mindmap.html` |
 | What's it to me? (prototype) | `whats-it-to-me.html` |
 | You're the Minister | `games/youre-the-minister.html` |
 | Motion Builder | `games/motion-builder.html` |

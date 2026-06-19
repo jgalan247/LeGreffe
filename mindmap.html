@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What's it to me? — interactive mind map · States Greffe Education &amp; Outreach</title>
+<style>
+  :root{
+    --navy:#12263A; --deep:#0A4D68; --teal:#1C7293; --gold:#E0973A;
+    --ink:#1E293B; --muted:#64748B; --line:#D8E3EA; --bg:#F6F9FB; --rust:#A6492E;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
+
+  .disclaimer{background:var(--rust);color:#fff;font-size:12.5px;line-height:1.4;text-align:center;padding:7px 16px}
+  .disclaimer strong{color:#fff}
+
+  header.bar{background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 18px;flex-wrap:wrap}
+  header .brand{font-family:var(--serif);font-weight:700;font-size:16px}
+  header .brand span{display:block;color:var(--gold);font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .tools button,.tools a{font-family:var(--sans);font-size:12.5px;font-weight:600;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;text-decoration:none}
+  .tools button:hover,.tools a:hover{background:rgba(255,255,255,.18)}
+  .tools a.go{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+
+  #canvas{position:absolute;inset:0;top:0;overflow:hidden;cursor:grab;touch-action:none;background:
+     radial-gradient(circle at 50% 45%, #fff 0%, var(--bg) 70%)}
+  #canvas.panning{cursor:grabbing}
+  #stage{position:absolute;left:0;top:0;width:4000px;height:3000px;transform-origin:0 0}
+  #links{position:absolute;left:0;top:0;width:4000px;height:3000px;overflow:visible;pointer-events:none}
+  #links path{fill:none;stroke-width:2.5;opacity:.55}
+
+  .node{position:absolute;transform:translate(-50%,-50%);will-change:left,top}
+  .bubble{transition:transform .12s,box-shadow .12s;cursor:pointer;user-select:none}
+  .bubble:hover{transform:scale(1.05)}
+
+  .center .bubble{background:linear-gradient(160deg,var(--navy),var(--deep));color:#fff;border-radius:18px;
+     padding:18px 22px;text-align:center;width:210px;box-shadow:0 14px 34px rgba(18,38,58,.30)}
+  .center .bubble .t{font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.15}
+  .center .bubble .s{color:#CFE0EA;font-size:11.5px;margin-top:7px;line-height:1.35}
+  .center .bubble .hint{color:var(--gold);font-size:10.5px;margin-top:9px;font-weight:700;letter-spacing:.4px}
+
+  .branch .bubble{background:var(--c);color:#fff;border-radius:13px;padding:11px 13px;width:172px;
+     box-shadow:0 8px 20px rgba(18,38,58,.18);display:flex;align-items:center;gap:8px}
+  .branch .bubble .lbl{font-family:var(--serif);font-weight:700;font-size:15px;flex:1;line-height:1.15}
+  .branch .bubble .toggle{width:20px;height:20px;flex:0 0 auto;border-radius:999px;background:rgba(255,255,255,.22);
+     display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;line-height:1}
+  .branch .bubble .open{color:#fff;text-decoration:none;font-size:13px;font-weight:700;opacity:.85;flex:0 0 auto}
+  .branch .bubble .open:hover{opacity:1}
+
+  .leaf .bubble{background:#fff;color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--c);
+     border-radius:10px;padding:8px 11px;width:158px;font-size:12.5px;line-height:1.3;box-shadow:0 5px 14px rgba(18,38,58,.08)}
+  .node.leaf{transition:opacity .18s}
+  .node.hidden{display:none}
+
+  .legend{position:absolute;left:14px;bottom:12px;background:rgba(255,255,255,.92);border:1px solid var(--line);
+     border-radius:10px;padding:9px 12px;font-size:11.5px;color:var(--muted);max-width:260px;line-height:1.5}
+  .legend b{color:var(--deep)}
+  @media(max-width:560px){.legend{display:none}}
+</style>
+</head>
+<body>
+
+<div class="disclaimer">
+  <strong>Interview prototype — not an official States Greffe website.</strong>
+  A personal proposal for discussion by Dr Galan.
+</div>
+
+<header class="bar">
+  <div class="brand"><span>States Greffe · Education &amp; Outreach</span>What's it to me? — mind map</div>
+  <div class="tools">
+    <button id="expandAll">Expand all</button>
+    <button id="collapseAll">Collapse all</button>
+    <button id="zoomIn">＋</button>
+    <button id="zoomOut">－</button>
+    <button id="reset">Reset view</button>
+    <a class="go" href="index.html">Open full proposal ↗</a>
+  </div>
+</header>
+
+<div id="canvas">
+  <div id="stage">
+    <svg id="links" viewBox="0 0 4000 3000" preserveAspectRatio="none"></svg>
+  </div>
+</div>
+
+<div class="legend"><b>Drag</b> to pan · <b>scroll</b> to zoom · <b>click a branch</b> to expand its points · click the centre to toggle all · <b>↗</b> opens that section of the proposal.</div>
+
+<script>
+(function(){
+  // ---- data --------------------------------------------------------------
+  var CENTER={t:"What's it to me?", s:"Helping more Islanders see how the Assembly's work affects them"};
+  var BRANCHES=[
+    {label:"The gap", color:"#1C7293", anchor:"gap", leaves:[
+      "More people voted than in over a decade","Auto-registration revealed the gap",
+      "Under-35 turnout 17% (2022)","Patterned by tenure & area"]},
+    {label:"The idea", color:"#0A4D68", anchor:"idea", leaves:[
+      "Translate live Assembly business","Place it where people are",
+      "Activate — a real next step","A thin plain-language layer"]},
+    {label:"Impartiality", color:"#E0973A", anchor:"delivery", leaves:[
+      "Official sources first","No advocacy wording","Balanced template",
+      "Named officer sign-off","Open corrections","Election-period lockdown"]},
+    {label:"An example", color:"#14807A", anchor:"example", leaves:[
+      "Plain-language explainer","Both sides, attributed",
+      "English + community languages","Ends in an action"]},
+    {label:"Planning", color:"#A6492E", anchor:"planning", leaves:[
+      "Pilot — 1 topic, 1 parish","6–8 weeks, then evaluate",
+      "Work through partners","Test the assumptions"]},
+    {label:"Delivery", color:"#2A6F97", anchor:"delivery", leaves:[
+      "Phase 1 — Pilot","Phase 2 — Evaluate","Phase 3 — Scale","Officer sign-off gate"]},
+    {label:"Measure", color:"#6B4E71", anchor:"discussion", leaves:[
+      "Reach — new people?","Action — Scrutiny, petitions","Long-view baseline","Willing to stop"]},
+    {label:"The journey", color:"#3E5C76", anchor:"discussion", leaves:[
+      "Vote Stars · KS2","MyTurn · KS3–4","Having a say · 16+","What's it to me · adults"]}
+  ];
+
+  // ---- layout ------------------------------------------------------------
+  var CX=2000, CY=1500, R1=340;
+  var stage=document.getElementById("stage");
+  var links=document.getElementById("links");
+  var canvas=document.getElementById("canvas");
+  var SVGNS="http://www.w3.org/2000/svg";
+  function rad(d){return d*Math.PI/180;}
+
+  // compute positions
+  var branchPos=[], leafPos=[];
+  BRANCHES.forEach(function(b,i){
+    var ang=-90+i*45;
+    var bx=CX+R1*Math.cos(rad(ang)), by=CY+R1*Math.sin(rad(ang));
+    branchPos.push({x:bx,y:by,ang:ang});
+    var n=b.leaves.length;
+    var per = n<=4?15:9.5;            // degrees between leaves
+    var arr=[];
+    b.leaves.forEach(function(lf,j){
+      var a=ang+(j-(n-1)/2)*per;
+      var lr=R1+150+(j%2)*78;         // alternate radius to reduce crowding
+      arr.push({x:CX+lr*Math.cos(rad(a)), y:CY+lr*Math.sin(rad(a))});
+    });
+    leafPos.push(arr);
+  });
+
+  var expanded=BRANCHES.map(function(){return false;});
+
+  // ---- build nodes -------------------------------------------------------
+  function el(cls,html){var d=document.createElement("div");d.className=cls;if(html!=null)d.innerHTML=html;return d;}
+  function place(node,x,y){node.style.left=x+"px";node.style.top=y+"px";stage.appendChild(node);}
+
+  // centre
+  var centerNode=el("node center","<div class='bubble'><div class='t'>"+CENTER.t+"</div><div class='s'>"+CENTER.s+"</div><div class='hint'>click to expand / collapse all</div></div>");
+  place(centerNode,CX,CY);
+  centerNode.querySelector(".bubble").addEventListener("click",function(){
+    var anyClosed=expanded.some(function(e){return !e;});
+    setAll(anyClosed);
+  });
+
+  var leafNodes=[];
+  BRANCHES.forEach(function(b,i){
+    // branch
+    var bn=el("branch node",
+      "<div class='bubble' style='--c:"+b.color+"'>"+
+        "<span class='toggle'>+</span>"+
+        "<span class='lbl'>"+b.label+"</span>"+
+        "<a class='open' href='index.html#"+b.anchor+"' title='Open this section' target='_blank' rel='noopener'>↗</a>"+
+      "</div>");
+    bn.style.setProperty("--c",b.color);
+    place(bn,branchPos[i].x,branchPos[i].y);
+    bn.querySelector(".open").addEventListener("click",function(e){e.stopPropagation();});
+    bn.querySelector(".bubble").addEventListener("click",function(){toggle(i);});
+    branchPos[i].node=bn;
+
+    // leaves
+    var lns=[];
+    b.leaves.forEach(function(lf,j){
+      var ln=el("leaf node hidden","<div class='bubble' style='--c:"+b.color+"'>"+lf+"</div>");
+      ln.style.setProperty("--c",b.color);
+      place(ln,leafPos[i][j].x,leafPos[i][j].y);
+      lns.push(ln);
+    });
+    leafNodes.push(lns);
+  });
+
+  // ---- connectors --------------------------------------------------------
+  function curve(x1,y1,x2,y2){
+    var mx=(x1+x2)/2, my=(y1+y2)/2;
+    var dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy)||1;
+    var ox=-dy/len, oy=dx/len, bow=len*0.10;      // gentle perpendicular bow
+    return "M"+x1+" "+y1+" Q "+(mx+ox*bow)+" "+(my+oy*bow)+" "+x2+" "+y2;
+  }
+  function drawLinks(){
+    while(links.firstChild) links.removeChild(links.firstChild);
+    BRANCHES.forEach(function(b,i){
+      addPath(CX,CY,branchPos[i].x,branchPos[i].y,b.color,3);
+      if(expanded[i]){
+        leafPos[i].forEach(function(p){ addPath(branchPos[i].x,branchPos[i].y,p.x,p.y,b.color,2.2); });
+      }
+    });
+  }
+  function addPath(x1,y1,x2,y2,color,w){
+    var p=document.createElementNS(SVGNS,"path");
+    p.setAttribute("d",curve(x1,y1,x2,y2));
+    p.setAttribute("stroke",color);
+    p.setAttribute("stroke-width",w);
+    links.appendChild(p);
+  }
+
+  // ---- expand / collapse -------------------------------------------------
+  function toggle(i){ setBranch(i,!expanded[i]); drawLinks(); }
+  function setBranch(i,on){
+    expanded[i]=on;
+    leafNodes[i].forEach(function(ln){ ln.classList.toggle("hidden",!on); });
+    var tg=branchPos[i].node.querySelector(".toggle"); if(tg) tg.textContent=on?"–":"+";
+  }
+  function setAll(on){ BRANCHES.forEach(function(_,i){ setBranch(i,on); }); drawLinks(); }
+
+  // ---- pan & zoom --------------------------------------------------------
+  var tx=0,ty=0,scale=0.64;
+  function apply(){ stage.style.transform="translate("+tx+"px,"+ty+"px) scale("+scale+")"; }
+  function centerView(){
+    var r=canvas.getBoundingClientRect();
+    tx=r.width/2 - CX*scale; ty=r.height/2 - CY*scale; apply();
+  }
+  function zoomAt(mx,my,factor){
+    var ns=Math.max(0.3,Math.min(2.4,scale*factor));
+    var sx=(mx-tx)/scale, sy=(my-ty)/scale;
+    scale=ns; tx=mx-sx*scale; ty=my-sy*scale; apply();
+  }
+
+  canvas.addEventListener("wheel",function(e){
+    e.preventDefault();
+    var r=canvas.getBoundingClientRect();
+    zoomAt(e.clientX-r.left, e.clientY-r.top, e.deltaY<0?1.12:1/1.12);
+  },{passive:false});
+
+  var panning=false,psx,psy,ptx,pty;
+  canvas.addEventListener("pointerdown",function(e){
+    if(e.target.closest(".node")) return;       // let nodes handle their own clicks
+    panning=true; canvas.classList.add("panning");
+    psx=e.clientX; psy=e.clientY; ptx=tx; pty=ty;
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove",function(e){
+    if(!panning) return;
+    tx=ptx+(e.clientX-psx); ty=pty+(e.clientY-psy); apply();
+  });
+  function endPan(){ panning=false; canvas.classList.remove("panning"); }
+  canvas.addEventListener("pointerup",endPan);
+  canvas.addEventListener("pointercancel",endPan);
+
+  // ---- controls ----------------------------------------------------------
+  document.getElementById("expandAll").addEventListener("click",function(){setAll(true);});
+  document.getElementById("collapseAll").addEventListener("click",function(){setAll(false);});
+  document.getElementById("reset").addEventListener("click",function(){scale=0.64;centerView();});
+  document.getElementById("zoomIn").addEventListener("click",function(){var r=canvas.getBoundingClientRect();zoomAt(r.width/2,r.height/2,1.18);});
+  document.getElementById("zoomOut").addEventListener("click",function(){var r=canvas.getBoundingClientRect();zoomAt(r.width/2,r.height/2,1/1.18);});
+
+  // ---- init --------------------------------------------------------------
+  drawLinks();
+  centerView();
+  window.addEventListener("resize",centerView);
+})();
+</script>
+</body>
+</html>
